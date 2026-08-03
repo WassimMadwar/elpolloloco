@@ -7,7 +7,7 @@ console.log("Class Info");
 let canvas;
 // let ctx;
 let game ;
-
+let keyTaste = new KeyboardObj();
 
 function init() {
   canvas = document.getElementById("canvas");
@@ -18,4 +18,9 @@ function init() {
   //   ctx.drawImage(character, 20, 20, 50, 100);
   // }, 2000);
   // console.log("gtgtt",game.character);
+  window.addEventListener("keydown", (e) => {
+    if (e.key == "ArrowLeft") {
+      keyTaste.left = true;
+    }
+  });
 }

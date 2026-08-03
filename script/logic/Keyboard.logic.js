@@ -1,9 +1,8 @@
-class keyboardObj {
-    left;
-    right;
-    jumb;
-    weepon;
-    space;
+class KeyboardObj {
+    left = false;
+    right = false;
+    up = false;
+    space = false;
     constructor() {
         
     }
