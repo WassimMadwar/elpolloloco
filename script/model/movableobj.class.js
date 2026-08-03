@@ -11,13 +11,11 @@ class MovableObj {
     this.img = new Image();
     this.img.src = path;
   }
+  
   moveRight() {
     log("Move Right");
   }
-  // loadImgMoving(arr) {
-  //   this.img = new Image();
-  //   this.img.src = arr[0];
-  // }
+
   loadImgMoving(arr) {
     arr.forEach((path) => {
       let img = new Image();
