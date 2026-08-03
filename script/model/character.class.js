@@ -14,10 +14,10 @@ class Character extends MovableObj {
   constructor() {
     super().loadImg("assets/img/2_character_pepe/1_idle/idle/I-1.png");
     this.loadImgMoving(this.imageCharWalking);
-    this.animateCharacter();
+    this.animateCharacterWalking();
   }
 
-  animateCharacter() {
+  animateCharacterWalking() {
     setInterval(() => {
       let path = this.imageCharWalking[this.currentImg];
       this.img = this.imageCache[path];
