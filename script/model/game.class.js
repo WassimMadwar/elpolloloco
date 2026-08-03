@@ -11,20 +11,14 @@ class Game {
   ];
   backgrounds = [
     new BackgroundObj(
-      "assets/img/5_background/layers/3_third_layer/1.png",
-      0,
-      0,
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/2_second_layer/1.png",
-      0,
+      "assets/img/5_background/first_half_background.png",
       0,
     ),
     new BackgroundObj(
-      "assets/img/5_background/layers/1_first_layer/1.png",
-      0,
+      "assets/img/5_background/second_half_background.png",
       0,
     ),
+
   ];
   constructor(canvas) {
     this.renderCanvas = canvas;
