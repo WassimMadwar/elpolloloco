@@ -8,5 +8,11 @@ class Cloud extends MovableObj {
     this.loadImg(path);
     //    this.y = 2 + Math.random() * 30;
     this.x = 30 + Math.random() * 250;
+    this.animate();
+  }
+  animate() {
+    setInterval(() => {
+        this.x -= 0.15;
+    }, 1000/60); // 60 FPS
   }
 }
