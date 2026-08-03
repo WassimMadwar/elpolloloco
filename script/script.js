@@ -17,5 +17,5 @@ function init() {
   // setTimeout(() => {
   //   ctx.drawImage(character, 20, 20, 50, 100);
   // }, 2000);
-  console.log("gtgtt",game.character);
+  // console.log("gtgtt",game.character);
 }
