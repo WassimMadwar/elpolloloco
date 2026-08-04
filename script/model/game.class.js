@@ -20,6 +20,11 @@ class Game {
     this.ctx = canvas.getContext("2d");
     this.keyAction = keyTaste;
     this.draw();
+    this.setupGame();
+  }
+
+  setupGame() {
+    this.character.gameMatch = this;
   }
 
   draw() {

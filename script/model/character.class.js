@@ -1,6 +1,7 @@
 class Character extends MovableObj {
   height = 100;
   y = 30;
+  gameMatch;
   imageCharWalking = [
     "assets/img/2_character_pepe/2_walk/W-21.png",
     "assets/img/2_character_pepe/2_walk/W-22.png",
@@ -10,7 +11,7 @@ class Character extends MovableObj {
     "assets/img/2_character_pepe/2_walk/W-26.png",
   ];
   currentImg = 0;
-  
+
   constructor() {
     super().loadImg("assets/img/2_character_pepe/1_idle/idle/I-1.png");
     this.loadImgMoving(this.imageCharWalking);
@@ -19,9 +20,11 @@ class Character extends MovableObj {
 
   animateCharacterWalking() {
     setInterval(() => {
-      let path = this.imageCharWalking[this.currentImg];
+      if (this.gameMatch.keyAction.right) {
+        let path = this.imageCharWalking[this.currentImg];
       this.img = this.imageCache[path];
       this.updateCurrentImg();
+      }
     }, 100);
   }
 
