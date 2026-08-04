@@ -4,28 +4,21 @@ class Game {
   clouds = [new Cloud(), new Cloud(), new Cloud()];
   ctx;
   renderCanvas;
-
+  keyAction;
   clouds = [
     new Cloud("assets/img/5_background/layers/4_clouds/1.png"),
     new Cloud("assets/img/5_background/layers/4_clouds/2.png"),
   ];
   backgrounds = [
-    // new BackgroundObj(
-    //   "assets/img/5_background/first_half_background.png",
-    //   0,
-    // ),
-    // new BackgroundObj(
-    //   "assets/img/5_background/second_half_background.png",
-    //   0,
-    // ),
     new BackgroundObj("assets/img/5_background/layers/air.png", 0),
     new BackgroundObj("assets/img/5_background/layers/3_third_layer/1.png", 0),
     new BackgroundObj("assets/img/5_background/layers/2_second_layer/1.png", 0),
     new BackgroundObj("assets/img/5_background/layers/1_first_layer/1.png", 0),
   ];
-  constructor(canvas) {
+  constructor(canvas, keyTaste) {
     this.renderCanvas = canvas;
     this.ctx = canvas.getContext("2d");
+    this.keyAction = keyTaste;
     this.draw();
   }
 
