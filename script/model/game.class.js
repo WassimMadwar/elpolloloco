@@ -46,6 +46,16 @@ class Game {
   }
 
   addToMap(movableObj) {
+    if (movableObj.otherDirection) {
+      this.ctx.save();
+      this.ctx.translate(movableObj.img.width, 0);
+      this.ctx.scale(-1, 1);
+      // movableObj.x = movableObj.x * -1;
+    }
+    if (movableObj.otherDirection) {
+      // movableObj.x = movableObj.x * -1;
+      this.ctx.restore();
+    }
     this.ctx.drawImage(
       movableObj.img,
       movableObj.x,
@@ -53,5 +63,6 @@ class Game {
       movableObj.width,
       movableObj.height,
     );
+
   }
 }

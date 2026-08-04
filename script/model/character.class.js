@@ -19,14 +19,18 @@ class Character extends MovableObj {
   }
 
   animateCharacterWalking() {
+    
     setInterval(() => {
       if (this.gameMatch.keyAction.right ) {
         this.x += 8;
+        this.otherDirection = false;
       }
       if (this.gameMatch.keyAction.left) {
         this.x -= 8;
+        this.otherDirection = true;
       }
     }, 100);
+
     setInterval(() => {
       if (this.gameMatch.keyAction.right || this.gameMatch.keyAction.left) {
         let path = this.imageCharWalking[this.currentImg];

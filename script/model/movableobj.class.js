@@ -6,12 +6,13 @@ class MovableObj {
   width = 50;
   imageCache = {};
   speed = 1;
+  otherDirection = false;
 
   loadImg(path) {
     this.img = new Image();
     this.img.src = path;
   }
-  
+
   moveRight() {
     log("Move Right");
   }
