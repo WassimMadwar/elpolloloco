@@ -1,7 +1,7 @@
 class Game {
   character = new Character();
-  enemies = [new Enemy(), new Enemy(), new Enemy()];
-  clouds = [new Cloud(), new Cloud(), new Cloud()];
+  enemies =level1.enemies;
+  clouds = level1.clouds;
   ctx;
   renderCanvas;
   keyAction;
@@ -10,64 +10,7 @@ class Game {
     new Cloud("assets/img/5_background/layers/4_clouds/1.png"),
     new Cloud("assets/img/5_background/layers/4_clouds/2.png"),
   ];
-  backgrounds = [
-    new BackgroundObj("assets/img/5_background/layers/air.png", -300),
-    new BackgroundObj(
-      "assets/img/5_background/layers/3_third_layer/2.png",
-      -300,
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/2_second_layer/2.png",
-      -300,
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/1_first_layer/2.png",
-      -300,
-    ),
-    new BackgroundObj("assets/img/5_background/layers/air.png", 0),
-    new BackgroundObj("assets/img/5_background/layers/3_third_layer/1.png", 0),
-    new BackgroundObj("assets/img/5_background/layers/2_second_layer/1.png", 0),
-    new BackgroundObj("assets/img/5_background/layers/1_first_layer/1.png", 0),
-    new BackgroundObj("assets/img/5_background/layers/air.png", 300),
-    new BackgroundObj(
-      "assets/img/5_background/layers/3_third_layer/2.png",
-      300,
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/2_second_layer/2.png",
-      300,
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/1_first_layer/2.png",
-      300,
-    ),
-    new BackgroundObj("assets/img/5_background/layers/air.png", 300 * 2),
-    new BackgroundObj(
-      "assets/img/5_background/layers/3_third_layer/2.png",
-      300 * 2,
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/2_second_layer/2.png",
-      300 * 2,
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/1_first_layer/2.png",
-      300 * 2,
-    ),
-    new BackgroundObj("assets/img/5_background/layers/air.png", 300 * 3),
-    new BackgroundObj(
-      "assets/img/5_background/layers/3_third_layer/2.png",
-      300 * 3,
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/2_second_layer/2.png",
-      300 * 3,
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/1_first_layer/2.png",
-      300 * 3,
-    ),
-  ];
+  backgrounds = level1.backgrounds;
 
   constructor(canvas, keyTaste) {
     this.renderCanvas = canvas;
@@ -124,7 +67,7 @@ class Game {
     this.ctx.translate(movableObj.x * 2 + movableObj.width, 0);
     this.ctx.scale(-1, 1);
   }
-  
+
   flipImageBack(movableObj) {
     this.ctx.restore();
   }
