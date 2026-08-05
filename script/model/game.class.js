@@ -5,6 +5,7 @@ class Game {
   ctx;
   renderCanvas;
   keyAction;
+  camera_x = -100;
   clouds = [
     new Cloud("assets/img/5_background/layers/4_clouds/1.png"),
     new Cloud("assets/img/5_background/layers/4_clouds/2.png"),
@@ -15,12 +16,16 @@ class Game {
     new BackgroundObj("assets/img/5_background/layers/2_second_layer/1.png", 0),
     new BackgroundObj("assets/img/5_background/layers/1_first_layer/1.png", 0),
   ];
+
+
+
   constructor(canvas, keyTaste) {
     this.renderCanvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.keyAction = keyTaste;
     this.draw();
     this.setupGame();
+    this.camera_x ;
   }
 
   setupGame() {
@@ -29,11 +34,12 @@ class Game {
 
   draw() {
     this.ctx.clearRect(0, 0, this.renderCanvas.width, this.renderCanvas.height);
-
+    this.ctx.translate(this.camera_x,0);
     this.addObjectsToMap(this.backgrounds);
     this.addToMap(this.character);
     this.addObjectsToMap(this.clouds);
     this.addObjectsToMap(this.enemies);
+    this.ctx.translate(-this.camera_x,-0);
 
     let self = this;
     requestAnimationFrame(() => self.draw());
@@ -47,9 +53,7 @@ class Game {
 
   addToMap(movableObj) {
     if (movableObj.otherDirection) {
-      this.ctx.save();
-      this.ctx.translate(movableObj.x * 2 + movableObj.width, 0);
-      this.ctx.scale(-1, 1);
+      this.flipImage(movableObj);
     }
 
     this.ctx.drawImage(
@@ -61,7 +65,15 @@ class Game {
     );
 
     if (movableObj.otherDirection) {
-      this.ctx.restore();
+      this.flipImageBack(movableObj);
     }
+  }
+  flipImage(movableObj) {
+    this.ctx.save();
+    this.ctx.translate(movableObj.x * 2 + movableObj.width, 0);
+    this.ctx.scale(-1, 1);
+  }
+  flipImageBack(movableObj) {
+    this.ctx.restore();
   }
 }

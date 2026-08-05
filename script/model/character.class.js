@@ -19,7 +19,7 @@ class Character extends MovableObj {
   }
 
   animateCharacterWalking() {
-    
+
     setInterval(() => {
       if (this.gameMatch.keyAction.right ) {
         this.x += 8;
@@ -29,6 +29,7 @@ class Character extends MovableObj {
         this.x -= 8;
         this.otherDirection = true;
       }
+      this.gameMatch.camera_x = -this.x + 100;
     }, 100);
 
     setInterval(() => {
