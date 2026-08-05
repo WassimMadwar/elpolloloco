@@ -1,6 +1,11 @@
 const level1 = new Level(
   [new Enemy(), new Enemy(), new Enemy()],
-  [new Cloud(), new Cloud(), new Cloud()],
+  [
+    new Cloud("assets/img/5_background/layers/4_clouds/1.png"),
+    new Cloud("assets/img/5_background/layers/4_clouds/2.png"),
+    new Cloud("assets/img/5_background/layers/4_clouds/1.png"),
+    new Cloud("assets/img/5_background/layers/4_clouds/2.png"),
+  ],
   [
     new BackgroundObj("assets/img/5_background/layers/air.png", -300),
     new BackgroundObj(

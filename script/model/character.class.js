@@ -21,15 +21,15 @@ class Character extends MovableObj {
   animateCharacterWalking() {
 
     setInterval(() => {
-      if (this.gameMatch.keyAction.right ) {
+      if (this.gameMatch.keyAction.right  && this.x < this.gameMatch.level.levelEndX ) {
         this.x += 8;
         this.otherDirection = false;
       }
-      if (this.gameMatch.keyAction.left) {
+      if (this.gameMatch.keyAction.left&& this.x > 0) {
         this.x -= 8;
         this.otherDirection = true;
       }
-      this.gameMatch.camera_x = -this.x + 100;
+      this.gameMatch.camera_x = -this.x + 50;
     }, 100);
 
     setInterval(() => {

@@ -1,16 +1,10 @@
 class Game {
   character = new Character();
-  enemies =level1.enemies;
-  clouds = level1.clouds;
+ level = level1;
   ctx;
   renderCanvas;
   keyAction;
   camera_x = -100;
-  clouds = [
-    new Cloud("assets/img/5_background/layers/4_clouds/1.png"),
-    new Cloud("assets/img/5_background/layers/4_clouds/2.png"),
-  ];
-  backgrounds = level1.backgrounds;
 
   constructor(canvas, keyTaste) {
     this.renderCanvas = canvas;
@@ -28,10 +22,10 @@ class Game {
   draw() {
     this.ctx.clearRect(0, 0, this.renderCanvas.width, this.renderCanvas.height);
     this.ctx.translate(this.camera_x, 0);
-    this.addObjectsToMap(this.backgrounds);
+    this.addObjectsToMap(this.level.backgrounds);
     this.addToMap(this.character);
-    this.addObjectsToMap(this.clouds);
-    this.addObjectsToMap(this.enemies);
+    this.addObjectsToMap(this.level.clouds);
+    this.addObjectsToMap(this.level.enemies);
     this.ctx.translate(-this.camera_x, -0);
 
     let self = this;
