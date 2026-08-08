@@ -1,6 +1,6 @@
 class Character extends MovableObj {
   height = 100;
-  y = 30;
+  y = -10;
   gameMatch;
   imageCharWalking = [
     "assets/img/2_character_pepe/2_walk/W-21.png",
@@ -12,20 +12,24 @@ class Character extends MovableObj {
   ];
   currentImg = 0;
 
+
   constructor() {
     super().loadImg("assets/img/2_character_pepe/1_idle/idle/I-1.png");
     this.loadImgMoving(this.imageCharWalking);
     this.animateCharacterWalking();
+    this.applyGravity();
   }
 
   animateCharacterWalking() {
-
     setInterval(() => {
-      if (this.gameMatch.keyAction.right  && this.x < this.gameMatch.level.levelEndX ) {
+      if (
+        this.gameMatch.keyAction.right &&
+        this.x < this.gameMatch.level.levelEndX
+      ) {
         this.x += 8;
         this.otherDirection = false;
       }
-      if (this.gameMatch.keyAction.left&& this.x > 0) {
+      if (this.gameMatch.keyAction.left && this.x > 0) {
         this.x -= 8;
         this.otherDirection = true;
       }
@@ -34,11 +38,10 @@ class Character extends MovableObj {
 
     setInterval(() => {
       if (this.gameMatch.keyAction.right || this.gameMatch.keyAction.left) {
-        this.playAnimation(this.imageCharWalking);}
+        this.playAnimation(this.imageCharWalking);
+      }
     }, 100);
-
   }
-
 
   jump() {}
 }
