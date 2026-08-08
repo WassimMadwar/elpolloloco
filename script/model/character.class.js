@@ -1,6 +1,7 @@
 class Character extends MovableObj {
   height = 100;
   y = -10;
+  groundY = 32;
   gameMatch;
   imageCharWalking = [
     "assets/img/2_character_pepe/2_walk/W-21.png",
@@ -22,7 +23,7 @@ class Character extends MovableObj {
     // "assets/img/2_character_pepe/3_jump/J-38.png",
     // "assets/img/2_character_pepe/3_jump/J-39.png",
   ];
-  currentImg = 0;
+  // currentImg = 0;
 
   constructor() {
     super().loadImg("assets/img/2_character_pepe/1_idle/idle/I-1.png");
@@ -45,11 +46,20 @@ class Character extends MovableObj {
         this.x -= 8;
         this.otherDirection = true;
       }
+      if (this.gameMatch.keyAction.up) {
+        console.log(this.y);
+        if (this.y == 32) {
+          // console.log('dsadsad')
+          this.speedY = 6;
+          this.y = 32;
+          return;
+        }
+      }
       this.gameMatch.camera_x = -this.x + 50;
     }, 100);
 
     setInterval(() => {
-      if(this.isAboveGround()) {
+      if (this.isAboveGround()) {
         this.playAnimation(this.imageCharJump);
       }
       if (this.gameMatch.keyAction.right || this.gameMatch.keyAction.left) {
