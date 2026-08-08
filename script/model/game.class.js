@@ -26,8 +26,8 @@ class Game {
     this.addToMap(this.character);
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.enemies);
-    this.character.drawFrameW(this.ctx);
-    this.level.enemies.forEach((enemy) => enemy.drawFrameW(this.ctx));
+    this.character.drawViewFrame(this.ctx);
+    this.level.enemies.forEach((enemy) => enemy.drawViewFrame(this.ctx));
     this.ctx.translate(-this.camera_x, -0);
     let self = this;
     requestAnimationFrame(() => self.draw());
@@ -43,7 +43,6 @@ class Game {
     if (movableObj.otherDirection) {
       this.flipImage(movableObj);
     }
-
     this.ctx.drawImage(
       movableObj.img,
       movableObj.x,

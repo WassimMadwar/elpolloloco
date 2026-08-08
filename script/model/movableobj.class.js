@@ -17,11 +17,6 @@ class MovableObj {
     this.img.src = path;
   }
 
-  moveRight() {
-    this.x += 8;
-    this.otherDirection = false;
-  }
-
   loadImgMoving(arr) {
     arr.forEach((path) => {
       let img = new Image();
@@ -42,10 +37,16 @@ class MovableObj {
       this.currentImg = 0;
     }
   }
+
+  moveRight() {
+    this.x += 8;
+    this.otherDirection = false;
+  }
+
   moveLeft() {
     setInterval(() => {
       this.x -= this.speed;
-    }, 1000 / 10); // 60 FPS log("Move Left");
+    }, 1000 / 10);
   }
 
   applyGravity() {
@@ -60,10 +61,12 @@ class MovableObj {
       }
     }, 1000 / 25);
   }
+
   isAboveGround() {
     return this.y < this.groundY;
   }
-  drawFrameW(ctx) {
+
+  drawViewFrame(ctx) {
     ctx.strokeStyle = "red";
     ctx.lineWidth = 2;
     ctx.strokeRect(this.x, this.y, this.width, this.height);
