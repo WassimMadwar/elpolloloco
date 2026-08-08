@@ -13,6 +13,7 @@ class Game {
     this.draw();
     this.setupGame();
     this.camera_x;
+    this.checkCollision();
   }
 
   setupGame() {
@@ -63,5 +64,15 @@ class Game {
 
   flipImageBack(movableObj) {
     this.ctx.restore();
+  }
+  checkCollision() {
+    setInterval(() => {
+      this.level.enemies.forEach((enemy)=>{
+        if (this.character.isColliding(enemy)) {
+          console.log('colllisin')
+        }
+      });
+    }, 1000);
+    // this.isColliding(movableObj);
   }
 }

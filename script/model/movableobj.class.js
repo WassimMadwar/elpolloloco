@@ -71,4 +71,13 @@ class MovableObj {
     ctx.lineWidth = 2;
     ctx.strokeRect(this.x, this.y, this.width, this.height);
   }
+
+  isColliding(movableObj) {
+    return (
+      this.x + this.width > movableObj.x &&
+      this.x < movableObj.x &&
+      this.y + this.height > movableObj.y &&
+      this.y < movableObj.y + movableObj.height
+    );
+  }
 }
