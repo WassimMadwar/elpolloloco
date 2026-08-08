@@ -34,19 +34,11 @@ class Character extends MovableObj {
 
     setInterval(() => {
       if (this.gameMatch.keyAction.right || this.gameMatch.keyAction.left) {
-        let path = this.imageCharWalking[this.currentImg];
-      this.img = this.imageCache[path];
-      this.updateCurrentImg();
-      }
+        this.playAnimation(this.imageCharWalking);}
     }, 100);
 
   }
 
-  updateCurrentImg() {
-    this.currentImg++;
-    if (this.currentImg >= this.imageCharWalking.length) {
-      this.currentImg = 0;
-    }
-  }
+
   jump() {}
 }

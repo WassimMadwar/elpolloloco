@@ -7,6 +7,7 @@ class MovableObj {
   imageCache = {};
   speed = 1;
   otherDirection = false;
+  currentImg = 0;
 
   loadImg(path) {
     this.img = new Image();
@@ -25,6 +26,18 @@ class MovableObj {
     });
   }
 
+  playAnimation(arrImg) {
+    let path = arrImg[this.currentImg];
+    this.img = this.imageCache[path];
+    this.updateCurrentImg(arrImg.length);
+  }
+
+  updateCurrentImg(arrLenght) {
+    this.currentImg++;
+    if (this.currentImg >= arrLenght) {
+      this.currentImg = 0;
+    }
+  }
   moveLeft() {
     setInterval(() => {
       this.x -= this.speed;

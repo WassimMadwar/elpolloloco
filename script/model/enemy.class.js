@@ -20,17 +20,8 @@ class Enemy extends MovableObj {
 
   animateEnemyWalking() {
     setInterval(() => {
-      let path = this.imgEnemyWalking[this.currentImg];
-      this.img = this.imageCache[path];
-      this.updateCurrentImg();
+      this.playAnimation(this.imgEnemyWalking);
     }, 200);
-  }
-
-  updateCurrentImg() {
-    this.currentImg++;
-    if (this.currentImg >= this.imgEnemyWalking.length) {
-      this.currentImg = 0;
-    }
   }
 
   animate() {
