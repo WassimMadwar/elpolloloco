@@ -9,7 +9,7 @@ class MovableObj {
   otherDirection = false;
   currentImg = 0;
   speedY = 0;
-  acceleration = 0.9;
+  acceleration = 0.4;
 
   loadImg(path) {
     this.img = new Image();
@@ -29,7 +29,7 @@ class MovableObj {
   }
 
   playAnimation(arrImg) {
-    let path = arrImg[this.currentImg];
+    let path = arrImg[this.currentImg % arrImg.length];
     this.img = this.imageCache[path];
     this.updateCurrentImg(arrImg.length);
   }
@@ -48,7 +48,7 @@ class MovableObj {
 
   applyGravity() {
     setInterval(() => {
-      if (this.isAboveGround() || this.speedY > 0) {
+      if (this.isAboveGround() ) {
         this.y -= this.speedY;
         this.speedY -= this.acceleration;
       }

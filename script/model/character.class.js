@@ -10,11 +10,23 @@ class Character extends MovableObj {
     "assets/img/2_character_pepe/2_walk/W-25.png",
     "assets/img/2_character_pepe/2_walk/W-26.png",
   ];
+  imageCharJump = [
+    "assets/img/2_character_pepe/3_jump/J-31.png",
+    "assets/img/2_character_pepe/3_jump/J-32.png",
+    "assets/img/2_character_pepe/3_jump/J-33.png",
+    "assets/img/2_character_pepe/3_jump/J-34.png",
+    "assets/img/2_character_pepe/3_jump/J-35.png",
+    // "assets/img/2_character_pepe/3_jump/J-31.png",
+    // "assets/img/2_character_pepe/3_jump/J-36.png",
+    // "assets/img/2_character_pepe/3_jump/J-37.png",
+    // "assets/img/2_character_pepe/3_jump/J-38.png",
+    // "assets/img/2_character_pepe/3_jump/J-39.png",
+  ];
   currentImg = 0;
-
 
   constructor() {
     super().loadImg("assets/img/2_character_pepe/1_idle/idle/I-1.png");
+    this.loadImgMoving(this.imageCharJump);
     this.loadImgMoving(this.imageCharWalking);
     this.animateCharacterWalking();
     this.applyGravity();
@@ -37,6 +49,9 @@ class Character extends MovableObj {
     }, 100);
 
     setInterval(() => {
+      if(this.isAboveGround()) {
+        this.playAnimation(this.imageCharJump);
+      }
       if (this.gameMatch.keyAction.right || this.gameMatch.keyAction.left) {
         this.playAnimation(this.imageCharWalking);
       }
