@@ -18,7 +18,8 @@ class MovableObj {
   }
 
   moveRight() {
-    log("Move Right");
+    this.x += 8;
+    this.otherDirection = false;
   }
 
   loadImgMoving(arr) {
@@ -42,6 +43,7 @@ class MovableObj {
     }
   }
   moveLeft() {
+    // this.otherDirection = true;
     setInterval(() => {
       this.x -= this.speed;
     }, 1000 / 10); // 60 FPS log("Move Left");

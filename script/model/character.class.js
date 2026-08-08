@@ -39,21 +39,15 @@ class Character extends MovableObj {
         this.gameMatch.keyAction.right &&
         this.x < this.gameMatch.level.levelEndX
       ) {
-        this.x += 8;
-        this.otherDirection = false;
+this.moveRight();
       }
       if (this.gameMatch.keyAction.left && this.x > 0) {
         this.x -= 8;
         this.otherDirection = true;
+        // this.moveLeft();
       }
       if (this.gameMatch.keyAction.up) {
-        console.log(this.y);
-        if (this.y == 32) {
-          // console.log('dsadsad')
-          this.speedY = 6;
-          this.y = 32;
-          return;
-        }
+        this.jump();
       }
       this.gameMatch.camera_x = -this.x + 50;
     }, 100);
@@ -68,5 +62,9 @@ class Character extends MovableObj {
     }, 100);
   }
 
-  jump() {}
+  jump() {
+    if (!this.isAboveGround()) {
+      this.speedY = 6;
+    }
+  }
 }
