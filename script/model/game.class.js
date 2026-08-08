@@ -1,6 +1,6 @@
 class Game {
   character = new Character();
- level = level1;
+  level = level1;
   ctx;
   renderCanvas;
   keyAction;
@@ -26,8 +26,9 @@ class Game {
     this.addToMap(this.character);
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.enemies);
+    this.character.drawFrameW(this.ctx);
+    this.level.enemies.forEach((enemy) => enemy.drawFrameW(this.ctx));
     this.ctx.translate(-this.camera_x, -0);
-
     let self = this;
     requestAnimationFrame(() => self.draw());
   }
@@ -50,7 +51,6 @@ class Game {
       movableObj.width,
       movableObj.height,
     );
-
     if (movableObj.otherDirection) {
       this.flipImageBack(movableObj);
     }

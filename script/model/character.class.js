@@ -39,12 +39,11 @@ class Character extends MovableObj {
         this.gameMatch.keyAction.right &&
         this.x < this.gameMatch.level.levelEndX
       ) {
-this.moveRight();
+        this.moveRight();
       }
       if (this.gameMatch.keyAction.left && this.x > 0) {
         this.x -= 8;
         this.otherDirection = true;
-        // this.moveLeft();
       }
       if (this.gameMatch.keyAction.up) {
         this.jump();

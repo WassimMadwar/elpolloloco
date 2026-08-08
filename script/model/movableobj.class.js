@@ -43,7 +43,6 @@ class MovableObj {
     }
   }
   moveLeft() {
-    // this.otherDirection = true;
     setInterval(() => {
       this.x -= this.speed;
     }, 1000 / 10); // 60 FPS log("Move Left");
@@ -63,5 +62,10 @@ class MovableObj {
   }
   isAboveGround() {
     return this.y < this.groundY;
+  }
+  drawFrameW(ctx) {
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(this.x, this.y, this.width, this.height);
   }
 }
