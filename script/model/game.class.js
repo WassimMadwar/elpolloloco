@@ -67,12 +67,13 @@ class Game {
   }
   checkCollision() {
     setInterval(() => {
-      this.level.enemies.forEach((enemy)=>{
+      this.level.enemies.forEach((enemy) => {
         if (this.character.isColliding(enemy)) {
-          console.log('colllisin')
+          this.character.hit();
+          // console.log("colllisin", this.character.energy);
         }
       });
-    }, 1000);
+    }, 200);
     // this.isColliding(movableObj);
   }
 }

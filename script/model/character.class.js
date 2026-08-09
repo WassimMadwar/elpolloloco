@@ -24,11 +24,20 @@ class Character extends MovableObj {
     // "assets/img/2_character_pepe/3_jump/J-39.png",
   ];
   // currentImg = 0;
-
+  imageCharDead = [
+    "assets/img/2_character_pepe/5_dead/D-51.png",
+    "assets/img/2_character_pepe/5_dead/D-52.png",
+    "assets/img/2_character_pepe/5_dead/D-53.png",
+    "assets/img/2_character_pepe/5_dead/D-54.png",
+    "assets/img/2_character_pepe/5_dead/D-55.png",
+    "assets/img/2_character_pepe/5_dead/D-56.png",
+    "assets/img/2_character_pepe/5_dead/D-57.png",
+  ];
   constructor() {
     super().loadImg("assets/img/2_character_pepe/1_idle/idle/I-1.png");
     this.loadImgMoving(this.imageCharJump);
     this.loadImgMoving(this.imageCharWalking);
+    this.loadImgMoving(this.imageCharDead);
     this.animateCharacterWalking();
     this.applyGravity();
   }
@@ -52,10 +61,17 @@ class Character extends MovableObj {
     }, 100);
 
     setInterval(() => {
+      if (this.isDead()) {
+        console.log("kokoo");
+        this.playAnimation(this.imageCharDead);
+      }
       if (this.isAboveGround()) {
         this.playAnimation(this.imageCharJump);
       }
-      if (this.gameMatch.keyAction.right || this.gameMatch.keyAction.left) {
+      if (
+        (!this.isAboveGround() && this.gameMatch.keyAction.right) ||
+        this.gameMatch.keyAction.left
+      ) {
         this.playAnimation(this.imageCharWalking);
       }
     }, 100);

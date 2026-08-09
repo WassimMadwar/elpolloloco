@@ -11,6 +11,7 @@ class MovableObj {
   speedY = 0;
   acceleration = 0.4;
   groundY = 130;
+  energy = 100;
 
   loadImg(path) {
     this.img = new Image();
@@ -79,5 +80,15 @@ class MovableObj {
       this.y + this.height > movableObj.y &&
       this.y < movableObj.y + movableObj.height
     );
+  }
+  hit() {
+    this.energy -= 10;
+    if (this.energy <= 0) {
+      this.energy = 0;
+    }
+  }
+
+  isDead() {
+    return this.energy == 0;
   }
 }
