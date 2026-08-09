@@ -8,6 +8,7 @@ class MovableObj extends DrawableObj {
   groundY = 130;
   energy = 100;
   lastHit = 0;
+  isDying = false;
 
   playAnimation(arrImg) {
     let path = arrImg[this.currentImg % arrImg.length];
@@ -27,7 +28,12 @@ class MovableObj extends DrawableObj {
   }
 
   applyGravity() {
-    setInterval(() => {
+    this.gravityInterval = setInterval(() => {
+      if (this.isDying) {
+        this.y -= this.speedY;
+        this.speedY -= this.acceleration;
+        return;
+      }
       if (this.isAboveGround() || this.speedY > 0) {
         this.y -= this.speedY;
         this.speedY -= this.acceleration;
@@ -74,6 +80,6 @@ class MovableObj extends DrawableObj {
   }
 // 
   isDead() {
-    return this.energy == 0;
+    return this.energy == 0 || this.isDying;
   }
 }

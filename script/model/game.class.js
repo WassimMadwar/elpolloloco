@@ -84,7 +84,6 @@ class Game {
     this.level.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
         this.character.hit();
-        this.helthBarChar.setPercentge(this.helthBarChar._percentge - 20);
       }
     });
   }

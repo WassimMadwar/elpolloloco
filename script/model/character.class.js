@@ -50,7 +50,15 @@ class Character extends MovableObj {
   }
 
   animateCharacterWalking() {
-    setInterval(() => {
+    this.controlInterval = setInterval(() => {
+      if (this.isDying) {
+        if (this.y > this.gameMatch.renderCanvas.height) {
+          clearInterval(this.controlInterval);
+          clearInterval(this.animationInterval);
+          clearInterval(this.gravityInterval);
+        }
+        return;
+      }
       if (
         this.gameMatch.keyAction.right &&
         this.x < this.gameMatch.level.levelEndX
@@ -67,7 +75,7 @@ class Character extends MovableObj {
       this.gameMatch.camera_x = -this.x + 50;
     }, 100);
 
-    setInterval(() => {
+    this.animationInterval = setInterval(() => {
       if (this.isDead()) {
         this.playAnimation(this.imageCharDead);
       } else if (this.isHurt()) {
@@ -89,5 +97,24 @@ class Character extends MovableObj {
     if (!this.isAboveGround()) {
       this.speedY = 6;
     }
+  }
+
+  hit() {
+    if (this.isDying) return;
+    this.energy -= 20;
+    if (this.energy <= 0) {
+      this.energy = 0;
+      this.gameMatch.helthBarChar.setPercentge(0);
+      this.die();
+    } else {
+      this.lastHit = new Date().getTime();
+      this.gameMatch.helthBarChar.setPercentge(this.energy);
+    }
+  }
+
+  die() {
+    if (this.isDying) return;
+    this.isDying = true;
+    this.speedY = 8;
   }
 }
