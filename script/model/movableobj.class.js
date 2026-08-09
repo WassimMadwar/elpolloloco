@@ -1,4 +1,4 @@
-class MovableObj {
+class MovableObj extends DrawableObj {
   x = 50;
   y = 50;
   img;
@@ -12,6 +12,7 @@ class MovableObj {
   acceleration = 0.4;
   groundY = 130;
   energy = 100;
+  lastHit = 0;
 
   loadImg(path) {
     this.img = new Image();
@@ -82,10 +83,20 @@ class MovableObj {
     );
   }
   hit() {
-    this.energy -= 10;
+    this.energy -= 5;
     if (this.energy <= 0) {
       this.energy = 0;
+    } else {
+      this.lastHit = new Date().getTime();
     }
+  }
+
+  isHurt() {
+    let timeDifference = new Date().getTime() - this.lastHit;
+    timeDifference = timeDifference / 60;
+    // console.log(timeDifference)
+
+    return timeDifference < 5;
   }
 
   isDead() {

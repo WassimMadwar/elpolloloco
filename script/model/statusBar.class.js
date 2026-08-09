@@ -1,0 +1,5 @@
+class StatusBar {
+    constructor(parameters) {
+        
+    }
+}

@@ -1,0 +1,5 @@
+class DrawableObj{
+    constructor(parameters) {
+        
+    }
+}

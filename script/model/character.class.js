@@ -33,11 +33,19 @@ class Character extends MovableObj {
     "assets/img/2_character_pepe/5_dead/D-56.png",
     "assets/img/2_character_pepe/5_dead/D-57.png",
   ];
+
+  imageCharHurt = [
+    "assets/img/2_character_pepe/4_hurt/H-41.png",
+    "assets/img/2_character_pepe/4_hurt/H-42.png",
+    "assets/img/2_character_pepe/4_hurt/H-43.png",
+  ];
+
   constructor() {
     super().loadImg("assets/img/2_character_pepe/1_idle/idle/I-1.png");
     this.loadImgMoving(this.imageCharJump);
     this.loadImgMoving(this.imageCharWalking);
     this.loadImgMoving(this.imageCharDead);
+    this.loadImgMoving(this.imageCharHurt);
     this.animateCharacterWalking();
     this.applyGravity();
   }
@@ -62,10 +70,11 @@ class Character extends MovableObj {
 
     setInterval(() => {
       if (this.isDead()) {
-        console.log("kokoo");
         this.playAnimation(this.imageCharDead);
-      }
-      if (this.isAboveGround()) {
+      } else if (this.isHurt()) {
+        console.log("kook")
+        this.playAnimation(this.imageCharHurt);
+      } else if (this.isAboveGround()) {
         this.playAnimation(this.imageCharJump);
       }
       if (

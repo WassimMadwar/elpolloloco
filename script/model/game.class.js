@@ -70,6 +70,7 @@ class Game {
       this.level.enemies.forEach((enemy) => {
         if (this.character.isColliding(enemy)) {
           this.character.hit();
+          // this.character.isHurt();
           // console.log("colllisin", this.character.energy);
         }
       });
