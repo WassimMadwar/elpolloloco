@@ -6,6 +6,7 @@ class Game {
   keyAction;
   camera_x = -100;
   helthBarChar = new StatusBar();
+  bottlesObj =[new ThrowableObj()];
 
   constructor(canvas, keyTaste) {
     this.renderCanvas = canvas;
@@ -31,6 +32,7 @@ class Game {
     this.addToMap(this.helthBarChar);
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.enemies);
+    this.addObjectsToMap(this.bottlesObj);
     this.character.drawViewFrame(this.ctx);
     this.level.enemies.forEach((enemy) => enemy.drawViewFrame(this.ctx));
     this.ctx.translate(-this.camera_x, -0);
