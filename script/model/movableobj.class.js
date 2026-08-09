@@ -46,9 +46,6 @@ class MovableObj extends DrawableObj {
   }
 
   isAboveGround() {
-    // if (this instanceof ThrowableObj) {
-    //   return true
-    // }else
     return this.y < this.groundY;
   }
 
@@ -73,9 +70,6 @@ class MovableObj extends DrawableObj {
   isHurt() {
     let timeDifference = new Date().getTime() - this.lastHit;
     timeDifference = timeDifference / 60;
-    // console.log(timeDifference)
-    // resolveImageIndex();
-    // this.helthCheck();
     return timeDifference < 5;
   }
 // 

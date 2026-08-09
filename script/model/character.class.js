@@ -47,16 +47,12 @@ class Character extends MovableObj {
     this.loadImgMoving(this.imageCharHurt);
     this.animateCharacterWalking();
     this.applyGravity();
+    this.clearIntervalAfterDead();
   }
 
   animateCharacterWalking() {
     this.controlInterval = setInterval(() => {
-      if (this.isDying) {
-        if (this.y > this.gameMatch.renderCanvas.height) {
-          clearInterval(this.controlInterval);
-          clearInterval(this.animationInterval);
-          clearInterval(this.gravityInterval);
-        }
+      if (this.clearIntervalAfterDead()) {
         return;
       }
       if (
@@ -76,10 +72,13 @@ class Character extends MovableObj {
     }, 100);
 
     this.animationInterval = setInterval(() => {
+      if (this.isDying) {
+        return;
+      }
       if (this.isDead()) {
         this.playAnimation(this.imageCharDead);
       } else if (this.isHurt()) {
-        console.log("kook")
+        console.log("kook");
         this.playAnimation(this.imageCharHurt);
       } else if (this.isAboveGround()) {
         this.playAnimation(this.imageCharJump);
@@ -91,6 +90,18 @@ class Character extends MovableObj {
         this.playAnimation(this.imageCharWalking);
       }
     }, 100);
+  }
+
+  clearIntervalAfterDead() {
+    if (this.isDying) {
+      if (this.y > this.gameMatch.renderCanvas.height) {
+        clearInterval(this.controlInterval);
+        clearInterval(this.animationInterval);
+        clearInterval(this.gravityInterval);
+      }
+      return true;
+    }
+    return false;
   }
 
   jump() {
@@ -116,5 +127,6 @@ class Character extends MovableObj {
     if (this.isDying) return;
     this.isDying = true;
     this.speedY = 8;
+    this.img = this.imageCache[this.imageCharDead[5]];
   }
 }
