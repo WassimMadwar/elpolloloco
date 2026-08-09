@@ -1,5 +1,5 @@
 class StatusBar extends DrawableObj {
-  _percentge = 100;
+  percentge = 100;
   x;
   y;
   width;
@@ -25,21 +25,21 @@ class StatusBar extends DrawableObj {
   }
 
   setPercentge(percentge) {
-    this._percentge = percentge;
+    this.percentge = percentge;
     let imgHelthPath = this.imgHelth[this.resolveImageIndex()];
     this.img = this.imageCache[imgHelthPath];
   }
 
   resolveImageIndex() {
-    if (this._percentge == 100) {
+    if (this.percentge == 100) {
       return 5;
-    } else if (this._percentge == 80) {
+    } else if (this.percentge == 80) {
       return 4;
-    } else if (this._percentge == 60) {
+    } else if (this.percentge == 60) {
       return 3;
-    } else if (this._percentge == 40) {
+    } else if (this.percentge == 40) {
       return 2;
-    } else if (this._percentge == 20) {
+    } else if (this.percentge == 20) {
       return 1;
     } else {
       return 0;
@@ -48,7 +48,7 @@ class StatusBar extends DrawableObj {
 
   //helthCheck(){
   //   if (this.isHurt()) {
-  //     this._percentge -=20;
+  //     this.percentge -=20;
   //   }
   // }
 }
