@@ -50,47 +50,47 @@ class Character extends MovableObj {
     this.clearIntervalAfterDead();
   }
 
-  animateCharacterWalking() {
-    this.controlInterval = setInterval(() => {
-      if (this.clearIntervalAfterDead()) {
-        return;
-      }
-      if (
-        this.gameMatch.keyAction.right &&
-        this.x < this.gameMatch.level.levelEndX
-      ) {
-        this.moveRight();
-      }
-      if (this.gameMatch.keyAction.left && this.x > 0) {
-        this.x -= 8;
-        this.otherDirection = true;
-      }
-      if (this.gameMatch.keyAction.up) {
-        this.jump();
-      }
-      this.gameMatch.camera_x = -this.x + 50;
-    }, 100);
+  // animateCharacterWalking() {
+  //   this.controlInterval = setInterval(() => {
+  //     if (this.clearIntervalAfterDead()) {
+  //       return;
+  //     }
+  //     if (
+  //       this.gameMatch.keyAction.right &&
+  //       this.x < this.gameMatch.level.levelEndX
+  //     ) {
+  //       this.moveRight();
+  //     }
+  //     if (this.gameMatch.keyAction.left && this.x > 0) {
+  //       this.x -= 8;
+  //       this.otherDirection = true;
+  //     }
+  //     if (this.gameMatch.keyAction.up) {
+  //       this.jump();
+  //     }
+  //     this.gameMatch.camera_x = -this.x + 50;
+  //   }, 100);
 
-    this.animationInterval = setInterval(() => {
-      if (this.isDying) {
-        return;
-      }
-      if (this.isDead()) {
-        this.playAnimation(this.imageCharDead);
-      } else if (this.isHurt()) {
-        console.log("kook");
-        this.playAnimation(this.imageCharHurt);
-      } else if (this.isAboveGround()) {
-        this.playAnimation(this.imageCharJump);
-      }
-      if (
-        (!this.isAboveGround() && this.gameMatch.keyAction.right) ||
-        this.gameMatch.keyAction.left
-      ) {
-        this.playAnimation(this.imageCharWalking);
-      }
-    }, 100);
-  }
+  //   this.animationInterval = setInterval(() => {
+  //     if (this.isDying) {
+  //       return;
+  //     }
+  //     if (this.isDead()) {
+  //       this.playAnimation(this.imageCharDead);
+  //     } else if (this.isHurt()) {
+  //       console.log("kook");
+  //       this.playAnimation(this.imageCharHurt);
+  //     } else if (this.isAboveGround()) {
+  //       this.playAnimation(this.imageCharJump);
+  //     }
+  //     if (
+  //       (!this.isAboveGround() && this.gameMatch.keyAction.right) ||
+  //       this.gameMatch.keyAction.left
+  //     ) {
+  //       this.playAnimation(this.imageCharWalking);
+  //     }
+  //   }, 100);
+  // }
 
   clearIntervalAfterDead() {
     if (this.isDying) {
@@ -104,6 +104,66 @@ class Character extends MovableObj {
     return false;
   }
 
+    animateCharacterWalking() {
+    this.handleCharacterMovement();
+    this.handleCharacterAnimation();
+  }
+
+  handleCharacterMovement() {
+    this.controlInterval = setInterval(() => {
+      if (this.clearIntervalAfterDead()) {
+        return;
+      }
+      this.handelMoveRight();
+      this.handelMoveLeft();
+      if (this.gameMatch.keyAction.up) {
+        this.jump();
+      }
+      this.updateCamera();
+    }, 100);
+  }
+
+  handelMoveRight() {
+    if (
+      this.gameMatch.keyAction.right &&
+      this.x < this.gameMatch.level.levelEndX
+    ) {
+      this.moveRight();
+    }
+  }
+
+  handelMoveLeft() {
+    if (this.gameMatch.keyAction.left && this.x > 0) {
+      this.x -= 8;
+      this.otherDirection = true;
+    }
+  }
+
+  handleCharacterAnimation() {
+    this.animationInterval = setInterval(() => {
+      if (this.isDying) {
+        return;
+      }
+      if (this.isDead()) {
+        this.playAnimation(this.imageCharDead);
+      } else if (this.isHurt()) {
+        this.playAnimation(this.imageCharHurt);
+      } else if (this.isAboveGround()) {
+        this.playAnimation(this.imageCharJump);
+      }
+      if (
+        (!this.isAboveGround() && this.gameMatch.keyAction.right) ||
+        this.gameMatch.keyAction.left
+      ) {
+        this.playAnimation(this.imageCharWalking);
+      }
+    }, 100);
+  }
+
+  updateCamera() {
+    this.gameMatch.camera_x = -this.x + 50;
+  }
+  
   jump() {
     if (!this.isAboveGround()) {
       this.speedY = 6;
