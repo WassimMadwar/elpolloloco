@@ -5,6 +5,7 @@ class Game {
   renderCanvas;
   keyAction;
   camera_x = -100;
+  helthBarChar = new StatusBar();
 
   constructor(canvas, keyTaste) {
     this.renderCanvas = canvas;
@@ -22,6 +23,7 @@ class Game {
 
   draw() {
     this.ctx.clearRect(0, 0, this.renderCanvas.width, this.renderCanvas.height);
+    this.addToMap(this.helthBarChar);
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgrounds);
     this.addToMap(this.character);
@@ -71,6 +73,8 @@ class Game {
       this.level.enemies.forEach((enemy) => {
         if (this.character.isColliding(enemy)) {
           this.character.hit();
+          // this.helthBarChar._percentge -= 20;
+          // console.log(this.helthBarChar._percentge);
         }
       });
     }, 200);

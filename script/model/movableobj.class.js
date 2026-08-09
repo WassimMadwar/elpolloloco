@@ -51,7 +51,7 @@ class MovableObj extends DrawableObj {
       this.y < movableObj.y + movableObj.height
     );
   }
-  
+
   hit() {
     this.energy -= 5;
     if (this.energy <= 0) {
@@ -65,10 +65,11 @@ class MovableObj extends DrawableObj {
     let timeDifference = new Date().getTime() - this.lastHit;
     timeDifference = timeDifference / 60;
     // console.log(timeDifference)
-
+    // resolveImageIndex();
+    // this.helthCheck();
     return timeDifference < 5;
   }
-
+// 
   isDead() {
     return this.energy == 0;
   }
