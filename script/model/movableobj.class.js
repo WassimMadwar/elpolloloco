@@ -1,43 +1,18 @@
 class MovableObj extends DrawableObj {
-  x = 50;
-  y = 50;
-  img;
   height = 75;
   width = 50;
-  imageCache = {};
   speed = 1;
   otherDirection = false;
-  currentImg = 0;
   speedY = 0;
   acceleration = 0.4;
   groundY = 130;
   energy = 100;
   lastHit = 0;
 
-  loadImg(path) {
-    this.img = new Image();
-    this.img.src = path;
-  }
-
-  loadImgMoving(arr) {
-    arr.forEach((path) => {
-      let img = new Image();
-      img.src = path;
-      this.imageCache[path] = img;
-    });
-  }
-
   playAnimation(arrImg) {
     let path = arrImg[this.currentImg % arrImg.length];
     this.img = this.imageCache[path];
     this.updateCurrentImg(arrImg.length);
-  }
-
-  updateCurrentImg(arrLenght) {
-    this.currentImg++;
-    if (this.currentImg >= arrLenght) {
-      this.currentImg = 0;
-    }
   }
 
   moveRight() {
@@ -68,12 +43,6 @@ class MovableObj extends DrawableObj {
     return this.y < this.groundY;
   }
 
-  drawViewFrame(ctx) {
-    ctx.strokeStyle = "red";
-    ctx.lineWidth = 2;
-    ctx.strokeRect(this.x, this.y, this.width, this.height);
-  }
-
   isColliding(movableObj) {
     return (
       this.x + this.width > movableObj.x &&
@@ -82,6 +51,7 @@ class MovableObj extends DrawableObj {
       this.y < movableObj.y + movableObj.height
     );
   }
+  
   hit() {
     this.energy -= 5;
     if (this.energy <= 0) {
