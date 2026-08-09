@@ -18,18 +18,16 @@ class StatusBar extends DrawableObj {
     super();
     this.loadImgMoving(this.imgHelth);
     this.setPercentge(100);
-    this.x=5;
-    this.y=0;
-    this.height=10;
-    this.width=60;
+    this.x = 5;
+    this.y = 0;
+    this.height = 10;
+    this.width = 60;
   }
 
   setPercentge(percentge) {
     this._percentge = percentge;
     let imgHelthPath = this.imgHelth[this.resolveImageIndex()];
     this.img = this.imageCache[imgHelthPath];
-          console.log(this._percentge);
-
   }
 
   resolveImageIndex() {

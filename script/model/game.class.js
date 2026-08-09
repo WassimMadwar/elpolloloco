@@ -6,7 +6,7 @@ class Game {
   keyAction;
   camera_x = -100;
   helthBarChar = new StatusBar();
-  bottlesObj =[new ThrowableObj()];
+  bottlesObj = [    ];
 
   constructor(canvas, keyTaste) {
     this.renderCanvas = canvas;
@@ -16,6 +16,7 @@ class Game {
     this.setupGame();
     this.camera_x;
     this.checkCollision();
+    this.runGame();
   }
 
   setupGame() {
@@ -72,14 +73,26 @@ class Game {
     this.ctx.restore();
   }
 
-  checkCollision() {
+  runGame() {
     setInterval(() => {
-      this.level.enemies.forEach((enemy) => {
-        if (this.character.isColliding(enemy)) {
-          this.character.hit();
-          this.helthBarChar.setPercentge(this.helthBarChar._percentge - 20);
-        }
-      });
+      this.checkCollision();
+      this.checkThrowedBottle();
     }, 200);
+  }
+
+  checkCollision() {
+    this.level.enemies.forEach((enemy) => {
+      if (this.character.isColliding(enemy)) {
+        this.character.hit();
+        this.helthBarChar.setPercentge(this.helthBarChar._percentge - 20);
+      }
+    });
+  }
+
+  checkThrowedBottle() {
+    if (this.keyAction.space) {
+      let bottle = new ThrowableObj(this.character.x,this.character.y);
+      this.bottlesObj.push(bottle);
+    }
   }
 }
