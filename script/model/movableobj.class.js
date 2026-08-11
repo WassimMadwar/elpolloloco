@@ -22,9 +22,13 @@ class MovableObj extends DrawableObj {
   }
 
   moveLeft() {
-    setInterval(() => {
+    this.moveInterval = setInterval(() => {
       this.x -= this.speed;
     }, 1000 / 10);
+  }
+
+  isFalling() {
+    return this.speedY < 0;
   }
 
   applyGravity() {

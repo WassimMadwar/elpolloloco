@@ -77,15 +77,25 @@ class Game {
     setInterval(() => {
       this.checkCollision();
       this.checkThrowedBottle();
+      this.removeDeadEnemies();
     }, 200);
   }
 
   checkCollision() {
     this.level.enemies.forEach((enemy) => {
-      if (this.character.isColliding(enemy)) {
+      if (!this.character.isColliding(enemy) || enemy.isDying) return;
+      if (enemy instanceof Enemy && this.character.isFalling()) {
+        enemy.die();
+      } else {
         this.character.hit();
       }
     });
+  }
+
+  removeDeadEnemies() {
+    this.level.enemies = this.level.enemies.filter(
+      (enemy) => !(enemy.isDying && enemy.isReadyToRemove()),
+    );
   }
 
   checkThrowedBottle() {

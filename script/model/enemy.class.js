@@ -20,12 +20,25 @@ class Enemy extends MovableObj {
   }
 
   animateEnemyWalking() {
-    setInterval(() => {
+    this.walkInterval = setInterval(() => {
       this.playAnimation(this.imgEnemyWalking);
     }, 200);
   }
 
   animate() {
     this.moveLeft();
+  }
+
+  die() {
+    if (this.isDying) return;
+    this.isDying = true;
+    this.deathTime = new Date().getTime();
+    clearInterval(this.walkInterval);
+    clearInterval(this.moveInterval);
+    this.loadImg("assets/img/3_enemies_chicken/chicken_normal/2_dead/dead.png");
+  }
+
+  isReadyToRemove() {
+    return this.isDying && new Date().getTime() - this.deathTime > 2000;
   }
 }
