@@ -78,6 +78,8 @@ class Game {
       this.checkCollision();
       this.checkThrowedBottle();
       this.removeDeadEnemies();
+      this.checkBottleCollisions();
+      this.removeOffscreenBottles();
     }, 200);
   }
 
@@ -103,5 +105,33 @@ class Game {
       let bottle = new ThrowableObj(this.character.x,this.character.y);
       this.bottlesObj.push(bottle);
     }
+  }
+
+  checkBottleCollisions() {
+    this.bottlesObj.forEach((bottle) => this.checkBottleHitsEnemies(bottle));
+  }
+
+  checkBottleHitsEnemies(bottle) {
+    this.level.enemies.forEach((enemy) => {
+      if (this.bottleHitsEnemy(bottle, enemy)) {
+        enemy.die();
+      }
+    });
+  }
+
+  bottleHitsEnemy(bottle, enemy) {
+    return enemy instanceof Enemy && !enemy.isDying && bottle.isColliding(enemy);
+  }
+
+  removeOffscreenBottles() {
+    this.bottlesObj = this.bottlesObj.filter((bottle) => {
+      const offscreen = this.isBottleOffscreen(bottle);
+      if (offscreen) bottle.stopBottle();
+      return !offscreen;
+    });
+  }
+
+  isBottleOffscreen(bottle) {
+    return bottle.x + this.camera_x > this.renderCanvas.width;
   }
 }
