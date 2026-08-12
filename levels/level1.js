@@ -39,16 +39,16 @@ const level1 = new Level(
     ),
     new BackgroundObj("assets/img/5_background/layers/air.png", 300 * 2),
     new BackgroundObj(
-      "assets/img/5_background/layers/3_third_layer/2.png",
-      300 * 2,
+      "assets/img/5_background/layers/3_third_layer/1.png",
+      300 * 2
     ),
     new BackgroundObj(
-      "assets/img/5_background/layers/2_second_layer/2.png",
-      300 * 2,
+      "assets/img/5_background/layers/2_second_layer/1.png",
+      300 * 2
     ),
     new BackgroundObj(
-      "assets/img/5_background/layers/1_first_layer/2.png",
-      300 * 2,
+      "assets/img/5_background/layers/1_first_layer/1.png",
+      300 * 2
     ),
     new BackgroundObj("assets/img/5_background/layers/air.png", 300 * 3),
     new BackgroundObj(
@@ -62,6 +62,58 @@ const level1 = new Level(
     new BackgroundObj(
       "assets/img/5_background/layers/1_first_layer/2.png",
       300 * 3,
+    ),
+        new BackgroundObj("assets/img/5_background/layers/air.png", 300 * 3),
+    new BackgroundObj(
+      "assets/img/5_background/layers/3_third_layer/2.png",
+      300 * 3
+    ),
+    new BackgroundObj(
+      "assets/img/5_background/layers/2_second_layer/2.png",
+      300 * 3
+    ),
+    new BackgroundObj(
+      "assets/img/5_background/layers/1_first_layer/2.png",
+      300 * 3
+    ),
+        new BackgroundObj("assets/img/5_background/layers/air.png", 300 * 4),
+    new BackgroundObj(
+      "assets/img/5_background/layers/3_third_layer/1.png",
+      300 * 4
+    ),
+    new BackgroundObj(
+      "assets/img/5_background/layers/2_second_layer/1.png",
+      300 * 4
+    ),
+    new BackgroundObj(
+      "assets/img/5_background/layers/1_first_layer/1.png",
+      300 * 4
+    ),
+        new BackgroundObj("assets/img/5_background/layers/air.png", 300 * 5),
+    new BackgroundObj(
+      "assets/img/5_background/layers/3_third_layer/2.png",
+      300 * 5
+    ),
+    new BackgroundObj(
+      "assets/img/5_background/layers/2_second_layer/2.png",
+      300 * 5
+    ),
+    new BackgroundObj(
+      "assets/img/5_background/layers/1_first_layer/2.png",
+      300 * 5
+    ),
+            new BackgroundObj("assets/img/5_background/layers/air.png", 300 * 6),
+    new BackgroundObj(
+      "assets/img/5_background/layers/3_third_layer/1.png",
+      300 * 6
+    ),
+    new BackgroundObj(
+      "assets/img/5_background/layers/2_second_layer/1.png",
+      300 * 6
+    ),
+    new BackgroundObj(
+      "assets/img/5_background/layers/1_first_layer/1.png",
+      300 * 6
     ),
   ],
 );
