@@ -102,7 +102,11 @@ class Game {
 
   checkThrowedBottle() {
     if (this.keyAction.space) {
-      let bottle = new ThrowableObj(this.character.x,this.character.y);
+      let bottle = new ThrowableObj(
+        this.character.x,
+        this.character.y,
+        this.character.otherDirection,
+      );
       this.bottlesObj.push(bottle);
     }
   }
@@ -132,6 +136,7 @@ class Game {
   }
 
   isBottleOffscreen(bottle) {
-    return bottle.x + this.camera_x > this.renderCanvas.width;
+    const screenX = bottle.x + this.camera_x;
+    return screenX > this.renderCanvas.width || screenX < 0;
   }
 }
