@@ -50,48 +50,6 @@ class Character extends MovableObj {
     this.clearIntervalAfterDead();
   }
 
-  // animateCharacterWalking() {
-  //   this.controlInterval = setInterval(() => {
-  //     if (this.clearIntervalAfterDead()) {
-  //       return;
-  //     }
-  //     if (
-  //       this.gameMatch.keyAction.right &&
-  //       this.x < this.gameMatch.level.levelEndX
-  //     ) {
-  //       this.moveRight();
-  //     }
-  //     if (this.gameMatch.keyAction.left && this.x > 0) {
-  //       this.x -= 8;
-  //       this.otherDirection = true;
-  //     }
-  //     if (this.gameMatch.keyAction.up) {
-  //       this.jump();
-  //     }
-  //     this.gameMatch.camera_x = -this.x + 50;
-  //   }, 100);
-
-  //   this.animationInterval = setInterval(() => {
-  //     if (this.isDying) {
-  //       return;
-  //     }
-  //     if (this.isDead()) {
-  //       this.playAnimation(this.imageCharDead);
-  //     } else if (this.isHurt()) {
-  //       console.log("kook");
-  //       this.playAnimation(this.imageCharHurt);
-  //     } else if (this.isAboveGround()) {
-  //       this.playAnimation(this.imageCharJump);
-  //     }
-  //     if (
-  //       (!this.isAboveGround() && this.gameMatch.keyAction.right) ||
-  //       this.gameMatch.keyAction.left
-  //     ) {
-  //       this.playAnimation(this.imageCharWalking);
-  //     }
-  //   }, 100);
-  // }
-
   clearIntervalAfterDead() {
     if (this.isDying) {
       if (this.y > this.gameMatch.renderCanvas.height) {
