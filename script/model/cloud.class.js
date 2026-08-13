@@ -2,12 +2,10 @@ class Cloud extends MovableObj {
   y = 10;
   height = 100;
   width = 100;
-  // path;
-  constructor(path) {
+  constructor(path, x) {
     super();
     this.loadImg(path);
-    //    this.y = 2 + Math.random() * 30;
-    this.x = 30 + Math.random() * 250;
+    this.x = x;
     this.animate();
   }
   animate() {
