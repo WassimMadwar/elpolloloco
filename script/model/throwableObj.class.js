@@ -27,8 +27,18 @@ class ThrowableObj extends MovableObj {
     this.speedY = 3;
     this.applyGravity();
     this.moveInterval = setInterval(() => {
+      if (!this.isAboveGround()) {
+        this.land();
+        return;
+      }
       this.x += this.otherDirection ? -6 : 6;
     }, 50);
+  } 
+
+  land() {
+    clearInterval(this.moveInterval);
+    this.isDying = true;
+    this.speedY = -9;
   }
 
   animateBottleRotation() {

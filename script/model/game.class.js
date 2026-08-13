@@ -137,6 +137,7 @@ class Game {
 
   isBottleOffscreen(bottle) {
     const screenX = bottle.x + this.camera_x;
+    if (bottle.y > this.renderCanvas.height) return true;
     return screenX > this.renderCanvas.width || screenX < 0;
   }
 }
