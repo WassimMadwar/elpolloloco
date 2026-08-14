@@ -8,6 +8,7 @@ class SmallChick extends Enemy {
   constructor(x, y) {
     super();
     this.setupSmallChick(x, y);
+    this.startFallTrajectory();
   }
 
   setupSmallChick(x, y) {
@@ -21,12 +22,19 @@ class SmallChick extends Enemy {
     this.animateEnemyWalking();
   }
 
+  startFallTrajectory() {
+    this.groundY = 110 ;
+    this.speedY = 3;
+    this.applyGravity();
+  }
+
   die() {
     if (this.isDying) return;
     this.isDying = true;
     this.deathTime = new Date().getTime();
     clearInterval(this.walkInterval);
     clearInterval(this.moveInterval);
+    clearInterval(this.gravityInterval);
     this.loadImg("assets/img/3_enemies_chicken/chicken_small/2_dead/dead.png");
   }
 }
