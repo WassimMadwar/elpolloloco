@@ -21,6 +21,12 @@ class Game {
 
   setupGame() {
     this.character.gameMatch = this;
+    this.setupEndboss();
+  }
+
+  setupEndboss() {
+    const endboss = this.level.enemies.find((enemy) => enemy instanceof Endboss);
+    if (endboss) endboss.gameMatch = this;
   }
 
   draw() {

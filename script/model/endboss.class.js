@@ -19,11 +19,24 @@ class Endboss extends MovableObj {
     this.loadImg("assets/img/4_enemie_boss_chicken/2_alert/G5.png");
     this.loadImgMoving(this.imgBossWalking);
     this.animate();
+    this.startThrowingChicks();
   }
 
   animate() {
     setInterval(() => {
       this.playAnimation(this.imgBossWalking);
     }, 200);
+  }
+
+  startThrowingChicks() {
+    setTimeout(() => {
+      this.throwInterval = setInterval(() => this.throwChick(), 3000);
+    }, 30000);
+  }
+
+  throwChick() {
+    if (!this.gameMatch) return;
+    const chick = new SmallChick(this.x, this.y);
+    this.gameMatch.level.enemies.push(chick);
   }
 }
