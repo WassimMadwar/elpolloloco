@@ -134,14 +134,14 @@ class Character extends MovableObj {
     if (this.energy <= 0) {
       this.energy = 0;
       this.gameMatch.helthBarChar.setPercentge(0);
-      this.die();
+      this.dieCahracter();
     } else {
       this.lastHit = new Date().getTime();
       this.gameMatch.helthBarChar.setPercentge(this.energy);
     }
   }
 
-  die() {
+  dieCahracter() {
     if (this.isDying) return;
     this.isDying = true;
     this.speedY = 8;
