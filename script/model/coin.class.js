@@ -8,8 +8,8 @@ class Coin extends MovableObj {
 
   constructor(x, y) {
     super();
-    this.x = x;
-    this.y = y;
+    this.x =  x;
+    this.y =  y;
     this.loadImg(this.imgCoinSpin[0]);
     this.loadImgMoving(this.imgCoinSpin);
     this.animateCoinSpin();

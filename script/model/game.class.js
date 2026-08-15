@@ -6,15 +6,27 @@ class Game {
   keyAction;
   camera_x = -100;
   helthBarChar = new StatusBar();
+  coinBar = new StatusBar(
+    [
+      "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/0.png",
+      "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/20.png",
+      "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/40.png",
+      "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/60.png",
+      "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/80.png",
+      "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/100.png",
+    ],
+    0,
+    5,
+    15,
+  );
   bottlesObj = [    ];
   coinCount = 0;
-  coinIcon = new Image();
+  totalCoins = 10;
 
   constructor(canvas, keyTaste) {
     this.renderCanvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.keyAction = keyTaste;
-    this.coinIcon.src = "assets/img/7_statusbars/3_icons/icon_coin.png";
     this.draw();
     this.setupGame();
     this.camera_x;
@@ -40,7 +52,7 @@ class Game {
     this.addObjectsToMap(this.level.clouds);
     this.ctx.translate(-this.camera_x, -0);
     this.addToMap(this.helthBarChar);
-    this.drawCoinCounter();
+    this.addToMap(this.coinBar);
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.bottlesObj);
@@ -163,26 +175,13 @@ class Game {
   checkCoinCollisions() {
     this.level.coins = this.level.coins.filter((coin) => {
       const collected = this.character.isColliding(coin);
-      if (collected) this.coinCount++;
+      if (collected) this.collectCoin();
       return !collected;
     });
   }
 
-  drawCoinCounter() {
-    const cx = 90, cy = 15, radius = 15;
-    this.ctx.beginPath();
-    this.ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-    this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-    this.ctx.fill();
-    this.ctx.drawImage(this.coinIcon, cx - radius + 3, cy - 8, 16, 16);
-    this.drawCoinCountText(cx, cy);
-  }
-
-  drawCoinCountText(cx, cy) {
-    this.ctx.fillStyle = "white";
-    this.ctx.font = "bold 14px Arial";
-    this.ctx.textAlign = "center";
-    this.ctx.textBaseline = "middle";
-    this.ctx.fillText(this.coinCount, cx + 7, cy + 1);
+  collectCoin() {
+    this.coinCount++;
+    this.coinBar.setPercentge((this.coinCount / this.totalCoins) * 100);
   }
 }
