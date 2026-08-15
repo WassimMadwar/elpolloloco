@@ -122,5 +122,17 @@ const level1 = new Level(
       300 * 6
     ),
   ],
+  [
+    new Coin(750, 80),
+    new Coin(861, 100),
+    new Coin(972, 80),
+    new Coin(1083, 100),
+    new Coin(1194, 80),
+    new Coin(1305, 100),
+    new Coin(1416, 80),
+    new Coin(1528, 100),
+    new Coin(1639, 80),
+    new Coin(1750, 100),
+  ],
 );
 level1;
