@@ -102,7 +102,7 @@ class Game {
 
   removeDeadEnemies() {
     this.level.enemies = this.level.enemies.filter(
-      (enemy) => !(enemy.isDying && enemy.isReadyToRemove()),
+      (enemy) => !(enemy.isDying && enemy.isReadyToRemove && enemy.isReadyToRemove()),
     );
   }
 
@@ -123,7 +123,9 @@ class Game {
 
   checkBottleHitsEnemies(bottle) {
     this.level.enemies.forEach((enemy) => {
-      if (this.bottleHitsEnemy(bottle, enemy)) {
+      if (enemy instanceof Endboss) {
+        this.checkBottleHitsBoss(bottle, enemy);
+      } else if (this.bottleHitsEnemy(bottle, enemy)) {
         enemy.die();
       }
     });
@@ -131,6 +133,11 @@ class Game {
 
   bottleHitsEnemy(bottle, enemy) {
     return enemy instanceof Enemy && !enemy.isDying && bottle.isColliding(enemy);
+  }
+
+  checkBottleHitsBoss(bottle, boss) {
+    if (boss.isDying || !bottle.isColliding(boss)) return;
+    boss.hit();
   }
 
   removeOffscreenBottles() {
