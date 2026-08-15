@@ -38,7 +38,13 @@ class Endboss extends MovableObj {
 
   animate() {
     setInterval(() => {
-      this.playAnimation(this.imgBossWalking);
+      if (this.isDying) {
+        this.playAnimation(this.imgBossDead);
+      } else if (this.isHurt()) {
+        this.playAnimation(this.imgBossHurt);
+      } else {
+        this.playAnimation(this.imgBossWalking);
+      }
     }, 200);
   }
 
@@ -52,14 +58,21 @@ class Endboss extends MovableObj {
     }
   }
 
+  die() {
+    if (this.isDying) return;
+    this.isDying = true;
+    clearTimeout(this.throwTimeout);
+    clearInterval(this.throwInterval);
+  }
+
   startThrowingChicks() {
-    setTimeout(() => {
+    this.throwTimeout = setTimeout(() => {
       this.throwInterval = setInterval(() => this.throwChick(), 3000);
     }, 30000);
   }
 
   throwChick() {
-    if (!this.gameMatch) return;
+    if (this.isDying || !this.gameMatch) return;
     const chick = new SmallChick(this.x, this.y);
     this.gameMatch.level.enemies.push(chick);
   }
