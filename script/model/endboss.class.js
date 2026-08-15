@@ -67,8 +67,8 @@ class Endboss extends MovableObj {
 
   startThrowingChicks() {
     this.throwTimeout = setTimeout(() => {
-      this.throwInterval = setInterval(() => this.throwChick(), 3000);
-    }, 30000);
+      this.throwInterval = setInterval(() => this.throwChick(), 6000);
+    }, 16000);
   }
 
   throwChick() {
