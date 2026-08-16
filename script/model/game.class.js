@@ -22,16 +22,19 @@ class Game {
   bottlesObj = [    ];
   coinCount = 0;
   totalCoins = 10;
+  gameOverImg = new Image();
 
   constructor(canvas, keyTaste) {
     this.renderCanvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.keyAction = keyTaste;
+    this.gameOverImg.src = "assets/img/You won, you lost/You lost.png";
     this.draw();
     this.setupGame();
     this.camera_x;
     this.checkCollision();
     this.runGame();
+    this.setupGameOver();
   }
 
   setupGame() {
@@ -60,10 +63,24 @@ class Game {
     this.character.drawViewFrame(this.ctx);
     this.level.enemies.forEach((enemy) => enemy.drawViewFrame(this.ctx));
     this.ctx.translate(-this.camera_x, -0);
+this.setupGameOver();
     let self = this;
     requestAnimationFrame(() => self.draw());
   }
 
+  drawGameOverScreen() {
+    this.ctx.drawImage(
+      this.gameOverImg,
+      0,
+      0,
+      this.renderCanvas.width,
+      this.renderCanvas.height,
+    );
+  }
+
+  setupGameOver(){    if (this.character.isDying) {
+      this.drawGameOverScreen();
+    }}
   addObjectsToMap(objs) {
     objs.forEach((obj) => {
       this.addToMap(obj);
