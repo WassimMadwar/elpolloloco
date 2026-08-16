@@ -61,6 +61,7 @@ class Endboss extends MovableObj {
   die() {
     if (this.isDying) return;
     this.isDying = true;
+    this.deathTime = new Date().getTime();
     clearTimeout(this.throwTimeout);
     clearInterval(this.throwInterval);
   }

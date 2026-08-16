@@ -19,22 +19,24 @@ class Game {
     5,
     15,
   );
-  bottlesObj = [    ];
+  bottlesObj = [];
   coinCount = 0;
   totalCoins = 10;
   gameOverImg = new Image();
+  winImg = new Image();
+  gameOverDelay = 2000;
 
   constructor(canvas, keyTaste) {
     this.renderCanvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.keyAction = keyTaste;
     this.gameOverImg.src = "assets/img/You won, you lost/You lost.png";
+    this.winImg.src = "assets/img/You won, you lost/You won A.png";
     this.draw();
     this.setupGame();
     this.camera_x;
     this.checkCollision();
     this.runGame();
-    this.setupGameOver();
   }
 
   setupGame() {
@@ -43,7 +45,9 @@ class Game {
   }
 
   setupEndboss() {
-    const endboss = this.level.enemies.find((enemy) => enemy instanceof Endboss);
+    const endboss = this.level.enemies.find(
+      (enemy) => enemy instanceof Endboss,
+    );
     if (endboss) endboss.gameMatch = this;
   }
 
@@ -63,24 +67,39 @@ class Game {
     this.character.drawViewFrame(this.ctx);
     this.level.enemies.forEach((enemy) => enemy.drawViewFrame(this.ctx));
     this.ctx.translate(-this.camera_x, -0);
-this.setupGameOver();
+    this.drawGameResult();
     let self = this;
     requestAnimationFrame(() => self.draw());
   }
 
-  drawGameOverScreen() {
+  drawGameResult() {
+    const result = this.getGameResult();
+    if (result === "lost") this.drawResultImg(this.gameOverImg);
+    if (result === "won") this.drawResultImg(this.winImg);
+  }
+
+  getGameResult() {
+    if (this.isReadyToShow(this.character)) return "lost";
+    const boss = this.level.enemies.find((enemy) => enemy instanceof Endboss);
+    if (boss && this.isReadyToShow(boss)) return "won";
+    return null;
+  }
+
+  isReadyToShow(entity) {
+    if (!entity.isDying) return false;
+    return new Date().getTime() - entity.deathTime >= this.gameOverDelay;
+  }
+
+  drawResultImg(img) {
     this.ctx.drawImage(
-      this.gameOverImg,
-      0,
-      0,
-      this.renderCanvas.width,
-      this.renderCanvas.height,
+      img,
+      5,
+      5,
+      this.renderCanvas.width - 10,
+      this.renderCanvas.height - 10,
     );
   }
 
-  setupGameOver(){    if (this.character.isDying) {
-      this.drawGameOverScreen();
-    }}
   addObjectsToMap(objs) {
     objs.forEach((obj) => {
       this.addToMap(obj);
@@ -137,7 +156,8 @@ this.setupGameOver();
 
   removeDeadEnemies() {
     this.level.enemies = this.level.enemies.filter(
-      (enemy) => !(enemy.isDying && enemy.isReadyToRemove && enemy.isReadyToRemove()),
+      (enemy) =>
+        !(enemy.isDying && enemy.isReadyToRemove && enemy.isReadyToRemove()),
     );
   }
 

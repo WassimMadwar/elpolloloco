@@ -189,6 +189,7 @@ class Character extends MovableObj {
   dieCahracter() {
     if (this.isDying) return;
     this.isDying = true;
+    this.deathTime = new Date().getTime();
     this.speedY = 8;
     this.img = this.imageCache[this.imageCharDead[5]];
   }
