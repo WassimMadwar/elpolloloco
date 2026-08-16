@@ -37,6 +37,7 @@ class Game {
   totalCoins = 5;
   bottleCount = 0;
   totalBottles = 5;
+  throwableBottles = 0;
   gameOverImg = new Image();
   winImg = new Image();
   gameOverDelay = 2000;
@@ -180,13 +181,14 @@ class Game {
   }
 
   checkThrowedBottle() {
-    if (this.keyAction.space) {
+    if (this.keyAction.space && this.throwableBottles > 0) {
       let bottle = new ThrowableObj(
         this.character.x,
         this.character.y,
         this.character.otherDirection,
       );
       this.bottlesObj.push(bottle);
+      this.throwableBottles--;
     }
   }
 
@@ -238,6 +240,7 @@ class Game {
 
   collectBottle() {
     this.bottleCount++;
+    this.throwableBottles += 2;
     this.bottleBar.setPercentge((this.bottleCount / this.totalBottles) * 100);
   }
 }
