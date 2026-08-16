@@ -19,9 +19,24 @@ class Game {
     5,
     15,
   );
+  bottleBar = new StatusBar(
+    [
+      "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/0.png",
+      "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/20.png",
+      "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/40.png",
+      "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/60.png",
+      "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/80.png",
+      "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/100.png",
+    ],
+    0,
+    5,
+    30,
+  );
   bottlesObj = [];
   coinCount = 0;
   totalCoins = 5;
+  bottleCount = 0;
+  totalBottles = 5;
   gameOverImg = new Image();
   winImg = new Image();
   gameOverDelay = 2000;
@@ -60,10 +75,12 @@ class Game {
     this.ctx.translate(-this.camera_x, -0);
     this.addToMap(this.helthBarChar);
     this.addToMap(this.coinBar);
+    this.addToMap(this.bottleBar);
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.bottlesObj);
     this.addObjectsToMap(this.level.coins);
+    this.addObjectsToMap(this.level.bottles);
     this.character.drawViewFrame(this.ctx);
     this.level.enemies.forEach((enemy) => enemy.drawViewFrame(this.ctx));
     this.ctx.translate(-this.camera_x, -0);
@@ -140,6 +157,7 @@ class Game {
       this.checkBottleCollisions();
       this.removeOffscreenBottles();
       this.checkCoinCollisions();
+      this.checkGroundBottleCollisions();
     }, 200);
   }
 
@@ -207,7 +225,19 @@ class Game {
 
   collectCoin() {
     this.coinCount++;
-    console.log(this.coinCount);
     this.coinBar.setPercentge((this.coinCount / this.totalCoins) * 100);
+  }
+
+  checkGroundBottleCollisions() {
+    this.level.bottles = this.level.bottles.filter((bottle) => {
+      const collected = this.character.isColliding(bottle);
+      if (collected) this.collectBottle();
+      return !collected;
+    });
+  }
+
+  collectBottle() {
+    this.bottleCount++;
+    this.bottleBar.setPercentge((this.bottleCount / this.totalBottles) * 100);
   }
 }
