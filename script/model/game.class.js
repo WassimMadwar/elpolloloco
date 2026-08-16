@@ -136,21 +136,9 @@ class Game {
   }
 
   checkBottleCollisions() {
-    this.bottlesObj.forEach((bottle) => this.checkBottleHitsEnemies(bottle));
-  }
-
-  checkBottleHitsEnemies(bottle) {
-    this.level.enemies.forEach((enemy) => {
-      if (enemy instanceof Endboss) {
-        this.checkBottleHitsBoss(bottle, enemy);
-      } else if (this.bottleHitsEnemy(bottle, enemy)) {
-        enemy.die();
-      }
-    });
-  }
-
-  bottleHitsEnemy(bottle, enemy) {
-    return enemy instanceof Enemy && !enemy.isDying && bottle.isColliding(enemy);
+    const boss = this.level.enemies.find((enemy) => enemy instanceof Endboss);
+    if (!boss) return;
+    this.bottlesObj.forEach((bottle) => this.checkBottleHitsBoss(bottle, boss));
   }
 
   checkBottleHitsBoss(bottle, boss) {
