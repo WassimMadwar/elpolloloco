@@ -21,7 +21,7 @@ class Game {
   );
   bottlesObj = [];
   coinCount = 0;
-  totalCoins = 10;
+  totalCoins = 5;
   gameOverImg = new Image();
   winImg = new Image();
   gameOverDelay = 2000;
@@ -207,6 +207,7 @@ class Game {
 
   collectCoin() {
     this.coinCount++;
+    console.log(this.coinCount);
     this.coinBar.setPercentge((this.coinCount / this.totalCoins) * 100);
   }
 }
