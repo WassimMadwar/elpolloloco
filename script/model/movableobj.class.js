@@ -60,9 +60,17 @@ class MovableObj extends DrawableObj {
     return (
       this.x + this.width > movableObj.x &&
       this.x < movableObj.x &&
-      this.y + this.height > movableObj.y &&
-      this.y < movableObj.y + movableObj.height
+      this.getHitboxY() + this.getHitboxHeight() > movableObj.y &&
+      this.getHitboxY() < movableObj.y + movableObj.height
     );
+  }
+
+  getHitboxY() {
+    return this.y;
+  }
+
+  getHitboxHeight() {
+    return this.height;
   }
 
   hit() {

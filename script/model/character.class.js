@@ -192,4 +192,12 @@ class Character extends MovableObj {
     this.speedY = 8;
     this.img = this.imageCache[this.imageCharDead[5]];
   }
+
+  getHitboxY() {
+    return this.y + 40;
+  }
+
+  getHitboxHeight() {
+    return 60;
+  }
 }
