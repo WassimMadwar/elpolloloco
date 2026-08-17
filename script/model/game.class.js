@@ -38,6 +38,7 @@ class Game {
   bottleCount = 0;
   totalBottles = 5;
   throwableBottles = 0;
+  maxThrowableBottles = 10;
   gameOverImg = new Image();
   winImg = new Image();
   gameOverDelay = 2000;
@@ -189,6 +190,7 @@ class Game {
       );
       this.bottlesObj.push(bottle);
       this.throwableBottles--;
+      this.updateBottleBar();
     }
   }
 
@@ -241,6 +243,10 @@ class Game {
   collectBottle() {
     this.bottleCount++;
     this.throwableBottles += 2;
-    this.bottleBar.setPercentge((this.bottleCount / this.totalBottles) * 100);
+    this.updateBottleBar();
+  }
+
+  updateBottleBar() {
+    this.bottleBar.setPercentge((this.throwableBottles / this.maxThrowableBottles) * 100);
   }
 }
