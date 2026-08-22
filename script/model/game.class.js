@@ -1,4 +1,5 @@
 class Game {
+  static paused = false;
   character = new Character();
   level = level1;
   ctx;
@@ -43,10 +44,12 @@ class Game {
   winImg = new Image();
   gameOverDelay = 2000;
   control = new Control();
-  muteIconOn = new Image();
-  muteIconOff = new Image();
-  muteIconSize = 15;
-  muteIconPadding = 5;
+  pauseIcon = new Image();
+  playIcon = new Image();
+  settingsIcon = new Image();
+  controlIconSize = 15;
+  controlIconPadding = 5;
+  controlIconGap = 5;
 
   constructor(canvas, keyTaste) {
     this.renderCanvas = canvas;
@@ -54,9 +57,10 @@ class Game {
     this.keyAction = keyTaste;
     this.gameOverImg.src = "assets/img/You won, you lost/You lost.png";
     this.winImg.src = "assets/img/You won, you lost/You won A.png";
-    this.muteIconOn.src = "assets/img/control/mute_15x15.png";
-    this.muteIconOff.src = "assets/img/control/speaker_15x15.png";
-    this.setupSoundToggle();
+    this.pauseIcon.src = "assets/img/control/pause_15x15.png";
+    this.playIcon.src = "assets/img/control/play_15x15.png";
+    this.settingsIcon.src = "assets/img/control/settings_15x15.png";
+    this.setupControlIcons();
     this.draw();
     this.setupGame();
     this.camera_x;
@@ -86,7 +90,7 @@ class Game {
     this.addToMap(this.helthBarChar);
     this.addToMap(this.coinBar);
     this.addToMap(this.bottleBar);
-    this.drawMuteIcon();
+    this.drawControlIcons();
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.bottlesObj);
@@ -162,6 +166,7 @@ class Game {
 
   runGame() {
     setInterval(() => {
+      if (Game.paused) return;
       this.checkCollision();
       this.checkThrowedBottle();
       this.removeDeadEnemies();
@@ -261,30 +266,6 @@ class Game {
     );
   }
 
-  drawMuteIcon() {
-    const icon = this.control.muted ? this.muteIconOn : this.muteIconOff;
-    this.ctx.drawImage(
-      icon,
-      this.getMuteIconX(),
-      this.muteIconPadding,
-      this.muteIconSize,
-      this.muteIconSize,
-    );
-  }
-
-  getMuteIconX() {
-    return this.renderCanvas.width - this.muteIconSize - this.muteIconPadding;
-  }
-
-  setupSoundToggle() {
-    this.renderCanvas.addEventListener("click", (event) => {
-      const pos = this.getCanvasClickPosition(event);
-      if (this.isMuteIconClicked(pos)) {
-        this.control.swwitchSound();
-      }
-    });
-  }
-
   getCanvasClickPosition(event) {
     const rect = this.renderCanvas.getBoundingClientRect();
     const scaleX = this.renderCanvas.width / rect.width;
@@ -295,13 +276,54 @@ class Game {
     };
   }
 
-  isMuteIconClicked(pos) {
-    const iconX = this.getMuteIconX();
+  getSettingsIconX() {
+    return this.renderCanvas.width - this.controlIconSize - this.controlIconPadding;
+  }
+
+  getPauseIconX() {
+    return this.getSettingsIconX() - this.controlIconSize - this.controlIconGap;
+  }
+
+  drawControlIcons() {
+    const pauseImg = Game.paused ? this.playIcon : this.pauseIcon;
+    this.ctx.drawImage(
+      pauseImg,
+      this.getPauseIconX(),
+      this.controlIconPadding,
+      this.controlIconSize,
+      this.controlIconSize,
+    );
+    this.ctx.drawImage(
+      this.settingsIcon,
+      this.getSettingsIconX(),
+      this.controlIconPadding,
+      this.controlIconSize,
+      this.controlIconSize,
+    );
+  }
+
+  setupControlIcons() {
+    this.renderCanvas.addEventListener("click", (event) => {
+      const pos = this.getCanvasClickPosition(event);
+      if (this.isIconClicked(pos, this.getPauseIconX())) this.togglePause();
+      if (this.isIconClicked(pos, this.getSettingsIconX())) this.openSettings();
+    });
+  }
+
+  isIconClicked(pos, iconX) {
     return (
       pos.x >= iconX &&
-      pos.x <= iconX + this.muteIconSize &&
-      pos.y >= this.muteIconPadding &&
-      pos.y <= this.muteIconPadding + this.muteIconSize
+      pos.x <= iconX + this.controlIconSize &&
+      pos.y >= this.controlIconPadding &&
+      pos.y <= this.controlIconPadding + this.controlIconSize
     );
+  }
+
+  togglePause() {
+    Game.paused = !Game.paused;
+  }
+
+  openSettings() {
+    console.log("settings clicked");
   }
 }

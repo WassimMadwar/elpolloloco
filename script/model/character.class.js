@@ -102,6 +102,7 @@ class Character extends MovableObj {
       if (this.clearIntervalAfterDead()) {
         return;
       }
+      if (Game.paused) return;
       this.handelMoveRight();
       this.handelMoveLeft();
       if (this.gameMatch.keyAction.up) {
@@ -146,6 +147,7 @@ class Character extends MovableObj {
       if (this.isDying) {
         return;
       }
+      if (Game.paused) return;
       if (this.isDead()) {
         this.playAnimation(this.imageCharDead);
       } else if (this.isHurt()) {

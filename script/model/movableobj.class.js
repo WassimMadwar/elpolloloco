@@ -23,6 +23,7 @@ class MovableObj extends DrawableObj {
 
   moveLeft() {
     this.moveInterval = setInterval(() => {
+      if (Game.paused) return;
       this.x -= this.speed;
     }, 1000 / 10);
   }
@@ -33,6 +34,7 @@ class MovableObj extends DrawableObj {
 
   applyGravity() {
     this.gravityInterval = setInterval(() => {
+      if (Game.paused) return;
       if (this.isDying) {
         this.goDown();
         return;

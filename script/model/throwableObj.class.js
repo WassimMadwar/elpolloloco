@@ -27,6 +27,7 @@ class ThrowableObj extends MovableObj {
     this.speedY = 3;
     this.applyGravity();
     this.moveInterval = setInterval(() => {
+      if (Game.paused) return;
       if (!this.isAboveGround()) {
         this.land();
         return;
@@ -43,6 +44,7 @@ class ThrowableObj extends MovableObj {
 
   animateBottleRotation() {
     this.rotationInterval = setInterval(() => {
+      if (Game.paused) return;
       this.playAnimation(this.imgBottleRotation);
     }, 100);
   }

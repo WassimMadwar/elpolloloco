@@ -38,6 +38,7 @@ class Endboss extends MovableObj {
 
   animate() {
     setInterval(() => {
+      if (Game.paused) return;
       if (this.isDying) {
         this.playAnimation(this.imgBossDead);
       } else if (this.isHurt()) {
@@ -73,7 +74,7 @@ class Endboss extends MovableObj {
   }
 
   throwChick() {
-    if (this.isDying || !this.gameMatch) return;
+    if (Game.paused || this.isDying || !this.gameMatch) return;
     const chick = new SmallChick(this.x, this.y);
     this.gameMatch.level.enemies.push(chick);
   }

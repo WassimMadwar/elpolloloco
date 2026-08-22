@@ -17,6 +17,7 @@ class Coin extends MovableObj {
 
   animateCoinSpin() {
     this.spinInterval = setInterval(() => {
+      if (Game.paused) return;
       this.playAnimation(this.imgCoinSpin);
     }, 300);
   }

@@ -21,6 +21,7 @@ class Enemy extends MovableObj {
 
   animateEnemyWalking() {
     this.walkInterval = setInterval(() => {
+      if (Game.paused) return;
       this.playAnimation(this.imgEnemyWalking);
     }, 200);
   }
