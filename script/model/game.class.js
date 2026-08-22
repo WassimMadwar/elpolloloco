@@ -50,6 +50,10 @@ class Game {
   controlIconSize = 15;
   controlIconPadding = 5;
   controlIconGap = 5;
+  settingsOpen = false;
+  speakerIcon = new Image();
+  muteIcon = new Image();
+  replayIcon = new Image();
 
   constructor(canvas, keyTaste) {
     this.renderCanvas = canvas;
@@ -60,6 +64,9 @@ class Game {
     this.pauseIcon.src = "assets/img/control/pause_15x15.png";
     this.playIcon.src = "assets/img/control/play_15x15.png";
     this.settingsIcon.src = "assets/img/control/settings_15x15.png";
+    this.speakerIcon.src = "assets/img/control/speaker_15x15.png";
+    this.muteIcon.src = "assets/img/control/mute_15x15.png";
+    this.replayIcon.src = "assets/img/control/replay_15x15.png";
     this.setupControlIcons();
     this.draw();
     this.setupGame();
@@ -306,7 +313,7 @@ class Game {
     this.renderCanvas.addEventListener("click", (event) => {
       const pos = this.getCanvasClickPosition(event);
       if (this.isIconClicked(pos, this.getPauseIconX())) this.togglePause();
-      if (this.isIconClicked(pos, this.getSettingsIconX())) this.openSettings();
+      if (this.isIconClicked(pos, this.getSettingsIconX())) this.toggleSettings();
     });
   }
 
@@ -323,7 +330,7 @@ class Game {
     Game.paused = !Game.paused;
   }
 
-  openSettings() {
-    console.log("settings clicked");
+  toggleSettings() {
+    this.settingsOpen = !this.settingsOpen;
   }
 }
