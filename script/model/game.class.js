@@ -54,8 +54,8 @@ class Game {
     this.keyAction = keyTaste;
     this.gameOverImg.src = "assets/img/You won, you lost/You lost.png";
     this.winImg.src = "assets/img/You won, you lost/You won A.png";
-    this.muteIconOn.src = "assets/img/control/mutesund.jpg";
-    this.muteIconOff.src = "assets/img/control/playsound.jpg";
+    this.muteIconOn.src = "assets/img/control/mute_15x15.png";
+    this.muteIconOff.src = "assets/img/control/speaker_15x15.png";
     this.setupSoundToggle();
     this.draw();
     this.setupGame();
