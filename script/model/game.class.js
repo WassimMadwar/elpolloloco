@@ -98,6 +98,7 @@ class Game {
     this.addToMap(this.coinBar);
     this.addToMap(this.bottleBar);
     this.drawControlIcons();
+    this.drawSettingsPanel();
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.bottlesObj);
@@ -307,6 +308,40 @@ class Game {
       this.controlIconSize,
       this.controlIconSize,
     );
+  }
+
+  getSettingsPanelWidth() {
+    return this.controlIconPadding * 2 + this.controlIconSize * 2 + this.controlIconGap;
+  }
+
+  getSettingsPanelHeight() {
+    return this.controlIconPadding * 2 + this.controlIconSize;
+  }
+
+  getSettingsPanelX() {
+    return this.getSettingsIconX() + this.controlIconSize - this.getSettingsPanelWidth();
+  }
+
+  getSettingsPanelY() {
+    return this.controlIconPadding + this.controlIconSize + this.controlIconGap;
+  }
+
+  drawSettingsPanel() {
+    if (!this.settingsOpen) return;
+    const x = this.getSettingsPanelX();
+    const y = this.getSettingsPanelY();
+    this.ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+    this.ctx.fillRect(x, y, this.getSettingsPanelWidth(), this.getSettingsPanelHeight());
+    this.drawSettingsPanelIcons(x, y);
+  }
+
+  drawSettingsPanelIcons(panelX, panelY) {
+    const soundIcon = this.control.muted ? this.muteIcon : this.speakerIcon;
+    const iconY = panelY + this.controlIconPadding;
+    const soundX = panelX + this.controlIconPadding;
+    const replayX = soundX + this.controlIconSize + this.controlIconGap;
+    this.ctx.drawImage(soundIcon, soundX, iconY, this.controlIconSize, this.controlIconSize);
+    this.ctx.drawImage(this.replayIcon, replayX, iconY, this.controlIconSize, this.controlIconSize);
   }
 
   setupControlIcons() {
