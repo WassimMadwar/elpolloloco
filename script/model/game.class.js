@@ -42,6 +42,11 @@ class Game {
   gameOverImg = new Image();
   winImg = new Image();
   gameOverDelay = 2000;
+  control = new Control();
+  muteIconOn = new Image();
+  muteIconOff = new Image();
+  muteIconSize = 15;
+  muteIconPadding = 5;
 
   constructor(canvas, keyTaste) {
     this.renderCanvas = canvas;
@@ -49,6 +54,9 @@ class Game {
     this.keyAction = keyTaste;
     this.gameOverImg.src = "assets/img/You won, you lost/You lost.png";
     this.winImg.src = "assets/img/You won, you lost/You won A.png";
+    this.muteIconOn.src = "assets/img/control/mutesund.jpg";
+    this.muteIconOff.src = "assets/img/control/playsound.jpg";
+    this.setupSoundToggle();
     this.draw();
     this.setupGame();
     this.camera_x;
@@ -78,6 +86,7 @@ class Game {
     this.addToMap(this.helthBarChar);
     this.addToMap(this.coinBar);
     this.addToMap(this.bottleBar);
+    this.drawMuteIcon();
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.bottlesObj);
@@ -252,4 +261,47 @@ class Game {
     );
   }
 
+  drawMuteIcon() {
+    const icon = this.control.muted ? this.muteIconOn : this.muteIconOff;
+    this.ctx.drawImage(
+      icon,
+      this.getMuteIconX(),
+      this.muteIconPadding,
+      this.muteIconSize,
+      this.muteIconSize,
+    );
+  }
+
+  getMuteIconX() {
+    return this.renderCanvas.width - this.muteIconSize - this.muteIconPadding;
+  }
+
+  setupSoundToggle() {
+    this.renderCanvas.addEventListener("click", (event) => {
+      const pos = this.getCanvasClickPosition(event);
+      if (this.isMuteIconClicked(pos)) {
+        this.control.swwitchSound();
+      }
+    });
+  }
+
+  getCanvasClickPosition(event) {
+    const rect = this.renderCanvas.getBoundingClientRect();
+    const scaleX = this.renderCanvas.width / rect.width;
+    const scaleY = this.renderCanvas.height / rect.height;
+    return {
+      x: (event.clientX - rect.left) * scaleX,
+      y: (event.clientY - rect.top) * scaleY,
+    };
+  }
+
+  isMuteIconClicked(pos) {
+    const iconX = this.getMuteIconX();
+    return (
+      pos.x >= iconX &&
+      pos.x <= iconX + this.muteIconSize &&
+      pos.y >= this.muteIconPadding &&
+      pos.y <= this.muteIconPadding + this.muteIconSize
+    );
+  }
 }
