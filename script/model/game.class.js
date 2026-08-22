@@ -251,9 +251,5 @@ class Game {
       (this.throwableBottles / this.maxThrowableBottles) * 100,
     );
   }
-  startMatch() {}
-  endMatch() {}
-  pauseMatch() {}
-  resultMatch() {}
-  swwitchSound() {}
+
 }
