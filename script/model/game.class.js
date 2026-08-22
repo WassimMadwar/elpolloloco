@@ -247,6 +247,13 @@ class Game {
   }
 
   updateBottleBar() {
-    this.bottleBar.setPercentge((this.throwableBottles / this.maxThrowableBottles) * 100);
+    this.bottleBar.setPercentge(
+      (this.throwableBottles / this.maxThrowableBottles) * 100,
+    );
   }
+  startMatch() {}
+  endMatch() {}
+  pauseMatch() {}
+  resultMatch() {}
+  swwitchSound() {}
 }
