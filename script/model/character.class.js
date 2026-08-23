@@ -184,11 +184,11 @@ class Character extends MovableObj {
     this.energy -= 20;
     if (this.energy <= 0) {
       this.energy = 0;
-      this.gameMatch.helthBarChar.setPercentge(0);
+      this.gameMatch.statusBars.setHealth(0);
       this.dieCahracter();
     } else {
       this.lastHit = new Date().getTime();
-      this.gameMatch.helthBarChar.setPercentge(this.energy);
+      this.gameMatch.statusBars.setHealth(this.energy);
     }
   }
 

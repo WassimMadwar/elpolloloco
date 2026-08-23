@@ -6,9 +6,7 @@ class Game {
   renderCanvas;
   keyAction;
   camera_x = -100;
-  helthBarChar;
-  coinBar;
-  bottleBar;
+  statusBars;
   bottlesObj = [];
   coinCount = 0;
   totalCoins = 5;
@@ -44,33 +42,7 @@ class Game {
   startGame() {
     this.character = new Character();
     this.level = createLevel1();
-    this.helthBarChar = new StatusBar();
-    this.coinBar = new StatusBar(
-      [
-        "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/0.png",
-        "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/20.png",
-        "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/40.png",
-        "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/60.png",
-        "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/80.png",
-        "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/100.png",
-      ],
-      0,
-      5,
-      15,
-    );
-    this.bottleBar = new StatusBar(
-      [
-        "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/0.png",
-        "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/20.png",
-        "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/40.png",
-        "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/60.png",
-        "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/80.png",
-        "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/100.png",
-      ],
-      0,
-      5,
-      30,
-    );
+    this.statusBars = new StatusBars();
     this.setupGame();
     this.checkCollision();
     this.runGame();
@@ -102,9 +74,7 @@ class Game {
     this.addToMap(this.character);
     this.addObjectsToMap(this.level.clouds);
     this.ctx.translate(-this.camera_x, -0);
-    this.addToMap(this.helthBarChar);
-    this.addToMap(this.coinBar);
-    this.addToMap(this.bottleBar);
+    this.statusBars.draw(this.ctx);
     this.drawControlIcons();
     this.control.drawPanel(this.ctx, this.getSettingsIconX() + this.controlIconSize, this.getSettingsPanelAnchorY());
     this.ctx.translate(this.camera_x, 0);
@@ -259,7 +229,7 @@ class Game {
 
   collectCoin() {
     this.coinCount++;
-    this.coinBar.setPercentge((this.coinCount / this.totalCoins) * 100);
+    this.statusBars.setCoins(this.coinCount, this.totalCoins);
   }
 
   checkGroundBottleCollisions() {
@@ -277,9 +247,7 @@ class Game {
   }
 
   updateBottleBar() {
-    this.bottleBar.setPercentge(
-      (this.throwableBottles / this.maxThrowableBottles) * 100,
-    );
+    this.statusBars.setBottles(this.throwableBottles, this.maxThrowableBottles);
   }
 
   getCanvasClickPosition(event) {
@@ -372,9 +340,7 @@ class Game {
     this.coinCount = 0;
     this.bottleCount = 0;
     this.throwableBottles = 0;
-    this.helthBarChar.setPercentge(100);
-    this.coinBar.setPercentge(0);
-    this.bottleBar.setPercentge(0);
+    this.statusBars.reset();
     Game.paused = false;
     this.control.closePanel();
   }
