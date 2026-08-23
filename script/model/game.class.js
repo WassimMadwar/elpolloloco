@@ -109,6 +109,7 @@ class Game {
   draw() {
     this.ctx.clearRect(0, 0, this.renderCanvas.width, this.renderCanvas.height);
     if (!this.gameStarted) {
+      this.drawStartScreen();
       let self = this;
       requestAnimationFrame(() => self.draw());
       return;
@@ -384,10 +385,25 @@ class Game {
   setupControlIcons() {
     this.renderCanvas.addEventListener("click", (event) => {
       const pos = this.getCanvasClickPosition(event);
+      if (!this.gameStarted) {
+        this.handleStartScreenClick(pos);
+        return;
+      }
       if (this.settingsOpen && this.handleSettingsPanelClick(pos)) return;
       if (this.isIconClicked(pos, this.getPauseIconX(), this.controlIconPadding)) this.togglePause();
       if (this.isIconClicked(pos, this.getSettingsIconX(), this.controlIconPadding)) this.toggleSettings();
     });
+  }
+
+  handleStartScreenClick(pos) {
+    const x = this.getStartRowX();
+    if (this.isIconClicked(pos, x, this.getStartRowY(1))) {
+      this.startGame();
+      return;
+    }
+    if (this.isIconClicked(pos, x, this.getStartRowY(0))) {
+      this.control.swwitchSound();
+    }
   }
 
   handleSettingsPanelClick(pos) {
@@ -446,5 +462,75 @@ class Game {
     this.bottleBar.setPercentge(0);
     Game.paused = false;
     this.settingsOpen = false;
+  }
+
+  drawStartScreen() {
+    this.ctx.drawImage(
+      this.startBgImg,
+      0,
+      0,
+      this.renderCanvas.width,
+      this.renderCanvas.height,
+    );
+    this.drawStartPanel();
+  }
+
+  getStartPanelWidth() {
+    return this.renderCanvas.width * 0.6;
+  }
+
+  getStartPanelHeight() {
+    return this.renderCanvas.height * 0.6;
+  }
+
+  getStartPanelX() {
+    return (this.renderCanvas.width - this.getStartPanelWidth()) / 2;
+  }
+
+  getStartPanelY() {
+    return (this.renderCanvas.height - this.getStartPanelHeight()) / 2;
+  }
+
+  getStartRowX() {
+    return this.getStartPanelX() + 6;
+  }
+
+  getStartRowY(index) {
+    return this.getStartPanelY() + 4 + index * 18;
+  }
+
+  drawStartPanel() {
+    this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+    this.ctx.fillRect(
+      this.getStartPanelX(),
+      this.getStartPanelY(),
+      this.getStartPanelWidth(),
+      this.getStartPanelHeight(),
+    );
+    this.drawStartPanelRows();
+  }
+
+  drawStartPanelRows() {
+    const x = this.getStartRowX();
+    this.drawIconLabelRow(this.speakerIcon, "Sound", x, this.getStartRowY(0));
+    this.drawIconLabelRow(this.playIcon, "Play", x, this.getStartRowY(1));
+    this.drawMovementRow(this.getStartRowY(2));
+    this.drawIconLabelRow(this.throwIcon, "Hit", x, this.getStartRowY(3));
+  }
+
+  drawIconLabelRow(icon, label, x, y) {
+    this.ctx.drawImage(icon, x, y, this.controlIconSize, this.controlIconSize);
+    this.ctx.fillStyle = "white";
+    this.ctx.font = "8px Arial";
+    this.ctx.textBaseline = "middle";
+    this.ctx.fillText(label, x + this.controlIconSize + 4, y + this.controlIconSize / 2);
+  }
+
+  drawMovementRow(y) {
+    const startX = this.getStartRowX();
+    const segmentWidth = (this.getStartPanelWidth() - 12) / 3;
+    this.drawIconLabelRow(this.jumpIcon, "Jump", startX, y);
+    this.drawIconLabelRow(this.rightIcon, "Right", startX + segmentWidth, y);
+    this.drawIconLabelRow(this.leftIcon, "Left", startX + segmentWidth * 2, y);
   }
 }
