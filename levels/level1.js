@@ -1,4 +1,5 @@
 function createLevel1() {
+  Enemy.countchicken = 0;
   return new Level(
   [new Enemy(), new Endboss()],
   [
