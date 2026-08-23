@@ -21,21 +21,10 @@ class Game {
   gameOverDelay = 2000;
   control = new Control();
   pauseIcon = new Image();
-  playIcon = new Image();
   settingsIcon = new Image();
   controlIconSize = 15;
   controlIconPadding = 5;
   controlIconGap = 5;
-  settingsOpen = false;
-  speakerIcon = new Image();
-  muteIcon = new Image();
-  replayIcon = new Image();
-  gameStarted = false;
-  startBgImg = new Image();
-  jumpIcon = new Image();
-  rightIcon = new Image();
-  leftIcon = new Image();
-  throwIcon = new Image();
 
   constructor(canvas, keyTaste) {
     this.renderCanvas = canvas;
@@ -44,16 +33,10 @@ class Game {
     this.gameOverImg.src = "assets/img/You won, you lost/You lost.png";
     this.winImg.src = "assets/img/You won, you lost/You won A.png";
     this.pauseIcon.src = "assets/img/control/pause_15x15.png";
-    this.playIcon.src = "assets/img/control/play_15x15.png";
     this.settingsIcon.src = "assets/img/control/settings_15x15.png";
-    this.speakerIcon.src = "assets/img/control/speaker_15x15.png";
-    this.muteIcon.src = "assets/img/control/mute_15x15.png";
-    this.replayIcon.src = "assets/img/control/replay_15x15.png";
-    this.startBgImg.src = "assets/img/5_background/complete_background.png";
-    this.jumpIcon.src = "assets/img/control/jump.png";
-    this.rightIcon.src = "assets/img/control/right_15x15.png";
-    this.leftIcon.src = "assets/img/control/prev_arrow_15x15.png";
-    this.throwIcon.src = "assets/img/control/space_15x15.png";
+    this.control.gameMatch = this;
+    this.control.ctx = this.ctx;
+    this.control.renderCanvas = this.renderCanvas;
     this.setupControlIcons();
     this.draw();
   }
@@ -91,7 +74,7 @@ class Game {
     this.setupGame();
     this.checkCollision();
     this.runGame();
-    this.gameStarted = true;
+    this.control.gameStarted = true;
   }
 
   setupGame() {
@@ -108,8 +91,8 @@ class Game {
 
   draw() {
     this.ctx.clearRect(0, 0, this.renderCanvas.width, this.renderCanvas.height);
-    if (!this.gameStarted) {
-      this.drawStartScreen();
+    if (!this.control.gameStarted) {
+      this.control.drawStartScreen();
       let self = this;
       requestAnimationFrame(() => self.draw());
       return;
@@ -123,7 +106,7 @@ class Game {
     this.addToMap(this.coinBar);
     this.addToMap(this.bottleBar);
     this.drawControlIcons();
-    this.drawSettingsPanel();
+    this.control.drawPanel(this.ctx, this.getSettingsIconX() + this.controlIconSize, this.getSettingsPanelAnchorY());
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.bottlesObj);
@@ -318,7 +301,7 @@ class Game {
   }
 
   drawControlIcons() {
-    const pauseImg = Game.paused ? this.playIcon : this.pauseIcon;
+    const pauseImg = Game.paused ? this.control.playIcon : this.pauseIcon;
     this.ctx.drawImage(
       pauseImg,
       this.getPauseIconX(),
@@ -335,87 +318,23 @@ class Game {
     );
   }
 
-  getSettingsPanelWidth() {
-    return this.controlIconPadding * 2 + this.controlIconSize * 2 + this.controlIconGap;
-  }
-
-  getSettingsPanelHeight() {
-    return this.controlIconPadding * 2 + this.controlIconSize;
-  }
-
-  getSettingsPanelX() {
-    return this.getSettingsIconX() + this.controlIconSize - this.getSettingsPanelWidth();
-  }
-
-  getSettingsPanelY() {
+  getSettingsPanelAnchorY() {
     return this.controlIconPadding + this.controlIconSize + this.controlIconGap;
-  }
-
-  drawSettingsPanel() {
-    if (!this.settingsOpen) return;
-    this.ctx.fillStyle = "rgba(0, 0, 0, 0)";
-    this.ctx.fillRect(
-      this.getSettingsPanelX(),
-      this.getSettingsPanelY(),
-      this.getSettingsPanelWidth(),
-      this.getSettingsPanelHeight(),
-    );
-    this.drawSettingsPanelIcons();
-  }
-
-  getPanelIconY() {
-    return this.getSettingsPanelY() + this.controlIconPadding;
-  }
-
-  getSoundIconX() {
-    return this.getSettingsPanelX() + this.controlIconPadding;
-  }
-
-  getReplayIconX() {
-    return this.getSoundIconX() + this.controlIconSize + this.controlIconGap;
-  }
-
-  drawSettingsPanelIcons() {
-    const soundIcon = this.control.muted ? this.muteIcon : this.speakerIcon;
-    const y = this.getPanelIconY();
-    this.ctx.drawImage(soundIcon, this.getSoundIconX(), y, this.controlIconSize, this.controlIconSize);
-    this.ctx.drawImage(this.replayIcon, this.getReplayIconX(), y, this.controlIconSize, this.controlIconSize);
   }
 
   setupControlIcons() {
     this.renderCanvas.addEventListener("click", (event) => {
       const pos = this.getCanvasClickPosition(event);
-      if (!this.gameStarted) {
-        this.handleStartScreenClick(pos);
+      if (!this.control.gameStarted) {
+        this.control.handleStartScreenClick(pos);
         return;
       }
-      if (this.settingsOpen && this.handleSettingsPanelClick(pos)) return;
+      const anchorX = this.getSettingsIconX() + this.controlIconSize;
+      const anchorY = this.getSettingsPanelAnchorY();
+      if (this.control.panelOpen && this.control.handlePanelClick(pos, anchorX, anchorY)) return;
       if (this.isIconClicked(pos, this.getPauseIconX(), this.controlIconPadding)) this.togglePause();
-      if (this.isIconClicked(pos, this.getSettingsIconX(), this.controlIconPadding)) this.toggleSettings();
+      if (this.isIconClicked(pos, this.getSettingsIconX(), this.controlIconPadding)) this.control.togglePanel();
     });
-  }
-
-  handleStartScreenClick(pos) {
-    const x = this.getStartRowX();
-    if (this.isIconClicked(pos, x, this.getStartRowY(1))) {
-      this.startGame();
-      return;
-    }
-    if (this.isIconClicked(pos, x, this.getStartRowY(0))) {
-      this.control.swwitchSound();
-    }
-  }
-
-  handleSettingsPanelClick(pos) {
-    if (this.isIconClicked(pos, this.getSoundIconX(), this.getPanelIconY())) {
-      this.control.swwitchSound();
-      return true;
-    }
-    if (this.isIconClicked(pos, this.getReplayIconX(), this.getPanelIconY())) {
-      this.restartGame();
-      return true;
-    }
-    return false;
   }
 
   isIconClicked(pos, iconX, iconY) {
@@ -429,10 +348,6 @@ class Game {
 
   togglePause() {
     Game.paused = !Game.paused;
-  }
-
-  toggleSettings() {
-    this.settingsOpen = !this.settingsOpen;
   }
 
   restartGame() {
@@ -461,78 +376,7 @@ class Game {
     this.coinBar.setPercentge(0);
     this.bottleBar.setPercentge(0);
     Game.paused = false;
-    this.settingsOpen = false;
+    this.control.closePanel();
   }
 
-  drawStartScreen() {
-    this.ctx.drawImage(
-      this.startBgImg,
-      0,
-      0,
-      this.renderCanvas.width,
-      this.renderCanvas.height,
-    );
-    this.drawStartPanel();
-  }
-
-  getStartPanelWidth() {
-    return this.renderCanvas.width * 0.8;
-  }
-
-  getStartPanelHeight() {
-    return this.renderCanvas.height * 0.8;
-  }
-
-  getStartPanelX() {
-    return (this.renderCanvas.width - this.getStartPanelWidth()) / 2;
-  }
-
-  getStartPanelY() {
-    return (this.renderCanvas.height - this.getStartPanelHeight()) / 2;
-  }
-
-  getStartRowX() {
-    return this.getStartPanelX() + 6;
-  }
-
-  getStartRowY(index) {
-    return this.getStartPanelY() + 14 + index * 18;
-  }
-
-  drawStartPanel() {
-    this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-    this.ctx.fillRect(
-      this.getStartPanelX(),
-      this.getStartPanelY(),
-      this.getStartPanelWidth(),
-      this.getStartPanelHeight(),
-    );
-    this.drawStartPanelRows();
-  }
-
-  drawStartPanelRows() {
-    const x = this.getStartRowX();
-    this.drawIconLabelRow(this.speakerIcon, "Sound", x, this.getStartRowY(0));
-    this.drawIconLabelRow(this.playIcon, "Play / start", x, this.getStartRowY(1));
-    this.drawMovementRow(this.getStartRowY(2));
-    this.drawIconLabelRow(this.throwIcon, "Hit", x, this.getStartRowY(3));
-  }
-
-  drawIconLabelRow(icon, label, x, y) {
-    this.ctx.drawImage(icon, x, y, this.controlIconSize, this.controlIconSize);
-    this.ctx.fillStyle = "white";
-    this.ctx.font = "8px Arial";
-    this.ctx.textBaseline = "middle";
-    this.ctx.fillText(label, x + this.controlIconSize + 4, y + this.controlIconSize / 2);
-  }
-
-  drawMovementRow(y) {
-    const startX = this.getStartRowX();
-    const segmentWidth = (this.getStartPanelWidth() - 12) /3;
-    this.drawIconLabelRow(this.jumpIcon, "Jump", startX, y);
-    this.drawIconLabelRow(this.rightIcon, "Right", startX + segmentWidth, y);
-    this.drawIconLabelRow(this.leftIcon, "Left", startX + segmentWidth * 2, y);
-    
-  
-  }
 }
