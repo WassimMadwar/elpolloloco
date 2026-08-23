@@ -79,7 +79,7 @@ class Control {
   drawPanel(ctx, anchorRightX, anchorY) {
     if (!this.panelOpen) return;
     const x = this.getPanelX(anchorRightX);
-    ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+    ctx.fillStyle = "rgba(0, 0, 0, 0)";
     ctx.fillRect(x, anchorY, this.getPanelWidth(), this.getPanelHeight());
     this.drawPanelIcons(ctx, x, anchorY);
   }
