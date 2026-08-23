@@ -70,19 +70,13 @@ class Game {
       return;
     }
     this.ctx.translate(this.camera_x, 0);
-    this.addObjectsToMap(this.level.backgrounds);
+    this.addingBackgroundsElemente();
     this.addToMap(this.character);
-    this.addObjectsToMap(this.level.clouds);
     this.ctx.translate(-this.camera_x, -0);
     this.statusBars.draw(this.ctx);
     this.drawControlIcons();
     this.ctx.translate(this.camera_x, 0);
-    this.addObjectsToMap(this.level.enemies);
-    this.addObjectsToMap(this.bottlesObj);
-    this.addObjectsToMap(this.level.coins);
-    this.addObjectsToMap(this.level.bottles);
-    this.character.drawViewFrame(this.ctx);
-    this.level.enemies.forEach((enemy) => enemy.drawViewFrame(this.ctx));
+    this.addingAggregateElements();
     this.ctx.translate(-this.camera_x, -0);
     this.drawGameResult();
     if (this.control.pauseMenuOpen) this.control.drawStartPanel();
@@ -90,6 +84,18 @@ class Game {
     requestAnimationFrame(() => self.draw());
   }
 
+  addingAggregateElements() {
+    this.addObjectsToMap(this.level.coins);
+    this.addObjectsToMap(this.level.bottles);
+    this.addObjectsToMap(this.bottlesObj);
+  }
+  
+  addingBackgroundsElemente() {
+    this.addObjectsToMap(this.level.backgrounds);
+    this.addObjectsToMap(this.level.clouds);
+    this.addObjectsToMap(this.level.enemies);
+  }
+  
   drawGameResult() {
     const result = this.getGameResult();
     if (result === "lost") this.drawResultImg(this.gameOverImg);
@@ -261,7 +267,9 @@ class Game {
   }
 
   getSettingsIconX() {
-    return this.renderCanvas.width - this.controlIconSize - this.controlIconPadding;
+    return (
+      this.renderCanvas.width - this.controlIconSize - this.controlIconPadding
+    );
   }
 
   getPauseIconX() {
@@ -293,8 +301,18 @@ class Game {
         this.control.handleStartScreenClick(pos);
         return;
       }
-      if (this.isIconClicked(pos, this.getPauseIconX(), this.controlIconPadding)) this.togglePause();
-      if (this.isIconClicked(pos, this.getSettingsIconX(), this.controlIconPadding)) this.control.togglePauseMenu();
+      if (
+        this.isIconClicked(pos, this.getPauseIconX(), this.controlIconPadding)
+      )
+        this.togglePause();
+      if (
+        this.isIconClicked(
+          pos,
+          this.getSettingsIconX(),
+          this.controlIconPadding,
+        )
+      )
+        this.control.togglePauseMenu();
     });
   }
 

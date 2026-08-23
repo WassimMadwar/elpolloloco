@@ -17,11 +17,6 @@ class Character extends MovableObj {
     "assets/img/2_character_pepe/3_jump/J-33.png",
     "assets/img/2_character_pepe/3_jump/J-34.png",
     "assets/img/2_character_pepe/3_jump/J-35.png",
-    // "assets/img/2_character_pepe/3_jump/J-31.png",
-    // "assets/img/2_character_pepe/3_jump/J-36.png",
-    // "assets/img/2_character_pepe/3_jump/J-37.png",
-    // "assets/img/2_character_pepe/3_jump/J-38.png",
-    // "assets/img/2_character_pepe/3_jump/J-39.png",
   ];
   imageCharDead = [
     "assets/img/2_character_pepe/5_dead/D-51.png",
