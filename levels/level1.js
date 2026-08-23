@@ -140,5 +140,3 @@ function createLevel1() {
   ],
   );
 }
-
-const level1 = createLevel1();

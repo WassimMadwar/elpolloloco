@@ -56,10 +56,42 @@ class Game {
     this.throwIcon.src = "assets/img/control/space_15x15.png";
     this.setupControlIcons();
     this.draw();
+  }
+
+  startGame() {
+    this.character = new Character();
+    this.level = createLevel1();
+    this.helthBarChar = new StatusBar();
+    this.coinBar = new StatusBar(
+      [
+        "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/0.png",
+        "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/20.png",
+        "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/40.png",
+        "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/60.png",
+        "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/80.png",
+        "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/100.png",
+      ],
+      0,
+      5,
+      15,
+    );
+    this.bottleBar = new StatusBar(
+      [
+        "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/0.png",
+        "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/20.png",
+        "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/40.png",
+        "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/60.png",
+        "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/80.png",
+        "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/100.png",
+      ],
+      0,
+      5,
+      30,
+    );
     this.setupGame();
-    this.camera_x;
     this.checkCollision();
     this.runGame();
+    this.gameStarted = true;
   }
 
   setupGame() {
@@ -76,6 +108,11 @@ class Game {
 
   draw() {
     this.ctx.clearRect(0, 0, this.renderCanvas.width, this.renderCanvas.height);
+    if (!this.gameStarted) {
+      let self = this;
+      requestAnimationFrame(() => self.draw());
+      return;
+    }
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgrounds);
     this.addToMap(this.character);
