@@ -6,6 +6,7 @@ class Game {
   renderCanvas;
   keyAction;
   camera_x = -100;
+  runGameInterval;
   statusBars;
   bottlesObj = [];
   coinCount = 0;
@@ -37,6 +38,7 @@ class Game {
     this.control.renderCanvas = this.renderCanvas;
     this.setupControlIcons();
     this.draw();
+    // this.restartGame();
   }
 
   startGame() {
@@ -100,6 +102,14 @@ class Game {
     const result = this.getGameResult();
     if (result === "lost") this.drawResultImg(this.gameOverImg);
     if (result === "won") this.drawResultImg(this.winImg);
+    if (result ) {
+      setTimeout(() => {
+        this.control.pauseMenuOpen = true;
+// this.togglePause();
+        console.log('ffffff');
+      }, 5000);
+      
+    }
   }
 
   getGameResult() {
@@ -157,7 +167,8 @@ class Game {
   }
 
   runGame() {
-    setInterval(() => {
+    clearInterval(this.runGameInterval);
+    this.runGameInterval = setInterval(() => {
       if (Game.paused) return;
       this.checkCollision();
       this.checkThrowedBottle();
@@ -361,6 +372,7 @@ class Game {
     this.stopCurrentLevel();
     this.bottlesObj.forEach((bottle) => bottle.stopBottle());
     this.bottlesObj = [];
+    clearInterval(this.runGameInterval);
     this.resetCounters();
     this.control.pauseMenuOpen = false;
     this.control.gameStarted = false;
