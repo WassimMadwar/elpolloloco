@@ -18,6 +18,7 @@ class Game {
   gameOverImg = new Image();
   winImg = new Image();
   gameOverDelay = 2000;
+  resultTimeoutStarted = false;
   control = new Control();
   pauseIcon = new Image();
   settingsIcon = new Image();
@@ -102,13 +103,13 @@ class Game {
     const result = this.getGameResult();
     if (result === "lost") this.drawResultImg(this.gameOverImg);
     if (result === "won") this.drawResultImg(this.winImg);
-    if (result ) {
+    if (result && !this.resultTimeoutStarted) {
+      this.resultTimeoutStarted = true;
       setTimeout(() => {
         this.control.pauseMenuOpen = true;
-// this.togglePause();
-        console.log('ffffff');
+        Game.paused = true;
+        this.resultTimeoutStarted = false;
       }, 5000);
-      
     }
   }
 

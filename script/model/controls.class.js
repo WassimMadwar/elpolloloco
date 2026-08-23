@@ -26,11 +26,13 @@ class Control {
     this.exitIcon.src = "assets/img/control/exit_15x15.png";
     this.reloadIcon.src = "assets/img/control/replay_15x15.png";
     this.playIcon.src = "assets/img/control/play_15x15.png";
-    this.startBgImg.src = "assets/img/9_intro_outro_screens/start/startscreen_2.png";
+    this.startBgImg.src =
+      "assets/img/9_intro_outro_screens/start/startscreen_2.png";
     this.jumpIcon.src = "assets/img/control/jump.png";
     this.rightIcon.src = "assets/img/control/right_15x15.png";
     this.leftIcon.src = "assets/img/control/prev_arrow_15x15.png";
     this.throwIcon.src = "assets/img/control/space_60x15.png";
+    // this.restartGame();
   }
 
   startMatch() {}
@@ -76,11 +78,11 @@ class Control {
   }
 
   getStartPanelWidth() {
-    return this.renderCanvas.width ;
+    return this.renderCanvas.width;
   }
 
   getStartPanelHeight() {
-    return this.renderCanvas.height ;
+    return this.renderCanvas.height;
   }
 
   getStartPanelX() {
@@ -96,7 +98,7 @@ class Control {
   }
 
   getStartRowY(index) {
-    return this.getStartPanelY()  + index * 8;
+    return this.getStartPanelY() + index * 8;
   }
 
   drawStartPanel() {
@@ -115,7 +117,12 @@ class Control {
     if (this.gameStarted) {
       this.drawPauseTopRow(y);
     } else {
-      this.drawIconLabelRow(this.playIcon, "Start Match", this.getStartRowX(), y);
+      this.drawIconLabelRow(
+        this.playIcon,
+        "Start Match",
+        this.getStartRowX(),
+        y,
+      );
       this.drawSoundRow(y);
     }
     this.drawMovementRow(this.getMovementRowY());
@@ -128,9 +135,19 @@ class Control {
 
   drawPauseTopRow(y) {
     this.drawIconLabelRow(this.playIcon, "Resume", this.getPauseRowItemX(0), y);
-    this.drawIconLabelRow(this.reloadIcon, "Restart", this.getPauseRowItemX(1), y);
+    this.drawIconLabelRow(
+      this.reloadIcon,
+      "Restart",
+      this.getPauseRowItemX(1),
+      y,
+    );
     this.drawIconLabelRow(this.exitIcon, "Exit", this.getPauseRowItemX(2), y);
-    this.drawIconLabelRow(this.getSoundIcon(), "Sound", this.getPauseRowItemX(3), y);
+    this.drawIconLabelRow(
+      this.getSoundIcon(),
+      "Sound",
+      this.getPauseRowItemX(3),
+      y,
+    );
   }
 
   getSoundIcon() {
@@ -143,7 +160,13 @@ class Control {
 
   drawSoundRow(y) {
     const iconX = this.getSpeakerRowX();
-    this.ctx.drawImage(this.getSoundIcon(), iconX, y, this.iconSize, this.iconSize);
+    this.ctx.drawImage(
+      this.getSoundIcon(),
+      iconX,
+      y,
+      this.iconSize,
+      this.iconSize,
+    );
     this.ctx.fillStyle = "white";
     this.ctx.font = "8px Arial";
     this.ctx.textBaseline = "middle";
@@ -169,8 +192,18 @@ class Control {
     const segmentWidth = (this.renderCanvas.width - 20) / 4;
     this.drawIconLabelRow(this.leftIcon, "Left", startX, y);
     this.drawIconLabelRow(this.jumpIcon, "Jump", startX + segmentWidth, y);
-    this.drawIconLabelRow(this.rightIcon, "Right", startX + segmentWidth * 2, y);
-    this.drawIconLabelRow(this.throwIcon, "Throw Bottle", startX + segmentWidth * 3, y);
+    this.drawIconLabelRow(
+      this.rightIcon,
+      "Right",
+      startX + segmentWidth * 2,
+      y,
+    );
+    this.drawIconLabelRow(
+      this.throwIcon,
+      "Throw Bottle",
+      startX + segmentWidth * 3,
+      y,
+    );
   }
 
   handleStartScreenClick(pos) {
@@ -210,4 +243,16 @@ class Control {
       this.swwitchSound();
     }
   }
+  // restartGame() {
+  //   this.character.stop();
+  //   this.stopCurrentLevel();
+  //   this.bottlesObj.forEach((bottle) => bottle.stopBottle());
+  //   this.bottlesObj = [];
+  //   this.character = new Character();
+  //   this.character.gameMatch = this;
+  //   this.level = createLevel1();
+  //   this.setupEndboss();
+  //   this.resetCounters();
+  //   this.control.pauseMenuOpen = false;
+  // }
 }
