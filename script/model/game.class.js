@@ -328,36 +328,62 @@ class Game {
 
   drawSettingsPanel() {
     if (!this.settingsOpen) return;
-    const x = this.getSettingsPanelX();
-    const y = this.getSettingsPanelY();
     this.ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
-    this.ctx.fillRect(x, y, this.getSettingsPanelWidth(), this.getSettingsPanelHeight());
-    this.drawSettingsPanelIcons(x, y);
+    this.ctx.fillRect(
+      this.getSettingsPanelX(),
+      this.getSettingsPanelY(),
+      this.getSettingsPanelWidth(),
+      this.getSettingsPanelHeight(),
+    );
+    this.drawSettingsPanelIcons();
   }
 
-  drawSettingsPanelIcons(panelX, panelY) {
+  getPanelIconY() {
+    return this.getSettingsPanelY() + this.controlIconPadding;
+  }
+
+  getSoundIconX() {
+    return this.getSettingsPanelX() + this.controlIconPadding;
+  }
+
+  getReplayIconX() {
+    return this.getSoundIconX() + this.controlIconSize + this.controlIconGap;
+  }
+
+  drawSettingsPanelIcons() {
     const soundIcon = this.control.muted ? this.muteIcon : this.speakerIcon;
-    const iconY = panelY + this.controlIconPadding;
-    const soundX = panelX + this.controlIconPadding;
-    const replayX = soundX + this.controlIconSize + this.controlIconGap;
-    this.ctx.drawImage(soundIcon, soundX, iconY, this.controlIconSize, this.controlIconSize);
-    this.ctx.drawImage(this.replayIcon, replayX, iconY, this.controlIconSize, this.controlIconSize);
+    const y = this.getPanelIconY();
+    this.ctx.drawImage(soundIcon, this.getSoundIconX(), y, this.controlIconSize, this.controlIconSize);
+    this.ctx.drawImage(this.replayIcon, this.getReplayIconX(), y, this.controlIconSize, this.controlIconSize);
   }
 
   setupControlIcons() {
     this.renderCanvas.addEventListener("click", (event) => {
       const pos = this.getCanvasClickPosition(event);
-      if (this.isIconClicked(pos, this.getPauseIconX())) this.togglePause();
-      if (this.isIconClicked(pos, this.getSettingsIconX())) this.toggleSettings();
+      if (this.settingsOpen && this.handleSettingsPanelClick(pos)) return;
+      if (this.isIconClicked(pos, this.getPauseIconX(), this.controlIconPadding)) this.togglePause();
+      if (this.isIconClicked(pos, this.getSettingsIconX(), this.controlIconPadding)) this.toggleSettings();
     });
   }
 
-  isIconClicked(pos, iconX) {
+  handleSettingsPanelClick(pos) {
+    if (this.isIconClicked(pos, this.getSoundIconX(), this.getPanelIconY())) {
+      this.control.swwitchSound();
+      return true;
+    }
+    if (this.isIconClicked(pos, this.getReplayIconX(), this.getPanelIconY())) {
+      this.restartGame();
+      return true;
+    }
+    return false;
+  }
+
+  isIconClicked(pos, iconX, iconY) {
     return (
       pos.x >= iconX &&
       pos.x <= iconX + this.controlIconSize &&
-      pos.y >= this.controlIconPadding &&
-      pos.y <= this.controlIconPadding + this.controlIconSize
+      pos.y >= iconY &&
+      pos.y <= iconY + this.controlIconSize
     );
   }
 
@@ -367,5 +393,9 @@ class Game {
 
   toggleSettings() {
     this.settingsOpen = !this.settingsOpen;
+  }
+
+  restartGame() {
+    console.log("restart clicked");
   }
 }
