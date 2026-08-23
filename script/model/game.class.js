@@ -76,7 +76,6 @@ class Game {
     this.ctx.translate(-this.camera_x, -0);
     this.statusBars.draw(this.ctx);
     this.drawControlIcons();
-    this.control.drawPanel(this.ctx, this.getSettingsIconX() + this.controlIconSize, this.getSettingsPanelAnchorY());
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.bottlesObj);
@@ -86,6 +85,7 @@ class Game {
     this.level.enemies.forEach((enemy) => enemy.drawViewFrame(this.ctx));
     this.ctx.translate(-this.camera_x, -0);
     this.drawGameResult();
+    if (this.control.pauseMenuOpen) this.control.drawStartPanel();
     let self = this;
     requestAnimationFrame(() => self.draw());
   }
@@ -286,22 +286,15 @@ class Game {
     );
   }
 
-  getSettingsPanelAnchorY() {
-    return this.controlIconPadding + this.controlIconSize + this.controlIconGap;
-  }
-
   setupControlIcons() {
     this.renderCanvas.addEventListener("click", (event) => {
       const pos = this.getCanvasClickPosition(event);
-      if (!this.control.gameStarted) {
+      if (!this.control.gameStarted || this.control.pauseMenuOpen) {
         this.control.handleStartScreenClick(pos);
         return;
       }
-      const anchorX = this.getSettingsIconX() + this.controlIconSize;
-      const anchorY = this.getSettingsPanelAnchorY();
-      if (this.control.panelOpen && this.control.handlePanelClick(pos, anchorX, anchorY)) return;
       if (this.isIconClicked(pos, this.getPauseIconX(), this.controlIconPadding)) this.togglePause();
-      if (this.isIconClicked(pos, this.getSettingsIconX(), this.controlIconPadding)) this.control.togglePanel();
+      if (this.isIconClicked(pos, this.getSettingsIconX(), this.controlIconPadding)) this.control.togglePauseMenu();
     });
   }
 
@@ -342,7 +335,15 @@ class Game {
     this.throwableBottles = 0;
     this.statusBars.reset();
     Game.paused = false;
-    this.control.closePanel();
   }
 
+  exitToStartScreen() {
+    this.character.stop();
+    this.stopCurrentLevel();
+    this.bottlesObj.forEach((bottle) => bottle.stopBottle());
+    this.bottlesObj = [];
+    this.resetCounters();
+    this.control.pauseMenuOpen = false;
+    this.control.gameStarted = false;
+  }
 }

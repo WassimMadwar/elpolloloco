@@ -4,15 +4,15 @@ class Control {
   gameMatch;
   ctx;
   renderCanvas;
-  panelOpen = false;
   speakerIcon = new Image();
   muteIcon = new Image();
-  replayIcon = new Image();
+  exitIcon = new Image();
   playIcon = new Image();
   iconSize = 15;
   padding = 5;
   gap = 5;
   gameStarted = false;
+  pauseMenuOpen = false;
   startBgImg = new Image();
   jumpIcon = new Image();
   rightIcon = new Image();
@@ -22,7 +22,7 @@ class Control {
   constructor() {
     this.speakerIcon.src = "assets/img/control/speaker_15x15.png";
     this.muteIcon.src = "assets/img/control/mute_15x15.png";
-    this.replayIcon.src = "assets/img/control/replay_15x15.png";
+    this.exitIcon.src = "assets/img/control/exit_15x15.png";
     this.playIcon.src = "assets/img/control/play_15x15.png";
     this.startBgImg.src = "assets/img/9_intro_outro_screens/start/startscreen_2.png";
     this.jumpIcon.src = "assets/img/control/jump.png";
@@ -48,62 +48,9 @@ class Control {
     });
   }
 
-  togglePanel() {
-    this.panelOpen = !this.panelOpen;
-  }
-
-  closePanel() {
-    this.panelOpen = false;
-  }
-
-  getPanelWidth() {
-    return this.padding * 2 + this.iconSize * 2 + this.gap;
-  }
-
-  getPanelHeight() {
-    return this.padding * 2 + this.iconSize;
-  }
-
-  getPanelX(anchorRightX) {
-    return anchorRightX - this.getPanelWidth();
-  }
-
-  getSoundIconX(panelX) {
-    return panelX + this.padding;
-  }
-
-  getReplayIconX(panelX) {
-    return this.getSoundIconX(panelX) + this.iconSize + this.gap;
-  }
-
-  drawPanel(ctx, anchorRightX, anchorY) {
-    if (!this.panelOpen) return;
-    const x = this.getPanelX(anchorRightX);
-    ctx.fillStyle = "rgba(0, 0, 0, 0)";
-    ctx.fillRect(x, anchorY, this.getPanelWidth(), this.getPanelHeight());
-    this.drawPanelIcons(ctx, x, anchorY);
-  }
-
-  drawPanelIcons(ctx, panelX, panelY) {
-    const soundIcon = this.muted ? this.muteIcon : this.speakerIcon;
-    const y = panelY + this.padding;
-    ctx.drawImage(soundIcon, this.getSoundIconX(panelX), y, this.iconSize, this.iconSize);
-    ctx.drawImage(this.replayIcon, this.getReplayIconX(panelX), y, this.iconSize, this.iconSize);
-  }
-
-  handlePanelClick(pos, anchorRightX, anchorY) {
-    if (!this.panelOpen) return false;
-    const panelX = this.getPanelX(anchorRightX);
-    const y = anchorY + this.padding;
-    if (this.isHit(pos, this.getSoundIconX(panelX), y)) {
-      this.swwitchSound();
-      return true;
-    }
-    if (this.isHit(pos, this.getReplayIconX(panelX), y)) {
-      this.gameMatch.restartGame();
-      return true;
-    }
-    return false;
+  togglePauseMenu() {
+    this.pauseMenuOpen = !this.pauseMenuOpen;
+    Game.paused = this.pauseMenuOpen;
   }
 
   isHit(pos, x, y) {
@@ -163,9 +110,29 @@ class Control {
 
   drawStartPanelRows() {
     const x = this.getStartRowX();
-    // this.drawIconLabelRow(this.speakerIcon, "Sound", x, this.getStartRowY(0));
-    this.drawIconLabelRow(this.playIcon, "Start Match", x, this.getStartRowY(1));
+    const playLabel = this.gameStarted ? "Resume Game" : "Start Match";
+    this.drawIconLabelRow(this.playIcon, playLabel, x, this.getStartRowY(1));
+    this.drawSoundRow(this.getStartRowY(1));
+    if (this.gameStarted) {
+      this.drawIconLabelRow(this.exitIcon, "Restart Game", x, this.getStartRowY(2));
+    }
     this.drawMovementRow(this.getMovementRowY());
+  }
+
+  getSpeakerRowX() {
+    return this.renderCanvas.width - this.iconSize - this.padding;
+  }
+
+  drawSoundRow(y) {
+    const icon = this.muted ? this.muteIcon : this.speakerIcon;
+    const iconX = this.getSpeakerRowX();
+    this.ctx.drawImage(icon, iconX, y, this.iconSize, this.iconSize);
+    this.ctx.fillStyle = "white";
+    this.ctx.font = "8px Arial";
+    this.ctx.textBaseline = "middle";
+    this.ctx.textAlign = "right";
+    this.ctx.fillText("Sound", iconX - 4, y + this.iconSize / 2);
+    this.ctx.textAlign = "left";
   }
 
   getMovementRowY() {
@@ -186,17 +153,25 @@ class Control {
     this.drawIconLabelRow(this.leftIcon, "Left", startX, y);
     this.drawIconLabelRow(this.jumpIcon, "Jump", startX + segmentWidth, y);
     this.drawIconLabelRow(this.rightIcon, "Right", startX + segmentWidth * 2, y);
-    this.drawIconLabelRow(this.throwIcon, "Throw", startX + segmentWidth * 3, y);
+    this.drawIconLabelRow(this.throwIcon, "Throw Bottle", startX + segmentWidth * 3, y);
   }
 
   handleStartScreenClick(pos) {
     const x = this.getStartRowX();
     if (this.isHit(pos, x, this.getStartRowY(1))) {
-      this.gameMatch.startGame();
+      if (this.gameStarted) {
+        this.togglePauseMenu();
+      } else {
+        this.gameMatch.startGame();
+      }
       return;
     }
-    if (this.isHit(pos, x, this.getStartRowY(0))) {
+    if (this.isHit(pos, this.getSpeakerRowX(), this.getStartRowY(1))) {
       this.swwitchSound();
+      return;
+    }
+    if (this.gameStarted && this.isHit(pos, x, this.getStartRowY(2))) {
+      this.gameMatch.exitToStartScreen();
     }
   }
 }
