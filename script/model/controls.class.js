@@ -147,7 +147,7 @@ class Control {
   }
 
   getStartRowY(index) {
-    return this.getStartPanelY() + 14 + index * 18;
+    return this.getStartPanelY()  + index * 8;
   }
 
   drawStartPanel() {
@@ -165,8 +165,11 @@ class Control {
     const x = this.getStartRowX();
     // this.drawIconLabelRow(this.speakerIcon, "Sound", x, this.getStartRowY(0));
     this.drawIconLabelRow(this.playIcon, "Start Match", x, this.getStartRowY(1));
-    this.drawMovementRow(this.getStartRowY(2));
-    this.drawIconLabelRow(this.throwIcon, "Throw Bottle", x, this.getStartRowY(3));
+    this.drawMovementRow(this.getMovementRowY());
+  }
+
+  getMovementRowY() {
+    return this.renderCanvas.height - this.iconSize - 4;
   }
 
   drawIconLabelRow(icon, label, x, y) {
@@ -178,11 +181,12 @@ class Control {
   }
 
   drawMovementRow(y) {
-    const startX = this.getStartRowX();
-    const segmentWidth = (this.getStartPanelWidth() - 12) / 3;
-    this.drawIconLabelRow(this.rightIcon, "Right", startX + segmentWidth, y);
-    this.drawIconLabelRow(this.leftIcon, "Left", startX + segmentWidth * 2, y);
-    this.drawIconLabelRow(this.jumpIcon, "Jump", startX, y);
+    const startX = 10;
+    const segmentWidth = (this.renderCanvas.width - 20) / 4;
+    this.drawIconLabelRow(this.leftIcon, "Left", startX, y);
+    this.drawIconLabelRow(this.jumpIcon, "Jump", startX + segmentWidth, y);
+    this.drawIconLabelRow(this.rightIcon, "Right", startX + segmentWidth * 2, y);
+    this.drawIconLabelRow(this.throwIcon, "Throw", startX + segmentWidth * 3, y);
   }
 
   handleStartScreenClick(pos) {
