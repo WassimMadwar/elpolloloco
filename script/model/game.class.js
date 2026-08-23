@@ -321,6 +321,7 @@ class Game {
     this.level = createLevel1();
     this.setupEndboss();
     this.resetCounters();
+    this.control.pauseMenuOpen = false;
   }
 
   stopCurrentLevel() {

@@ -7,6 +7,7 @@ class Control {
   speakerIcon = new Image();
   muteIcon = new Image();
   exitIcon = new Image();
+  reloadIcon = new Image();
   playIcon = new Image();
   iconSize = 15;
   padding = 5;
@@ -23,6 +24,7 @@ class Control {
     this.speakerIcon.src = "assets/img/control/speaker_15x15.png";
     this.muteIcon.src = "assets/img/control/mute_15x15.png";
     this.exitIcon.src = "assets/img/control/exit_15x15.png";
+    this.reloadIcon.src = "assets/img/control/replay_15x15.png";
     this.playIcon.src = "assets/img/control/play_15x15.png";
     this.startBgImg.src = "assets/img/9_intro_outro_screens/start/startscreen_2.png";
     this.jumpIcon.src = "assets/img/control/jump.png";
@@ -109,14 +111,30 @@ class Control {
   }
 
   drawStartPanelRows() {
-    const x = this.getStartRowX();
-    const playLabel = this.gameStarted ? "Resume Game" : "Start Match";
-    this.drawIconLabelRow(this.playIcon, playLabel, x, this.getStartRowY(1));
-    this.drawSoundRow(this.getStartRowY(1));
+    const y = this.getStartRowY(1);
     if (this.gameStarted) {
-      this.drawIconLabelRow(this.exitIcon, "Restart Game", x, this.getStartRowY(2));
+      this.drawPauseTopRow(y);
+    } else {
+      this.drawIconLabelRow(this.playIcon, "Start Match", this.getStartRowX(), y);
+      this.drawSoundRow(y);
     }
     this.drawMovementRow(this.getMovementRowY());
+  }
+
+  getPauseRowItemX(index) {
+    const segmentWidth = (this.renderCanvas.width - 20) / 4;
+    return 10 + segmentWidth * index;
+  }
+
+  drawPauseTopRow(y) {
+    this.drawIconLabelRow(this.playIcon, "Resume", this.getPauseRowItemX(0), y);
+    this.drawIconLabelRow(this.reloadIcon, "Restart", this.getPauseRowItemX(1), y);
+    this.drawIconLabelRow(this.exitIcon, "Exit", this.getPauseRowItemX(2), y);
+    this.drawIconLabelRow(this.getSoundIcon(), "Sound", this.getPauseRowItemX(3), y);
+  }
+
+  getSoundIcon() {
+    return this.muted ? this.muteIcon : this.speakerIcon;
   }
 
   getSpeakerRowX() {
@@ -124,9 +142,8 @@ class Control {
   }
 
   drawSoundRow(y) {
-    const icon = this.muted ? this.muteIcon : this.speakerIcon;
     const iconX = this.getSpeakerRowX();
-    this.ctx.drawImage(icon, iconX, y, this.iconSize, this.iconSize);
+    this.ctx.drawImage(this.getSoundIcon(), iconX, y, this.iconSize, this.iconSize);
     this.ctx.fillStyle = "white";
     this.ctx.font = "8px Arial";
     this.ctx.textBaseline = "middle";
@@ -157,21 +174,40 @@ class Control {
   }
 
   handleStartScreenClick(pos) {
-    const x = this.getStartRowX();
-    if (this.isHit(pos, x, this.getStartRowY(1))) {
-      if (this.gameStarted) {
-        this.togglePauseMenu();
-      } else {
-        this.gameMatch.startGame();
-      }
+    if (this.gameStarted) {
+      this.handlePauseTopRowClick(pos);
       return;
     }
-    if (this.isHit(pos, this.getSpeakerRowX(), this.getStartRowY(1))) {
+    this.handlePreGameTopRowClick(pos);
+  }
+
+  handlePreGameTopRowClick(pos) {
+    const y = this.getStartRowY(1);
+    if (this.isHit(pos, this.getStartRowX(), y)) {
+      this.gameMatch.startGame();
+      return;
+    }
+    if (this.isHit(pos, this.getSpeakerRowX(), y)) {
       this.swwitchSound();
+    }
+  }
+
+  handlePauseTopRowClick(pos) {
+    const y = this.getStartRowY(1);
+    if (this.isHit(pos, this.getPauseRowItemX(0), y)) {
+      this.togglePauseMenu();
       return;
     }
-    if (this.gameStarted && this.isHit(pos, x, this.getStartRowY(2))) {
+    if (this.isHit(pos, this.getPauseRowItemX(1), y)) {
+      this.gameMatch.restartGame();
+      return;
+    }
+    if (this.isHit(pos, this.getPauseRowItemX(2), y)) {
       this.gameMatch.exitToStartScreen();
+      return;
+    }
+    if (this.isHit(pos, this.getPauseRowItemX(3), y)) {
+      this.swwitchSound();
     }
   }
 }
