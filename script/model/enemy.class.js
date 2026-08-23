@@ -30,6 +30,12 @@ class Enemy extends MovableObj {
     this.moveLeft();
   }
 
+  stop() {
+    clearInterval(this.walkInterval);
+    clearInterval(this.moveInterval);
+    clearInterval(this.gravityInterval);
+  }
+
   die() {
     if (this.isDying) return;
     this.isDying = true;

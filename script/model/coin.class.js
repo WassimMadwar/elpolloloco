@@ -21,4 +21,8 @@ class Coin extends MovableObj {
       this.playAnimation(this.imgCoinSpin);
     }, 300);
   }
+
+  stop() {
+    clearInterval(this.spinInterval);
+  }
 }

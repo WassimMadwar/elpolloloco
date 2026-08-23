@@ -80,12 +80,16 @@ class Character extends MovableObj {
     this.clearIntervalAfterDead();
   }
 
+  stop() {
+    clearInterval(this.controlInterval);
+    clearInterval(this.animationInterval);
+    clearInterval(this.gravityInterval);
+  }
+
   clearIntervalAfterDead() {
     if (this.isDying) {
       if (this.y > this.gameMatch.renderCanvas.height) {
-        clearInterval(this.controlInterval);
-        clearInterval(this.animationInterval);
-        clearInterval(this.gravityInterval);
+        this.stop();
       }
       return true;
     }

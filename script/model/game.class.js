@@ -396,6 +396,31 @@ class Game {
   }
 
   restartGame() {
-    console.log("restart clicked");
+    this.character.stop();
+    this.stopCurrentLevel();
+    this.bottlesObj.forEach((bottle) => bottle.stopBottle());
+    this.bottlesObj = [];
+    this.character = new Character();
+    this.character.gameMatch = this;
+    this.level = createLevel1();
+    this.setupEndboss();
+    this.resetCounters();
+  }
+
+  stopCurrentLevel() {
+    this.level.enemies.forEach((enemy) => enemy.stop());
+    this.level.clouds.forEach((cloud) => cloud.stop());
+    this.level.coins.forEach((coin) => coin.stop());
+  }
+
+  resetCounters() {
+    this.coinCount = 0;
+    this.bottleCount = 0;
+    this.throwableBottles = 0;
+    this.helthBarChar.setPercentge(100);
+    this.coinBar.setPercentge(0);
+    this.bottleBar.setPercentge(0);
+    Game.paused = false;
+    this.settingsOpen = false;
   }
 }

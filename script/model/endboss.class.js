@@ -37,7 +37,7 @@ class Endboss extends MovableObj {
   }
 
   animate() {
-    setInterval(() => {
+    this.animateInterval = setInterval(() => {
       if (Game.paused) return;
       if (this.isDying) {
         this.playAnimation(this.imgBossDead);
@@ -47,6 +47,12 @@ class Endboss extends MovableObj {
         this.playAnimation(this.imgBossWalking);
       }
     }, 200);
+  }
+
+  stop() {
+    clearInterval(this.animateInterval);
+    clearTimeout(this.throwTimeout);
+    clearInterval(this.throwInterval);
   }
 
   hit() {

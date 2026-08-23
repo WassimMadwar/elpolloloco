@@ -1,4 +1,5 @@
-const level1 = new Level(
+function createLevel1() {
+  return new Level(
   [new Enemy(), new Endboss()],
   [
     new Cloud("assets/img/5_background/layers/4_clouds/1.png", 0),
@@ -136,5 +137,7 @@ const level1 = new Level(
     new Bottle(1416, 90),
     new Bottle(1528, 30),
   ],
-);
-level1;
+  );
+}
+
+const level1 = createLevel1();
