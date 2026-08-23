@@ -1,38 +1,14 @@
 class Game {
   static paused = false;
-  character = new Character();
-  level = level1;
+  character;
+  level;
   ctx;
   renderCanvas;
   keyAction;
   camera_x = -100;
-  helthBarChar = new StatusBar();
-  coinBar = new StatusBar(
-    [
-      "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/0.png",
-      "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/20.png",
-      "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/40.png",
-      "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/60.png",
-      "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/80.png",
-      "assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/100.png",
-    ],
-    0,
-    5,
-    15,
-  );
-  bottleBar = new StatusBar(
-    [
-      "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/0.png",
-      "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/20.png",
-      "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/40.png",
-      "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/60.png",
-      "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/80.png",
-      "assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/100.png",
-    ],
-    0,
-    5,
-    30,
-  );
+  helthBarChar;
+  coinBar;
+  bottleBar;
   bottlesObj = [];
   coinCount = 0;
   totalCoins = 5;
@@ -54,6 +30,12 @@ class Game {
   speakerIcon = new Image();
   muteIcon = new Image();
   replayIcon = new Image();
+  gameStarted = false;
+  startBgImg = new Image();
+  jumpIcon = new Image();
+  rightIcon = new Image();
+  leftIcon = new Image();
+  throwIcon = new Image();
 
   constructor(canvas, keyTaste) {
     this.renderCanvas = canvas;
@@ -67,6 +49,11 @@ class Game {
     this.speakerIcon.src = "assets/img/control/speaker_15x15.png";
     this.muteIcon.src = "assets/img/control/mute_15x15.png";
     this.replayIcon.src = "assets/img/control/replay_15x15.png";
+    this.startBgImg.src = "assets/img/5_background/complete_background.png";
+    this.jumpIcon.src = "assets/img/control/jump.png";
+    this.rightIcon.src = "assets/img/control/right_15x15.png";
+    this.leftIcon.src = "assets/img/control/prev_arrow_15x15.png";
+    this.throwIcon.src = "assets/img/control/space_15x15.png";
     this.setupControlIcons();
     this.draw();
     this.setupGame();
