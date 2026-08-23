@@ -100,7 +100,7 @@ class Control {
   }
 
   drawStartPanel() {
-    this.ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+    this.ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
     this.ctx.fillRect(
       this.getStartPanelX(),
       this.getStartPanelY(),
