@@ -24,11 +24,11 @@ class Control {
     this.muteIcon.src = "assets/img/control/mute_15x15.png";
     this.replayIcon.src = "assets/img/control/replay_15x15.png";
     this.playIcon.src = "assets/img/control/play_15x15.png";
-    this.startBgImg.src = "assets/img/5_background/complete_background.png";
+    this.startBgImg.src = "assets/img/9_intro_outro_screens/start/startscreen_2.png";
     this.jumpIcon.src = "assets/img/control/jump.png";
     this.rightIcon.src = "assets/img/control/right_15x15.png";
     this.leftIcon.src = "assets/img/control/prev_arrow_15x15.png";
-    this.throwIcon.src = "assets/img/control/space_15x15.png";
+    this.throwIcon.src = "assets/img/control/space_60x15.png";
   }
 
   startMatch() {}
@@ -127,11 +127,11 @@ class Control {
   }
 
   getStartPanelWidth() {
-    return this.renderCanvas.width * 0.8;
+    return this.renderCanvas.width ;
   }
 
   getStartPanelHeight() {
-    return this.renderCanvas.height * 0.8;
+    return this.renderCanvas.height ;
   }
 
   getStartPanelX() {
@@ -151,7 +151,7 @@ class Control {
   }
 
   drawStartPanel() {
-    this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+    this.ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
     this.ctx.fillRect(
       this.getStartPanelX(),
       this.getStartPanelY(),
@@ -163,10 +163,10 @@ class Control {
 
   drawStartPanelRows() {
     const x = this.getStartRowX();
-    this.drawIconLabelRow(this.speakerIcon, "Sound", x, this.getStartRowY(0));
-    this.drawIconLabelRow(this.playIcon, "Play / start", x, this.getStartRowY(1));
+    // this.drawIconLabelRow(this.speakerIcon, "Sound", x, this.getStartRowY(0));
+    this.drawIconLabelRow(this.playIcon, "Start Match", x, this.getStartRowY(1));
     this.drawMovementRow(this.getStartRowY(2));
-    this.drawIconLabelRow(this.throwIcon, "Hit", x, this.getStartRowY(3));
+    this.drawIconLabelRow(this.throwIcon, "Throw Bottle", x, this.getStartRowY(3));
   }
 
   drawIconLabelRow(icon, label, x, y) {
@@ -180,9 +180,9 @@ class Control {
   drawMovementRow(y) {
     const startX = this.getStartRowX();
     const segmentWidth = (this.getStartPanelWidth() - 12) / 3;
-    this.drawIconLabelRow(this.jumpIcon, "Jump", startX, y);
     this.drawIconLabelRow(this.rightIcon, "Right", startX + segmentWidth, y);
     this.drawIconLabelRow(this.leftIcon, "Left", startX + segmentWidth * 2, y);
+    this.drawIconLabelRow(this.jumpIcon, "Jump", startX, y);
   }
 
   handleStartScreenClick(pos) {
