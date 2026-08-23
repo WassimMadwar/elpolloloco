@@ -39,6 +39,8 @@ class Game {
     this.control.renderCanvas = this.renderCanvas;
     this.setupControlIcons();
     this.draw();
+    this.resultTimeout = null;
+    this.resultTimeoutStarted = false;
     // this.restartGame();
   }
 
@@ -92,32 +94,62 @@ class Game {
     this.addObjectsToMap(this.level.bottles);
     this.addObjectsToMap(this.bottlesObj);
   }
-  
+
   addingBackgroundsElemente() {
     this.addObjectsToMap(this.level.backgrounds);
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.enemies);
   }
-  
+
   drawGameResult() {
     const result = this.getGameResult();
+
     if (result === "lost") this.drawResultImg(this.gameOverImg);
     if (result === "won") this.drawResultImg(this.winImg);
+
     if (result && !this.resultTimeoutStarted) {
       this.resultTimeoutStarted = true;
-      setTimeout(() => {
+
+      this.resultTimeout = setTimeout(() => {
+        this.resultTimeoutStarted = false;
         this.control.pauseMenuOpen = true;
         Game.paused = true;
-        this.resultTimeoutStarted = false;
       }, 5000);
     }
   }
 
   getGameResult() {
     if (this.isReadyToShow(this.character)) return "lost";
+
     const boss = this.level.enemies.find((enemy) => enemy instanceof Endboss);
+
     if (boss && this.isReadyToShow(boss)) return "won";
-    return null;
+
+    return false;
+  }
+
+  restartGame() {
+    clearTimeout(this.resultTimeout);
+
+    this.resultTimeout = null;
+    this.resultTimeoutStarted = false;
+
+    this.character.stop();
+    this.stopCurrentLevel();
+
+    this.bottlesObj.forEach((bottle) => bottle.stopBottle());
+    this.bottlesObj = [];
+
+    this.character = new Character();
+    this.character.gameMatch = this;
+
+    this.level = createLevel1();
+    this.setupEndboss();
+
+    this.resetCounters();
+
+    this.control.pauseMenuOpen = false;
+    Game.paused = false;
   }
 
   isReadyToShow(entity) {
@@ -339,19 +371,6 @@ class Game {
 
   togglePause() {
     Game.paused = !Game.paused;
-  }
-
-  restartGame() {
-    this.character.stop();
-    this.stopCurrentLevel();
-    this.bottlesObj.forEach((bottle) => bottle.stopBottle());
-    this.bottlesObj = [];
-    this.character = new Character();
-    this.character.gameMatch = this;
-    this.level = createLevel1();
-    this.setupEndboss();
-    this.resetCounters();
-    this.control.pauseMenuOpen = false;
   }
 
   stopCurrentLevel() {
