@@ -353,7 +353,7 @@ class Game {
 
   drawSettingsPanel() {
     if (!this.settingsOpen) return;
-    this.ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+    this.ctx.fillStyle = "rgba(0, 0, 0, 0)";
     this.ctx.fillRect(
       this.getSettingsPanelX(),
       this.getSettingsPanelY(),
@@ -476,11 +476,11 @@ class Game {
   }
 
   getStartPanelWidth() {
-    return this.renderCanvas.width * 0.6;
+    return this.renderCanvas.width * 0.8;
   }
 
   getStartPanelHeight() {
-    return this.renderCanvas.height * 0.6;
+    return this.renderCanvas.height * 0.8;
   }
 
   getStartPanelX() {
@@ -496,7 +496,7 @@ class Game {
   }
 
   getStartRowY(index) {
-    return this.getStartPanelY() + 4 + index * 18;
+    return this.getStartPanelY() + 14 + index * 18;
   }
 
   drawStartPanel() {
@@ -513,7 +513,7 @@ class Game {
   drawStartPanelRows() {
     const x = this.getStartRowX();
     this.drawIconLabelRow(this.speakerIcon, "Sound", x, this.getStartRowY(0));
-    this.drawIconLabelRow(this.playIcon, "Play", x, this.getStartRowY(1));
+    this.drawIconLabelRow(this.playIcon, "Play / start", x, this.getStartRowY(1));
     this.drawMovementRow(this.getStartRowY(2));
     this.drawIconLabelRow(this.throwIcon, "Hit", x, this.getStartRowY(3));
   }
@@ -528,9 +528,11 @@ class Game {
 
   drawMovementRow(y) {
     const startX = this.getStartRowX();
-    const segmentWidth = (this.getStartPanelWidth() - 12) / 3;
+    const segmentWidth = (this.getStartPanelWidth() - 12) /3;
     this.drawIconLabelRow(this.jumpIcon, "Jump", startX, y);
     this.drawIconLabelRow(this.rightIcon, "Right", startX + segmentWidth, y);
     this.drawIconLabelRow(this.leftIcon, "Left", startX + segmentWidth * 2, y);
+    
+  
   }
 }
