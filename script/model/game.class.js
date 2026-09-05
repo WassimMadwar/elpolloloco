@@ -128,27 +128,27 @@ class Game {
     return false;
   }
 
+  clearResultTimeout() {
+    if (this.resultTimeout) {
+      clearTimeout(this.resultTimeout);
+      this.resultTimeout = null;
+      this.resultTimeoutStarted = false;
+    this.control.pauseMenuOpen = false;
+
+    }
+  }
+
   restartGame() {
-    clearTimeout(this.resultTimeout);
-
-    this.resultTimeout = null;
-    this.resultTimeoutStarted = false;
-
+    this.clearResultTimeout();
     this.character.stop();
     this.stopCurrentLevel();
-
     this.bottlesObj.forEach((bottle) => bottle.stopBottle());
     this.bottlesObj = [];
-
     this.character = new Character();
     this.character.gameMatch = this;
-
     this.level = createLevel1();
     this.setupEndboss();
-
     this.resetCounters();
-
-    this.control.pauseMenuOpen = false;
     Game.paused = false;
   }
 
@@ -195,7 +195,7 @@ class Game {
     this.ctx.scale(-1, 1);
   }
 
-  flipImageBack(movableObj) {
+  flipImageBack() {
     this.ctx.restore();
   }
 
@@ -388,13 +388,13 @@ class Game {
   }
 
   exitToStartScreen() {
+    this.clearResultTimeout();
     this.character.stop();
     this.stopCurrentLevel();
     this.bottlesObj.forEach((bottle) => bottle.stopBottle());
     this.bottlesObj = [];
     clearInterval(this.runGameInterval);
     this.resetCounters();
-    this.control.pauseMenuOpen = false;
     this.control.gameStarted = false;
   }
 }
