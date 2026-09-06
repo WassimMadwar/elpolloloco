@@ -21,8 +21,8 @@ class Control {
   throwIcon = new Image();
 
   constructor() {
-    this.speakerIcon.src = "assets/img/control/speaker_15x15.png";
-    this.muteIcon.src = "assets/img/control/mute_15x15.png";
+    this.speakerIcon.src = "assets/img/control/speaker_15x151.png";
+    this.muteIcon.src = "assets/img/control/mute_15x151.png";
     this.exitIcon.src = "assets/img/control/exit_15x15.png";
     this.reloadIcon.src = "assets/img/control/replay_15x15.png";
     this.playIcon.src = "assets/img/control/play_15x15.png";
@@ -31,7 +31,7 @@ class Control {
     this.jumpIcon.src = "assets/img/control/jump.png";
     this.rightIcon.src = "assets/img/control/right_15x15.png";
     this.leftIcon.src = "assets/img/control/prev_arrow_15x15.png";
-    this.throwIcon.src = "assets/img/control/space.png";
+    this.throwIcon.src = "assets/img/control/space_60x15.png";
   }
 
   startMatch() {}
@@ -101,7 +101,7 @@ class Control {
   }
 
   drawStartPanel() {
-    this.ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+    this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
     this.ctx.fillRect(
       this.getStartPanelX(),
       this.getStartPanelY(),
@@ -178,12 +178,19 @@ class Control {
     return this.renderCanvas.height - this.iconSize - 5;
   }
 
-  drawIconLabelRow(icon, label, x, y, iconWidth = this.iconSize) {
-    this.ctx.drawImage(icon, x, y, iconWidth, this.iconSize);
+  drawIconLabelRow(
+    icon,
+    label,
+    x,
+    y,
+    iconWidth = this.iconSize,
+    iconHeight = this.iconSize,
+  ) {
+    this.ctx.drawImage(icon, x, y, iconWidth, iconHeight);
     this.ctx.fillStyle = "white";
     this.ctx.font = "8px Arial";
     this.ctx.textBaseline = "middle";
-    this.ctx.fillText(label, x + iconWidth + 4, y + this.iconSize / 2);
+    this.ctx.fillText(label, x + iconWidth + 4, y + iconHeight / 2);
   }
 
   drawMovementRow(y) {
@@ -201,8 +208,9 @@ class Control {
       this.throwIcon,
       "Throw Bottle",
       startX + segmentWidth * 3,
-      y,
+      y + 2,
       45,
+      11.3,
     );
   }
 
