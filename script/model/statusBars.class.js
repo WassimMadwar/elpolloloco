@@ -11,7 +11,8 @@ class StatusBars {
     "assets/img/7_statusbars/2_statusbar_endboss/blue/blue100.png",
   ];
   endboss = new StatusBar(this.endbossImages, 100, 0, 0);
-  endbossPadding = 5;
+  endbossPaddingRight = 5;
+  endbossPaddingTop = 20;
   visbilityEndBossBar = false;
 
   draw(ctx) {
@@ -26,8 +27,8 @@ class StatusBars {
   }
 
   drawEndbossBar(ctx) {
-    const x = ctx.canvas.width - this.endboss.width - this.endbossPadding;
-    ctx.drawImage(this.endboss.img, x, this.endbossPadding, this.endboss.width, this.endboss.height);
+    const x = ctx.canvas.width - this.endboss.width - this.endbossPaddingRight;
+    ctx.drawImage(this.endboss.img, x, this.endbossPaddingTop, this.endboss.width, this.endboss.height);
   }
 
   setHealth(percentage) {
