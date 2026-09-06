@@ -242,6 +242,7 @@ class Game {
     const boss = this.level.enemies.find((enemy) => enemy instanceof Endboss);
     if (!boss) return;
     this.bottlesObj.forEach((bottle) => this.checkBottleHitsBoss(bottle, boss));
+    boss.checkReached(this.character);
   }
 
   checkBottleHitsBoss(bottle, boss) {

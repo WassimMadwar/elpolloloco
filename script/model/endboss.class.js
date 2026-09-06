@@ -25,6 +25,7 @@ class Endboss extends MovableObj {
   ];
   hitsTaken = 0;
   maxHits = 10;
+  triggerDistance = 400;
 
   constructor() {
     super();
@@ -58,10 +59,20 @@ class Endboss extends MovableObj {
   hit() {
     if (this.isDying) return;
     this.hitsTaken++;
+    this.gameMatch.statusBars.setEndbossHealth(
+      100 - (this.hitsTaken / this.maxHits) * 100,
+    );
     if (this.hitsTaken >= this.maxHits) {
       this.die();
     } else {
       this.lastHit = new Date().getTime();
+    }
+  }
+
+  checkReached(character) {
+    if (this.gameMatch.statusBars.visbilityEndBossBar) return;
+    if (character.x >= this.x - this.triggerDistance) {
+      this.gameMatch.statusBars.showEndbossBar();
     }
   }
 
