@@ -32,7 +32,6 @@ class Control {
     this.rightIcon.src = "assets/img/control/right_15x15.png";
     this.leftIcon.src = "assets/img/control/prev_arrow_15x15.png";
     this.throwIcon.src = "assets/img/control/space.png";
-    // this.restartGame();
   }
 
   startMatch() {}
@@ -176,20 +175,20 @@ class Control {
   }
 
   getMovementRowY() {
-    return this.renderCanvas.height - this.iconSize - 4;
+    return this.renderCanvas.height - this.iconSize - 5;
   }
 
-  drawIconLabelRow(icon, label, x, y) {
-    this.ctx.drawImage(icon, x, y, this.iconSize, this.iconSize);
+  drawIconLabelRow(icon, label, x, y, iconWidth = this.iconSize) {
+    this.ctx.drawImage(icon, x, y, iconWidth, this.iconSize);
     this.ctx.fillStyle = "white";
     this.ctx.font = "8px Arial";
     this.ctx.textBaseline = "middle";
-    this.ctx.fillText(label, x + this.iconSize + 4, y + this.iconSize / 2);
+    this.ctx.fillText(label, x + iconWidth + 4, y + this.iconSize / 2);
   }
 
   drawMovementRow(y) {
     const startX = 10;
-    const segmentWidth = (this.renderCanvas.width - 20) / 4;
+    const segmentWidth = (this.renderCanvas.width - 50) / 4;
     this.drawIconLabelRow(this.leftIcon, "Left", startX, y);
     this.drawIconLabelRow(this.jumpIcon, "Jump", startX + segmentWidth, y);
     this.drawIconLabelRow(
@@ -203,6 +202,7 @@ class Control {
       "Throw Bottle",
       startX + segmentWidth * 3,
       y,
+      45,
     );
   }
 
