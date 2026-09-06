@@ -15,15 +15,15 @@ class SmallChick extends Enemy {
     clearInterval(this.walkInterval);
     this.x = x;
     this.y = y;
-    this.width = 10;
-    this.height = 15;
+    this.width = 20;
+    this.height = 25;
     this.loadImg(this.imgEnemyWalking[0]);
     this.loadImgMoving(this.imgEnemyWalking);
     this.animateEnemyWalking();
   }
 
   startFallTrajectory() {
-    this.groundY = 110 ;
+    this.groundY = 100;
     this.speedY = 3;
     this.applyGravity();
   }
