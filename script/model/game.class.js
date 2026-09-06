@@ -52,6 +52,7 @@ class Game {
     this.checkCollision();
     this.runGame();
     this.control.gameStarted = true;
+    this.clearResultTimeout();
   }
 
   setupGame() {
@@ -103,28 +104,22 @@ class Game {
 
   drawGameResult() {
     const result = this.getGameResult();
-
     if (result === "lost") this.drawResultImg(this.gameOverImg);
     if (result === "won") this.drawResultImg(this.winImg);
-
     if (result && !this.resultTimeoutStarted) {
       this.resultTimeoutStarted = true;
-
       this.resultTimeout = setTimeout(() => {
         this.resultTimeoutStarted = false;
         this.control.pauseMenuOpen = true;
         Game.paused = true;
-      }, 5000);
+      }, 2000);
     }
   }
 
   getGameResult() {
     if (this.isReadyToShow(this.character)) return "lost";
-
     const boss = this.level.enemies.find((enemy) => enemy instanceof Endboss);
-
     if (boss && this.isReadyToShow(boss)) return "won";
-
     return false;
   }
 
@@ -133,9 +128,9 @@ class Game {
       clearTimeout(this.resultTimeout);
       this.resultTimeout = null;
       this.resultTimeoutStarted = false;
-    this.control.pauseMenuOpen = false;
-
     }
+    this.control.pauseMenuOpen = false;
+    Game.paused = false;
   }
 
   restartGame() {
@@ -149,7 +144,6 @@ class Game {
     this.level = createLevel1();
     this.setupEndboss();
     this.resetCounters();
-    Game.paused = false;
   }
 
   isReadyToShow(entity) {
