@@ -31,7 +31,7 @@ class Control {
     this.jumpIcon.src = "assets/img/control/jump.png";
     this.rightIcon.src = "assets/img/control/right_15x15.png";
     this.leftIcon.src = "assets/img/control/prev_arrow_15x15.png";
-    this.throwIcon.src = "assets/img/control/space_60x15.png";
+    this.throwIcon.src = "assets/img/control/space.png";
     // this.restartGame();
   }
 
