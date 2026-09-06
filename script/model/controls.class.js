@@ -243,16 +243,4 @@ class Control {
       this.swwitchSound();
     }
   }
-  // restartGame() {
-  //   this.character.stop();
-  //   this.stopCurrentLevel();
-  //   this.bottlesObj.forEach((bottle) => bottle.stopBottle());
-  //   this.bottlesObj = [];
-  //   this.character = new Character();
-  //   this.character.gameMatch = this;
-  //   this.level = createLevel1();
-  //   this.setupEndboss();
-  //   this.resetCounters();
-  //   this.control.pauseMenuOpen = false;
-  // }
 }
