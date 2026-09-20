@@ -8,6 +8,7 @@ class Control {
     throwBottle: "assets/sounds/throwBottele.wav",
     chickJump: "assets/sounds/jumpSmallchick.mp3",
     showBoss: "assets/sounds/showBoss.wav",
+    bossHurt: "assets/sounds/hartEndBoss.mp3",
   };
 
   muted = Control.loadMuted();

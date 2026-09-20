@@ -255,7 +255,8 @@ class Game {
   }
 
   checkBottleHitsBoss(bottle, boss) {
-    if (boss.isDying || !bottle.isColliding(boss)) return;
+    if (bottle.hasHit || boss.isDying || !bottle.isColliding(boss)) return;
+    bottle.hasHit = true;
     boss.hit();
   }
 

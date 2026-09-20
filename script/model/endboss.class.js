@@ -58,6 +58,7 @@ class Endboss extends MovableObj {
 
   hit() {
     if (this.isDying) return;
+    this.gameMatch.control.playEffect("bossHurt");
     this.hitsTaken++;
     this.gameMatch.statusBars.setEndbossHealth(
       100 - (this.hitsTaken / this.maxHits) * 100,
