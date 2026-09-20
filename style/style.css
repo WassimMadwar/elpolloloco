@@ -12,7 +12,19 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-     font-family: "zabras", sans-serif;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    background: url("../assets/img/5_background/pageBG.jpg") center / cover no-repeat;
+    font-family: "zabras", sans-serif;
+}
+
+h1 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
 }
 
 canvas {
