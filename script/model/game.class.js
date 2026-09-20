@@ -233,6 +233,7 @@ class Game {
         this.character.otherDirection,
       );
       this.bottlesObj.push(bottle);
+      this.control.playEffect("throwBottle", false);
       this.throwableBottles--;
       this.updateBottleBar();
     }
@@ -274,6 +275,7 @@ class Game {
 
   collectCoin() {
     this.coinCount++;
+    this.control.playEffect("coin");
     this.statusBars.setCoins(this.coinCount, this.totalCoins);
   }
 
@@ -288,6 +290,7 @@ class Game {
   collectBottle() {
     this.bottleCount++;
     this.throwableBottles += 2;
+    this.control.playEffect("takeBottle");
     this.updateBottleBar();
   }
 

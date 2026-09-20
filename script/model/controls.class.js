@@ -3,6 +3,9 @@ class Control {
     jump: "assets/sounds/jumpCharacter.mp3",
     hurt: "assets/sounds/hartcharactr.wav",
     dead: "assets/sounds/deadChracter.wav",
+    coin: "assets/sounds/tackeCoin.wav",
+    takeBottle: "assets/sounds/takeBottele.wav",
+    throwBottle: "assets/sounds/throwBottele.wav",
   };
 
   muted = Control.loadMuted();
