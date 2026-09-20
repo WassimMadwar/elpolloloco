@@ -139,26 +139,26 @@ class Control {
       this.startBgImg,
       0,
       0,
-      this.renderCanvas.width,
-      this.renderCanvas.height,
+      Game.VIEW_WIDTH,
+      Game.VIEW_HEIGHT,
     );
     this.drawStartPanel();
   }
 
   getStartPanelWidth() {
-    return this.renderCanvas.width;
+    return Game.VIEW_WIDTH;
   }
 
   getStartPanelHeight() {
-    return this.renderCanvas.height;
+    return Game.VIEW_HEIGHT;
   }
 
   getStartPanelX() {
-    return (this.renderCanvas.width - this.getStartPanelWidth()) / 2;
+    return (Game.VIEW_WIDTH - this.getStartPanelWidth()) / 2;
   }
 
   getStartPanelY() {
-    return (this.renderCanvas.height - this.getStartPanelHeight()) / 2;
+    return (Game.VIEW_HEIGHT - this.getStartPanelHeight()) / 2;
   }
 
   getStartRowX() {
@@ -197,7 +197,7 @@ class Control {
   }
 
   getPauseRowItemX(index) {
-    const segmentWidth = (this.renderCanvas.width - 20) / 4;
+    const segmentWidth = (Game.VIEW_WIDTH - 20) / 4;
     return 10 + segmentWidth * index;
   }
 
@@ -223,7 +223,7 @@ class Control {
   }
 
   getSpeakerRowX() {
-    return this.renderCanvas.width - this.iconSize - this.padding;
+    return Game.VIEW_WIDTH - this.iconSize - this.padding;
   }
 
   drawSoundRow(y) {
@@ -244,7 +244,7 @@ class Control {
   }
 
   getMovementRowY() {
-    return this.renderCanvas.height - this.iconSize - 5;
+    return Game.VIEW_HEIGHT - this.iconSize - 5;
   }
 
   drawIconLabelRow(
@@ -264,7 +264,7 @@ class Control {
 
   drawMovementRow(y) {
     const startX = 10;
-    const segmentWidth = (this.renderCanvas.width - 50) / 4;
+    const segmentWidth = (Game.VIEW_WIDTH - 50) / 4;
     this.drawIconLabelRow(this.leftIcon, "Left", startX, y);
     this.drawIconLabelRow(this.jumpIcon, "Jump", startX + segmentWidth, y);
     this.drawIconLabelRow(

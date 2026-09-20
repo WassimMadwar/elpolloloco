@@ -1,4 +1,6 @@
 class Game {
+  static VIEW_WIDTH = 300;
+  static VIEW_HEIGHT = 150;
   static paused = false;
   character;
   level;
@@ -29,6 +31,11 @@ class Game {
   constructor(canvas, keyTaste) {
     this.renderCanvas = canvas;
     this.ctx = canvas.getContext("2d");
+    this.ctx.scale(
+      canvas.width / Game.VIEW_WIDTH,
+      canvas.height / Game.VIEW_HEIGHT,
+    );
+    this.ctx.imageSmoothingQuality = "high";
     this.keyAction = keyTaste;
     this.gameOverImg.src = "assets/img/You won, you lost/You lost.png";
     this.winImg.src = "assets/img/You won, you lost/You won A.png";
@@ -68,7 +75,7 @@ class Game {
   }
 
   draw() {
-    this.ctx.clearRect(0, 0, this.renderCanvas.width, this.renderCanvas.height);
+    this.ctx.clearRect(0, 0, Game.VIEW_WIDTH, Game.VIEW_HEIGHT);
     if (this.drawStartScreenIfNeeded()) return;
     this.drawWithCamera(() => {
       this.addingBackgroundsElemente();
@@ -162,8 +169,8 @@ class Game {
       img,
       5,
       5,
-      this.renderCanvas.width - 10,
-      this.renderCanvas.height - 10,
+      Game.VIEW_WIDTH - 10,
+      Game.VIEW_HEIGHT - 10,
     );
   }
 
@@ -270,8 +277,8 @@ class Game {
 
   isBottleOffscreen(bottle) {
     const screenX = bottle.x + this.camera_x;
-    if (bottle.y > this.renderCanvas.height) return true;
-    return screenX > this.renderCanvas.width || screenX < 0;
+    if (bottle.y > Game.VIEW_HEIGHT) return true;
+    return screenX > Game.VIEW_WIDTH || screenX < 0;
   }
 
   checkCoinCollisions() {
@@ -309,8 +316,8 @@ class Game {
 
   getCanvasClickPosition(event) {
     const rect = this.renderCanvas.getBoundingClientRect();
-    const scaleX = this.renderCanvas.width / rect.width;
-    const scaleY = this.renderCanvas.height / rect.height;
+    const scaleX = Game.VIEW_WIDTH / rect.width;
+    const scaleY = Game.VIEW_HEIGHT / rect.height;
     return {
       x: (event.clientX - rect.left) * scaleX,
       y: (event.clientY - rect.top) * scaleY,
@@ -319,7 +326,7 @@ class Game {
 
   getSettingsIconX() {
     return (
-      this.renderCanvas.width - this.controlIconSize - this.controlIconPadding
+      Game.VIEW_WIDTH - this.controlIconSize - this.controlIconPadding
     );
   }
 

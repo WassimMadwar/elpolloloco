@@ -83,7 +83,7 @@ class Character extends MovableObj {
 
   clearIntervalAfterDead() {
     if (this.isDying) {
-      if (this.y > this.gameMatch.renderCanvas.height) {
+      if (this.y > Game.VIEW_HEIGHT) {
         this.stop();
       }
       return true;

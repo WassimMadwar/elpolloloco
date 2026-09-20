@@ -27,7 +27,7 @@ class StatusBars {
   }
 
   drawEndbossBar(ctx) {
-    const x = ctx.canvas.width - this.endboss.width - this.endbossPaddingRight;
+    const x = Game.VIEW_WIDTH - this.endboss.width - this.endbossPaddingRight;
     ctx.drawImage(this.endboss.img, x, this.endbossPaddingTop, this.endboss.width, this.endboss.height);
   }
 
