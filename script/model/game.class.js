@@ -226,7 +226,9 @@ class Game {
   }
 
   checkThrowedBottle() {
-    if (this.keyAction.space && this.throwableBottles > 0) {
+    const wantsThrow = this.keyAction.throwRequested;
+    this.keyAction.throwRequested = false;
+    if (wantsThrow && this.throwableBottles > 0) {
       let bottle = new ThrowableObj(
         this.character.x,
         this.character.y,

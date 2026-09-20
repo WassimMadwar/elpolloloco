@@ -3,6 +3,7 @@ class KeyboardObj {
     right = false;
     up = false;
     space = false;
+    throwRequested = false;
     constructor() {
         
     }

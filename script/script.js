@@ -19,6 +19,9 @@ window.addEventListener("keydown", (e) => {
     keyTaste.up = true;
   }
   if (e.key == " ") {
+    if (!keyTaste.space && !Game.paused) {
+      keyTaste.throwRequested = true;
+    }
     keyTaste.space = true;
   }
 });
