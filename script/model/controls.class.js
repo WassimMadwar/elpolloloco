@@ -1,4 +1,10 @@
 class Control {
+  static SOUND_EFFECTS = {
+    jump: "assets/sounds/jumpCharacter.mp3",
+    hurt: "assets/sounds/hartcharactr.wav",
+    dead: "assets/sounds/deadChracter.wav",
+  };
+
   muted = Control.loadMuted();
   sounds = [];
   effects = {};
@@ -36,9 +42,7 @@ class Control {
     this.bgMusic = this.createSound("assets/sounds/soundBackground.mp3", 0.3);
     this.bgMusic.loop = true;
     this.startMusic();
-    this.loadEffect("jump", "assets/sounds/jumpCharacter.mp3");
-    this.loadEffect("hurt", "assets/sounds/hartcharactr.wav");
-    this.loadEffect("dead", "assets/sounds/deadChracter.wav");
+    this.loadEffects();
   }
 
   startMatch() {}
@@ -74,6 +78,12 @@ class Control {
 
   loadEffect(name, src, volume = 0.3) {
     this.effects[name] = this.createSound(src, volume);
+  }
+
+  loadEffects() {
+    Object.entries(Control.SOUND_EFFECTS).forEach(([name, src]) =>
+      this.loadEffect(name, src),
+    );
   }
 
   playEffect(name, restart = true) {
