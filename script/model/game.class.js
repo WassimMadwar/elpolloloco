@@ -70,19 +70,23 @@ class Game {
   draw() {
     this.ctx.clearRect(0, 0, this.renderCanvas.width, this.renderCanvas.height);
     if (this.drawStartScreenIfNeeded()) return;
-    this.addingBackgroundsElemente();
-    this.ctx.translate(this.camera_x, 0);
-    this.addToMap(this.character);
-    this.ctx.translate(-this.camera_x, -0);
+    this.drawWithCamera(() => {
+      this.addingBackgroundsElemente();
+      this.addToMap(this.character);
+    });
     this.statusBars.draw(this.ctx);
     this.drawControlIcons();
-    this.ctx.translate(this.camera_x, 0);
-    this.addingAggregateElements();
-    this.ctx.translate(-this.camera_x, -0);
+    this.drawWithCamera(() => this.addingAggregateElements());
     this.drawGameResult();
     if (this.control.pauseMenuOpen) this.control.drawStartPanel();
     let self = this;
     requestAnimationFrame(() => self.draw());
+  }
+
+  drawWithCamera(drawFn) {
+    this.ctx.translate(this.camera_x, 0);
+    drawFn();
+    this.ctx.translate(-this.camera_x, 0);
   }
 
   drawStartScreenIfNeeded() {
