@@ -1,5 +1,5 @@
 class Control {
-  muted = false;
+  muted = Control.loadMuted();
   sounds = [];
   gameMatch;
   ctx;
@@ -39,6 +39,20 @@ class Control {
   pauseMatch() {}
   resultMatch() {}
 
+  static loadMuted() {
+    try {
+      return localStorage.getItem("elPolloLocoMuted") === "true";
+    } catch (e) {
+      return false;
+    }
+  }
+
+  saveMuted() {
+    try {
+      localStorage.setItem("elPolloLocoMuted", this.muted);
+    } catch (e) {}
+  }
+
   registerSound(audio) {
     audio.muted = this.muted;
     this.sounds.push(audio);
@@ -46,6 +60,7 @@ class Control {
 
   swwitchSound() {
     this.muted = !this.muted;
+    this.saveMuted();
     this.sounds.forEach((sound) => {
       sound.muted = this.muted;
     });
