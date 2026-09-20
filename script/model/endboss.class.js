@@ -73,6 +73,7 @@ class Endboss extends MovableObj {
     if (this.gameMatch.statusBars.visbilityEndBossBar) return;
     if (character.x >= this.x - this.triggerDistance) {
       this.gameMatch.statusBars.showEndbossBar();
+      this.gameMatch.control.playEffect("showBoss");
     }
   }
 
