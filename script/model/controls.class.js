@@ -1,6 +1,7 @@
 class Control {
   muted = Control.loadMuted();
   sounds = [];
+  effects = {};
   gameMatch;
   ctx;
   renderCanvas;
@@ -32,6 +33,10 @@ class Control {
     this.rightIcon.src = "assets/img/control/right_15x15.png";
     this.leftIcon.src = "assets/img/control/prev_arrow_15x15.png";
     this.throwIcon.src = "assets/img/control/space_60x15.png";
+    this.bgMusic = this.createSound("assets/sounds/soundBackground.mp3", 0.3);
+    this.bgMusic.loop = true;
+    this.startMusic();
+    this.loadEffect("jump", "assets/sounds/jumpCharacter.mp3");
   }
 
   startMatch() {}
@@ -53,9 +58,39 @@ class Control {
     } catch (e) {}
   }
 
+  createSound(src, volume = 1) {
+    const audio = new Audio(src);
+    audio.volume = volume;
+    this.registerSound(audio);
+    return audio;
+  }
+
   registerSound(audio) {
     audio.muted = this.muted;
     this.sounds.push(audio);
+  }
+
+  loadEffect(name, src, volume = 0.3) {
+    this.effects[name] = this.createSound(src, volume);
+  }
+
+  playEffect(name) {
+    const effect = this.effects[name];
+    effect.currentTime = 0;
+    effect.play().catch(() => {});
+  }
+
+  startMusic() {
+    this.bgMusic.play().catch(() => this.playMusicOnFirstInput());
+  }
+
+  playMusicOnFirstInput() {
+    const events = ["pointerdown", "keydown"];
+    const resume = () => {
+      events.forEach((e) => window.removeEventListener(e, resume));
+      this.bgMusic.play().catch(() => {});
+    };
+    events.forEach((e) => window.addEventListener(e, resume));
   }
 
   swwitchSound() {

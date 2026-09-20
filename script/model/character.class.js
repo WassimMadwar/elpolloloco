@@ -170,6 +170,7 @@ class Character extends MovableObj {
   jump() {
     if (!this.isAboveGround()) {
       this.speedY = 6;
+      this.gameMatch.control.playEffect("jump");
       this.updateActivity();
     }
   }
