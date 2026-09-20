@@ -6,6 +6,7 @@ class Control {
     coin: "assets/sounds/tackeCoin.wav",
     takeBottle: "assets/sounds/takeBottele.wav",
     throwBottle: "assets/sounds/throwBottele.wav",
+    chickJump: "assets/sounds/jumpSmallchick.mp3",
   };
 
   muted = Control.loadMuted();

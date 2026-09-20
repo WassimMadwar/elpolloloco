@@ -94,5 +94,6 @@ class Endboss extends MovableObj {
     if (Game.paused || this.isDying || !this.gameMatch) return;
     const chick = new SmallChick(this.x, this.y);
     this.gameMatch.level.enemies.push(chick);
+    this.gameMatch.control.playEffect("chickJump");
   }
 }
