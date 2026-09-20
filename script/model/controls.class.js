@@ -37,6 +37,8 @@ class Control {
     this.bgMusic.loop = true;
     this.startMusic();
     this.loadEffect("jump", "assets/sounds/jumpCharacter.mp3");
+    this.loadEffect("hurt", "assets/sounds/hartcharactr.wav");
+    this.loadEffect("dead", "assets/sounds/deadChracter.wav");
   }
 
   startMatch() {}
@@ -74,8 +76,9 @@ class Control {
     this.effects[name] = this.createSound(src, volume);
   }
 
-  playEffect(name) {
+  playEffect(name, restart = true) {
     const effect = this.effects[name];
+    if (!restart && !effect.paused && !effect.ended) return;
     effect.currentTime = 0;
     effect.play().catch(() => {});
   }
