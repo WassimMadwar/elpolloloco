@@ -7,6 +7,7 @@ class Game {
   ctx;
   renderCanvas;
   viewport;
+  touchControls;
   keyAction;
   camera_x = -100;
   runGameInterval;
@@ -39,6 +40,7 @@ class Game {
       Game.VIEW_HEIGHT,
     );
     this.keyAction = keyTaste;
+    this.touchControls = new TouchControls(this);
     this.gameOverImg.src = "assets/img/You won, you lost/You lost.png";
     this.winImg.src = "assets/img/You won, you lost/You won A.png";
     this.pauseIcon.src = "assets/img/control/pause_15x15.png";
@@ -86,6 +88,7 @@ class Game {
     this.statusBars.draw(this.ctx);
     this.drawControlIcons();
     this.drawWithCamera(() => this.addingAggregateElements());
+    this.touchControls.draw(this.ctx);
     this.drawGameResult();
     if (this.control.pauseMenuOpen) this.control.drawStartPanel();
     let self = this;
@@ -357,6 +360,7 @@ class Game {
   setupControlIcons() {
     this.renderCanvas.addEventListener("click", (event) => {
       const pos = this.getCanvasClickPosition(event);
+      if (this.touchControls.isButtonAt(pos)) return;
       if (!this.control.gameStarted || this.control.pauseMenuOpen) {
         this.control.handleStartScreenClick(pos);
         return;
