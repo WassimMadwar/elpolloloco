@@ -39,7 +39,8 @@ class Viewport {
   }
 
   getAvailableSize() {
-    return { width: window.innerWidth, height: window.innerHeight };
+    const root = document.documentElement;
+    return { width: root.clientWidth, height: root.clientHeight };
   }
 
   getMaxCssWidth() {
