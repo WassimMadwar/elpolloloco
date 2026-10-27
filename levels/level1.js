@@ -1,142 +1,151 @@
 function createLevel1() {
   Enemy.countchicken = 0;
   return new Level(
-  [new Enemy(), new Endboss()],
-  [
-    new Cloud("assets/img/5_background/layers/4_clouds/1.png", 0),
-    new Cloud("assets/img/5_background/layers/4_clouds/2.png", 225),
-    new Cloud("assets/img/5_background/layers/4_clouds/1.png", 450),
-    new Cloud("assets/img/5_background/layers/4_clouds/2.png", 775),
-    new Cloud("assets/img/5_background/layers/4_clouds/1.png", 900),
-    new Cloud("assets/img/5_background/layers/4_clouds/2.png", 1225),
-    new Cloud("assets/img/5_background/layers/4_clouds/1.png", 1550),
-    new Cloud("assets/img/5_background/layers/4_clouds/2.png", 1875),
-    new Cloud("assets/img/5_background/layers/4_clouds/1.png", 2150),
+    [new Enemy(), new Endboss()],
+    [
+      new Cloud("assets/img/5_background/layers/4_clouds/1.png", 0),
+      new Cloud("assets/img/5_background/layers/4_clouds/2.png", 225),
+      new Cloud("assets/img/5_background/layers/4_clouds/1.png", 450),
+      new Cloud("assets/img/5_background/layers/4_clouds/2.png", 775),
+      new Cloud("assets/img/5_background/layers/4_clouds/1.png", 900),
+      new Cloud("assets/img/5_background/layers/4_clouds/2.png", 1225),
+      new Cloud("assets/img/5_background/layers/4_clouds/1.png", 1550),
+      new Cloud("assets/img/5_background/layers/4_clouds/2.png", 1875),
+      new Cloud("assets/img/5_background/layers/4_clouds/1.png", 2150),
       new Cloud("assets/img/5_background/layers/4_clouds/2.png", 2675),
-  ],
-  [
-    new BackgroundObj("assets/img/5_background/layers/air.png", -298),
-    new BackgroundObj(
-      "assets/img/5_background/layers/3_third_layer/2.png",
-      -298,
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/2_second_layer/2.png",
-      -298,
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/1_first_layer/2.png",
-      -298,
-    ),
-    new BackgroundObj("assets/img/5_background/layers/air.png", 0),
-    new BackgroundObj("assets/img/5_background/layers/3_third_layer/1.png", 0),
-    new BackgroundObj("assets/img/5_background/layers/2_second_layer/1.png", 0),
-    new BackgroundObj("assets/img/5_background/layers/1_first_layer/1.png", 0),
-    new BackgroundObj("assets/img/5_background/layers/air.png", 299),
-    new BackgroundObj(
-      "assets/img/5_background/layers/3_third_layer/2.png",
-      299,
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/2_second_layer/2.png",
-      299,
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/1_first_layer/2.png",
-      299,
-    ),
-    new BackgroundObj("assets/img/5_background/layers/air.png", 299 * 2),
-    new BackgroundObj(
-      "assets/img/5_background/layers/3_third_layer/1.png",
-      299 * 2
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/2_second_layer/1.png",
-      299 * 2
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/1_first_layer/1.png",
-      299 * 2
-    ),
-    new BackgroundObj("assets/img/5_background/layers/air.png", 299 * 3),
-    new BackgroundObj(
-      "assets/img/5_background/layers/3_third_layer/2.png",
-      299 * 3,
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/2_second_layer/2.png",
-      299 * 3,
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/1_first_layer/2.png",
-      299 * 3,
-    ),
-        new BackgroundObj("assets/img/5_background/layers/air.png", 299 * 3),
-    new BackgroundObj(
-      "assets/img/5_background/layers/3_third_layer/2.png",
-      299 * 3
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/2_second_layer/2.png",
-      299 * 3
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/1_first_layer/2.png",
-      299 * 3
-    ),
-        new BackgroundObj("assets/img/5_background/layers/air.png", 299 * 4),
-    new BackgroundObj(
-      "assets/img/5_background/layers/3_third_layer/1.png",
-      299 * 4
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/2_second_layer/1.png",
-      299 * 4
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/1_first_layer/1.png",
-      299 * 4
-    ),
-        new BackgroundObj("assets/img/5_background/layers/air.png", 299 * 5),
-    new BackgroundObj(
-      "assets/img/5_background/layers/3_third_layer/2.png",
-      299 * 5
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/2_second_layer/2.png",
-      299 * 5
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/1_first_layer/2.png",
-      299 * 5
-    ),
-            new BackgroundObj("assets/img/5_background/layers/air.png", 299 * 6),
-    new BackgroundObj(
-      "assets/img/5_background/layers/3_third_layer/1.png",
-      299 * 6
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/2_second_layer/1.png",
-      299 * 6
-    ),
-    new BackgroundObj(
-      "assets/img/5_background/layers/1_first_layer/1.png",
-      299 * 6
-    ),
-  ],
-  [
-    new Coin(750, 90),
-    new Coin(861, 30),
-    new Coin(1194, 90),
-    new Coin(1639, 90),
-    new Coin(1750, 30),
-  ],
-  [
-    new Bottle(972, 90),
-    new Bottle(1083, 30),
-    new Bottle(1305, 30),
-    new Bottle(1416, 90),
-    new Bottle(1528, 30),
-  ],
+    ],
+    [
+      new BackgroundObj("assets/img/5_background/layers/air.png", -298),
+      new BackgroundObj(
+        "assets/img/5_background/layers/3_third_layer/2.png",
+        -298,
+      ),
+      new BackgroundObj(
+        "assets/img/5_background/layers/2_second_layer/2.png",
+        -298,
+      ),
+      new BackgroundObj(
+        "assets/img/5_background/layers/1_first_layer/2.png",
+        -298,
+      ),
+      new BackgroundObj("assets/img/5_background/layers/air.png", 0),
+      new BackgroundObj(
+        "assets/img/5_background/layers/3_third_layer/1.png",
+        0,
+      ),
+      new BackgroundObj(
+        "assets/img/5_background/layers/2_second_layer/1.png",
+        0,
+      ),
+      new BackgroundObj(
+        "assets/img/5_background/layers/1_first_layer/1.png",
+        0,
+      ),
+      new BackgroundObj("assets/img/5_background/layers/air.png", 299),
+      new BackgroundObj(
+        "assets/img/5_background/layers/3_third_layer/2.png",
+        299,
+      ),
+      new BackgroundObj(
+        "assets/img/5_background/layers/2_second_layer/2.png",
+        299,
+      ),
+      new BackgroundObj(
+        "assets/img/5_background/layers/1_first_layer/2.png",
+        299,
+      ),
+      new BackgroundObj("assets/img/5_background/layers/air.png", 299 * 2),
+      new BackgroundObj(
+        "assets/img/5_background/layers/3_third_layer/1.png",
+        299 * 2,
+      ),
+      new BackgroundObj(
+        "assets/img/5_background/layers/2_second_layer/1.png",
+        299 * 2,
+      ),
+      new BackgroundObj(
+        "assets/img/5_background/layers/1_first_layer/1.png",
+        299 * 2,
+      ),
+      new BackgroundObj("assets/img/5_background/layers/air.png", 299 * 3),
+      new BackgroundObj(
+        "assets/img/5_background/layers/3_third_layer/2.png",
+        299 * 3,
+      ),
+      new BackgroundObj(
+        "assets/img/5_background/layers/2_second_layer/2.png",
+        299 * 3,
+      ),
+      new BackgroundObj(
+        "assets/img/5_background/layers/1_first_layer/2.png",
+        299 * 3,
+      ),
+      new BackgroundObj("assets/img/5_background/layers/air.png", 299 * 3),
+      new BackgroundObj(
+        "assets/img/5_background/layers/3_third_layer/2.png",
+        299 * 3,
+      ),
+      new BackgroundObj(
+        "assets/img/5_background/layers/2_second_layer/2.png",
+        299 * 3,
+      ),
+      new BackgroundObj(
+        "assets/img/5_background/layers/1_first_layer/2.png",
+        299 * 3,
+      ),
+      new BackgroundObj("assets/img/5_background/layers/air.png", 299 * 4),
+      new BackgroundObj(
+        "assets/img/5_background/layers/3_third_layer/1.png",
+        299 * 4,
+      ),
+      new BackgroundObj(
+        "assets/img/5_background/layers/2_second_layer/1.png",
+        299 * 4,
+      ),
+      new BackgroundObj(
+        "assets/img/5_background/layers/1_first_layer/1.png",
+        299 * 4,
+      ),
+      new BackgroundObj("assets/img/5_background/layers/air.png", 299 * 5),
+      new BackgroundObj(
+        "assets/img/5_background/layers/3_third_layer/2.png",
+        299 * 5,
+      ),
+      new BackgroundObj(
+        "assets/img/5_background/layers/2_second_layer/2.png",
+        299 * 5,
+      ),
+      new BackgroundObj(
+        "assets/img/5_background/layers/1_first_layer/2.png",
+        299 * 5,
+      ),
+      new BackgroundObj("assets/img/5_background/layers/air.png", 299 * 6),
+      new BackgroundObj(
+        "assets/img/5_background/layers/3_third_layer/1.png",
+        299 * 6,
+      ),
+      new BackgroundObj(
+        "assets/img/5_background/layers/2_second_layer/1.png",
+        299 * 6,
+      ),
+      new BackgroundObj(
+        "assets/img/5_background/layers/1_first_layer/1.png",
+        299 * 6,
+      ),
+    ],
+    [
+      new Coin(750, 90),
+      new Coin(861, 30),
+      new Coin(1194, 90),
+      new Coin(1639, 90),
+      new Coin(1750, 30),
+    ],
+    [
+      new Bottle(972, 90),
+      new Bottle(1083, 30),
+      new Bottle(1305, 30),
+      new Bottle(1416, 90),
+      new Bottle(1528, 30),
+    ],
   );
 }

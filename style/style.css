@@ -56,4 +56,8 @@ canvas {
     #orientation-warning {
         display: flex;
     }
+
+    .game-title {
+        display: none;
+    }
 }
