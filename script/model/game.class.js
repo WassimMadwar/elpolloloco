@@ -6,6 +6,7 @@ class Game {
   level;
   ctx;
   renderCanvas;
+  viewport;
   keyAction;
   camera_x = -100;
   runGameInterval;
@@ -31,11 +32,12 @@ class Game {
   constructor(canvas, keyTaste) {
     this.renderCanvas = canvas;
     this.ctx = canvas.getContext("2d");
-    this.ctx.scale(
-      canvas.width / Game.VIEW_WIDTH,
-      canvas.height / Game.VIEW_HEIGHT,
+    this.viewport = new Viewport(
+      canvas,
+      this.ctx,
+      Game.VIEW_WIDTH,
+      Game.VIEW_HEIGHT,
     );
-    this.ctx.imageSmoothingQuality = "high";
     this.keyAction = keyTaste;
     this.gameOverImg.src = "assets/img/You won, you lost/You lost.png";
     this.winImg.src = "assets/img/You won, you lost/You won A.png";

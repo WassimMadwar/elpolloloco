@@ -8,13 +8,20 @@
     src: url("../fonts/Roboto-Italic-VariableFont_wdth,wght.ttf") format("truetype");
 }
 
+html,
+body {
+    height: 100%;
+}
+
 body {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
+    min-height: 100dvh;
     margin: 0;
+    overflow: hidden;
     background: url("../assets/img/5_background/pageBG2.jpg") center / cover no-repeat;
     font-family: "zabras", sans-serif;
 }
@@ -28,9 +35,8 @@ h1 {
 }
 
 canvas {
+    display: block;
     background-color: black;
-    width: 720px;
-    height: 480px;
 }
 
 #orientation-warning {
@@ -56,7 +62,9 @@ canvas {
     #orientation-warning {
         display: flex;
     }
+}
 
+@media only screen and (max-width: 750px), only screen and (max-height: 630px) {
     .game-title {
         display: none;
     }
