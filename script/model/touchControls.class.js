@@ -3,7 +3,8 @@ class TouchControls {
   // Diameter of the visible circle in screen pixels (CSS px).
   static TABLET_DIAMETER_PX = 72;
   static PHONE_DIAMETER_PX = 46;
-  // Screens whose game height is below this value count as phones.
+  // Devices whose shorter screen side is below this value count as phones
+  // (phones: up to ~430px, tablets: 768px and more, in any orientation).
   static PHONE_MAX_HEIGHT_PX = 500;
   // Minimum tap area (diameter). Small buttons stay easy to hit with a
   // finger, because the tap area is larger than the drawn circle.
@@ -111,7 +112,9 @@ class TouchControls {
   }
 
   isPhone() {
-    return this.game.viewport.cssHeight < TouchControls.PHONE_MAX_HEIGHT_PX;
+    const root = document.documentElement;
+    const shortSide = Math.min(root.clientWidth, root.clientHeight);
+    return shortSide < TouchControls.PHONE_MAX_HEIGHT_PX;
   }
 
   getDiameterPx() {
