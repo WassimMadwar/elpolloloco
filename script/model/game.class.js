@@ -267,16 +267,18 @@ class Game {
   }
 
   checkBottleHitsBoss(bottle, boss) {
-    if (bottle.hasHit || boss.isDying || !bottle.isColliding(boss)) return;
+    if (bottle.hasHit || bottle.isSplashing || boss.isDying) return;
+    if (!bottle.isColliding(boss)) return;
     bottle.hasHit = true;
     boss.hit();
+    bottle.splashOnBoss(boss);
   }
 
   removeOffscreenBottles() {
     this.bottlesObj = this.bottlesObj.filter((bottle) => {
-      const offscreen = this.isBottleOffscreen(bottle);
-      if (offscreen) bottle.stopBottle();
-      return !offscreen;
+      const remove = bottle.isFinished || this.isBottleOffscreen(bottle);
+      if (remove) bottle.stopBottle();
+      return !remove;
     });
   }
 
