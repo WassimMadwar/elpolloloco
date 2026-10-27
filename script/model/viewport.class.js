@@ -42,6 +42,11 @@ class Viewport {
     return { width: window.innerWidth, height: window.innerHeight };
   }
 
+  getMaxCssWidth() {
+    const isTouch = window.matchMedia("(pointer: coarse)").matches;
+    return isTouch ? Infinity : Viewport.MAX_CSS_WIDTH;
+  }
+
   getPixelRatio() {
     return Math.min(window.devicePixelRatio || 1, Viewport.MAX_PIXEL_RATIO);
   }
@@ -52,7 +57,7 @@ class Viewport {
       Math.min(
         available.width,
         available.height * this.aspectRatio,
-        Viewport.MAX_CSS_WIDTH,
+        this.getMaxCssWidth(),
       ),
     );
     this.cssHeight = Math.floor(this.cssWidth / this.aspectRatio);

@@ -64,8 +64,16 @@ canvas {
     }
 }
 
-@media only screen and (max-width: 750px), only screen and (max-height: 630px) {
+@media only screen and (max-width: 750px),
+    only screen and (max-height: 630px),
+    only screen and (pointer: coarse) and (orientation: landscape) {
     .game-title {
         display: none;
+    }
+}
+
+@media only screen and (pointer: coarse) and (orientation: landscape) {
+    body {
+        background: black;
     }
 }

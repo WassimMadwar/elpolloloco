@@ -10,6 +10,7 @@ class Control {
     showBoss: "assets/sounds/showBoss.wav",
     bossHurt: "assets/sounds/hartEndBoss.mp3",
   };
+  static HIT_PADDING = 4;
 
   muted = Control.loadMuted();
   sounds = [];
@@ -125,24 +126,57 @@ class Control {
     Game.paused = this.pauseMenuOpen;
   }
 
-  isHit(pos, x, y) {
+  isInArea(pos, left, top, right, bottom) {
+    const p = Control.HIT_PADDING;
     return (
-      pos.x >= x &&
-      pos.x <= x + this.iconSize &&
-      pos.y >= y &&
-      pos.y <= y + this.iconSize
+      pos.x >= left - p &&
+      pos.x <= right + p &&
+      pos.y >= top - p &&
+      pos.y <= bottom + p
     );
   }
 
+  getLabelWidth(label) {
+    this.ctx.font = "8px Arial";
+    return this.ctx.measureText(label).width;
+  }
+
+  isLabelRowHit(pos, x, y, label) {
+    const right = x + this.iconSize + 4 + this.getLabelWidth(label);
+    return this.isInArea(pos, x, y, right, y + this.iconSize);
+  }
+
+  isSoundRowHit(pos, iconX, y) {
+    const left = iconX - 4 - this.getLabelWidth("Sound");
+    return this.isInArea(pos, left, y, iconX + this.iconSize, y + this.iconSize);
+  }
+
   drawStartScreen() {
-    this.ctx.drawImage(
-      this.startBgImg,
-      0,
-      0,
-      Game.VIEW_WIDTH,
-      Game.VIEW_HEIGHT,
-    );
+    this.drawImageCover(this.startBgImg, Game.VIEW_WIDTH, Game.VIEW_HEIGHT);
     this.drawStartPanel();
+  }
+
+  drawImageCover(img, width, height) {
+    if (!img.naturalWidth) return;
+    const scale = Math.max(
+      width / img.naturalWidth,
+      height / img.naturalHeight,
+    );
+    const sourceWidth = width / scale;
+    const sourceHeight = height / scale;
+    const sourceX = (img.naturalWidth - sourceWidth) / 2;
+    const sourceY = (img.naturalHeight - sourceHeight) / 2;
+    this.ctx.drawImage(
+      img,
+      sourceX,
+      sourceY,
+      sourceWidth,
+      sourceHeight,
+      0,
+      0,
+      width,
+      height,
+    );
   }
 
   getStartPanelWidth() {
@@ -293,30 +327,30 @@ class Control {
 
   handlePreGameTopRowClick(pos) {
     const y = this.getStartRowY(1);
-    if (this.isHit(pos, this.getStartRowX(), y)) {
+    if (this.isLabelRowHit(pos, this.getStartRowX(), y, "Start Match")) {
       this.gameMatch.startGame();
       return;
     }
-    if (this.isHit(pos, this.getSpeakerRowX(), y)) {
+    if (this.isSoundRowHit(pos, this.getSpeakerRowX(), y)) {
       this.swwitchSound();
     }
   }
 
   handlePauseTopRowClick(pos) {
     const y = this.getStartRowY(1);
-    if (this.isHit(pos, this.getPauseRowItemX(0), y)) {
+    if (this.isLabelRowHit(pos, this.getPauseRowItemX(0), y, "Resume")) {
       this.togglePauseMenu();
       return;
     }
-    if (this.isHit(pos, this.getPauseRowItemX(1), y)) {
+    if (this.isLabelRowHit(pos, this.getPauseRowItemX(1), y, "Restart")) {
       this.gameMatch.restartGame();
       return;
     }
-    if (this.isHit(pos, this.getPauseRowItemX(2), y)) {
+    if (this.isLabelRowHit(pos, this.getPauseRowItemX(2), y, "Exit")) {
       this.gameMatch.exitToStartScreen();
       return;
     }
-    if (this.isHit(pos, this.getPauseRowItemX(3), y)) {
+    if (this.isLabelRowHit(pos, this.getPauseRowItemX(3), y, "Sound")) {
       this.swwitchSound();
     }
   }
