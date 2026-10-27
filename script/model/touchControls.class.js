@@ -1,16 +1,36 @@
 class TouchControls {
-  static MIN_DIAMETER_PX = 56;
-  static MAX_DIAMETER_PX = 72;
+  // ===== BUTTON SIZE: change the button size here =====
+  // Diameter of the visible circle in screen pixels (CSS px).
+  static TABLET_DIAMETER_PX = 72;
+  static PHONE_DIAMETER_PX = 46;
+  // Screens whose game height is below this value count as phones.
+  static PHONE_MAX_HEIGHT_PX = 500;
+  // Minimum tap area (diameter). Small buttons stay easy to hit with a
+  // finger, because the tap area is larger than the drawn circle.
+  static MIN_TAP_DIAMETER_PX = 44;
+  // Distance to the screen edge and between the two buttons of a group.
   static EDGE_MARGIN_PX = 14;
   static BUTTON_GAP_PX = 14;
+  // Angle of each button group (0 = horizontal).
   static GROUP_ANGLE_DEG = 22;
+  // =====================================================
   static MOVE_BUTTONS = ["left", "right"];
   static HOLD_FLAGS = { left: "left", right: "right", jump: "up" };
   static OPACITY = 0.4;
   static FILL = "#ffc21a";
   static FILL_PRESSED = "#d98f00";
   static RING = "#7a2e0b";
-  static ICON_SCALE = { left: 1.1, right: 1.1, jump: 1.1, throw: 1.9 };
+  static BOTTLE_SCALE = 1.9;
+  static ARROW_ANGLE = { right: 0, left: Math.PI, jump: -Math.PI / 2 };
+  static ARROW_SHAPE = [
+    [-0.5, -0.16],
+    [0.05, -0.16],
+    [0.05, -0.42],
+    [0.55, 0],
+    [0.05, 0.42],
+    [0.05, 0.16],
+    [-0.5, 0.16],
+  ];
 
   game;
   canvas;
@@ -38,17 +58,6 @@ class TouchControls {
     return window.matchMedia("(pointer: coarse)").matches;
   }
 
-  getIcon(name) {
-    const control = this.game.control;
-    const icons = {
-      left: control.leftIcon,
-      right: control.rightIcon,
-      jump: control.jumpIcon,
-      throw: this.bottleIcon,
-    };
-    return icons[name];
-  }
-
   draw(ctx) {
     if (!this.isTouchDevice() || !this.isActive()) return;
     ctx.save();
@@ -71,27 +80,50 @@ class TouchControls {
   }
 
   drawIcon(ctx, name, x, y, r) {
-    const icon = this.getIcon(name);
-    if (!icon.naturalWidth) return;
-    const size = r * TouchControls.ICON_SCALE[name];
-    ctx.drawImage(icon, x - size / 2, y - size / 2, size, size);
+    if (name in TouchControls.ARROW_ANGLE) {
+      this.drawArrow(ctx, x, y, r, TouchControls.ARROW_ANGLE[name]);
+      return;
+    }
+    if (!this.bottleIcon.naturalWidth) return;
+    const size = r * TouchControls.BOTTLE_SCALE;
+    ctx.drawImage(this.bottleIcon, x - size / 2, y - size / 2, size, size);
+  }
+
+  drawArrow(ctx, x, y, r, angle) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.scale(r, r);
+    ctx.beginPath();
+    TouchControls.ARROW_SHAPE.forEach(([px, py]) => ctx.lineTo(px, py));
+    ctx.closePath();
+    ctx.fillStyle = TouchControls.RING;
+    ctx.fill();
+    ctx.lineJoin = "round";
+    ctx.lineWidth = 0.08;
+    ctx.strokeStyle = TouchControls.RING;
+    ctx.stroke();
+    ctx.restore();
   }
 
   getUnitsPerPx() {
     return Game.VIEW_WIDTH / this.game.viewport.cssWidth;
   }
 
+  isPhone() {
+    return this.game.viewport.cssHeight < TouchControls.PHONE_MAX_HEIGHT_PX;
+  }
+
   getDiameterPx() {
-    const preferred = this.game.viewport.cssHeight * 0.2;
-    return Math.min(
-      Math.max(preferred, TouchControls.MIN_DIAMETER_PX),
-      TouchControls.MAX_DIAMETER_PX,
-    );
+    return this.isPhone()
+      ? TouchControls.PHONE_DIAMETER_PX
+      : TouchControls.TABLET_DIAMETER_PX;
   }
 
   getButtons() {
     const unit = this.getUnitsPerPx();
     const r = (this.getDiameterPx() / 2) * unit;
+    const tapR = Math.max(r, (TouchControls.MIN_TAP_DIAMETER_PX / 2) * unit);
     const margin = TouchControls.EDGE_MARGIN_PX * unit;
     const step = 2 * r + TouchControls.BUTTON_GAP_PX * unit;
     const angle = (TouchControls.GROUP_ANGLE_DEG * Math.PI) / 180;
@@ -101,16 +133,16 @@ class TouchControls {
     const leftX = margin + r;
     const rightX = Game.VIEW_WIDTH - margin - r;
     return [
-      { name: "left", x: leftX, y, r },
-      { name: "right", x: leftX + dx, y: y - dy, r },
-      { name: "jump", x: rightX, y, r },
-      { name: "throw", x: rightX - dx, y: y - dy, r },
+      { name: "left", x: leftX, y, r, tapR },
+      { name: "right", x: leftX + dx, y: y - dy, r, tapR },
+      { name: "jump", x: rightX, y, r, tapR },
+      { name: "throw", x: rightX - dx, y: y - dy, r, tapR },
     ];
   }
 
   getButtonAt(pos) {
     return this.getButtons().find(
-      (b) => Math.hypot(pos.x - b.x, pos.y - b.y) <= b.r,
+      (b) => Math.hypot(pos.x - b.x, pos.y - b.y) <= b.tapR,
     );
   }
 
