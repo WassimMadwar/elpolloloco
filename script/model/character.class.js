@@ -83,6 +83,10 @@ class Character extends MovableObj {
     this.clearIntervalAfterDead();
   }
 
+  /**
+   * Stops the character completely.
+   * Clears the movement, animation and gravity intervals and ends the snoring sound.
+   */
   stop() {
     clearInterval(this.controlInterval);
     clearInterval(this.animationInterval);
@@ -90,6 +94,10 @@ class Character extends MovableObj {
     this.stopSnoring();
   }
 
+  /**
+   * Checks whether the character is dying and stops it once it has fallen out of the view.
+   * @returns {boolean} True if the character is dying, otherwise false.
+   */
   clearIntervalAfterDead() {
     if (this.isDying) {
       if (this.y > Game.VIEW_HEIGHT) {
@@ -100,11 +108,19 @@ class Character extends MovableObj {
     return false;
   }
 
+  /**
+   * Starts the character's movement handling and animation loop.
+   */
     animateCharacterWalking() {
     this.handleCharacterMovement();
     this.handleCharacterAnimation();
   }
 
+  /**
+   * Starts the movement interval (every 100 ms).
+   * Moves the character left or right, triggers jumps from the key state
+   * and keeps the camera following the character. Skipped while paused or dying.
+   */
   handleCharacterMovement() {
     this.controlInterval = setInterval(() => {
       if (this.clearIntervalAfterDead()) {
@@ -120,6 +136,10 @@ class Character extends MovableObj {
     }, 100);
   }
 
+  /**
+   * Moves the character to the right while the right key is pressed
+   * and the end of the level has not been reached.
+   */
   handelMoveRight() {
     if (
       this.gameMatch.keyAction.right &&
@@ -130,6 +150,10 @@ class Character extends MovableObj {
     }
   }
 
+  /**
+   * Moves the character to the left while the left key is pressed
+   * and the start of the level has not been reached. Mirrors the character image.
+   */
   handelMoveLeft() {
     if (this.gameMatch.keyAction.left && this.x > 0) {
       this.x -= 8;
@@ -138,18 +162,35 @@ class Character extends MovableObj {
     }
   }
 
+  /**
+   * Saves the current time as the last action of the character.
+   * Used to decide when the character falls asleep.
+   */
   updateActivity() {
     this.lastActionTime = new Date().getTime();
   }
 
+  /**
+   * Checks whether the left or right key is currently pressed.
+   * @returns {boolean} True if the character is walking.
+   */
   isWalking() {
     return this.gameMatch.keyAction.right || this.gameMatch.keyAction.left;
   }
 
+  /**
+   * Checks whether the character has been inactive for at least 15 seconds.
+   * @returns {boolean} True if the character should show the sleep animation.
+   */
   isSleeping() {
     return new Date().getTime() - this.lastActionTime >= 15000;
   }
 
+  /**
+   * Starts the animation interval (every 100 ms).
+   * Plays the animation that fits the current state and starts or stops
+   * the snoring sound together with the sleep animation.
+   */
   handleCharacterAnimation() {
     this.animationInterval = setInterval(() => {
       if (this.isDying || Game.paused) {
@@ -162,6 +203,11 @@ class Character extends MovableObj {
     }, 100);
   }
 
+  /**
+   * Selects the animation for the current state.
+   * Priority: dead, hurt, jumping, walking, sleeping, idle.
+   * @returns {string[]} The list of image paths of the selected animation.
+   */
   getCurrentAnimation() {
     if (this.isDead()) return this.imageCharDead;
     if (this.isHurt()) return this.imageCharHurt;
@@ -171,6 +217,10 @@ class Character extends MovableObj {
     return this.imageCharIdle;
   }
 
+  /**
+   * Starts or stops the snoring sound depending on the sleep state.
+   * @param {boolean} asleep - Whether the sleep animation is currently playing.
+   */
   updateSnoring(asleep) {
     if (asleep) {
       this.startSnoring();
@@ -179,22 +229,35 @@ class Character extends MovableObj {
     }
   }
 
+  /**
+   * Starts the looping snoring sound, if it is not already playing.
+   */
   startSnoring() {
     if (this.isSnoring) return;
     this.isSnoring = true;
     this.gameMatch.control.playEffect("snore");
   }
 
+  /**
+   * Stops the snoring sound, if it is currently playing.
+   */
   stopSnoring() {
     if (!this.isSnoring) return;
     this.isSnoring = false;
     this.gameMatch.control.stopEffect("snore");
   }
 
+  /**
+   * Moves the camera so that it follows the character.
+   */
   updateCamera() {
     this.gameMatch.camera_x = -this.x + 50;
   }
   
+  /**
+   * Lets the character jump if it is standing on the ground.
+   * Plays the jump sound and counts as an action (wakes the character up).
+   */
   jump() {
     if (!this.isAboveGround()) {
       this.speedY = 6;
@@ -203,6 +266,10 @@ class Character extends MovableObj {
     }
   }
 
+  /**
+   * Reduces the character's energy by 20 after a hit and updates the health bar.
+   * Plays the hurt sound, or lets the character die when the energy reaches 0.
+   */
   hit() {
     if (this.isDying) return;
     this.energy -= 20;
@@ -217,6 +284,11 @@ class Character extends MovableObj {
     }
   }
 
+  /**
+   * Starts the death of the character.
+   * Stops snoring, plays the death sound, saves the time of death
+   * and lets the character fall out of the view.
+   */
   dieCahracter() {
     if (this.isDying) return;
     this.isDying = true;
@@ -227,6 +299,13 @@ class Character extends MovableObj {
     this.img = this.imageCache[this.imageCharDead[5]];
   }
 
+  /**
+   * Checks whether the character lands on top of an enemy.
+   * The character must be falling, its feet must be in the upper part of the enemy
+   * (see STOMP_ZONE) and both must overlap horizontally (see MIN_STOMP_OVERLAP).
+   * @param {MovableObj} enemy - The enemy to check.
+   * @returns {boolean} True if the enemy is stomped.
+   */
   canStomp(enemy) {
     if (!this.isFalling()) return false;
     const feet = this.getHitbox();

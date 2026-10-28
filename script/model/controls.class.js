@@ -56,11 +56,11 @@ class Control {
     this.loadEffects();
   }
 
-  startMatch() {}
-  endMatch() {}
-  pauseMatch() {}
-  resultMatch() {}
-
+  /**
+   * Reads the saved mute setting from the local storage.
+   * @static
+   * @returns {boolean} True if the sound was muted last time, otherwise false.
+   */
   static loadMuted() {
     try {
       return localStorage.getItem("elPolloLocoMuted") === "true";
@@ -69,12 +69,21 @@ class Control {
     }
   }
 
+  /**
+   * Saves the current mute setting in the local storage.
+   */
   saveMuted() {
     try {
       localStorage.setItem("elPolloLocoMuted", this.muted);
     } catch (e) {}
   }
 
+  /**
+   * Creates a new audio object and registers it for the mute setting.
+   * @param {string} src - The path of the sound file.
+   * @param {number} [volume=1] - The volume between 0 and 1.
+   * @returns {HTMLAudioElement} The created audio object.
+   */
   createSound(src, volume = 1) {
     const audio = new Audio(src);
     audio.volume = volume;
@@ -82,15 +91,29 @@ class Control {
     return audio;
   }
 
+  /**
+   * Applies the current mute setting to a sound and adds it to the list of all sounds.
+   * @param {HTMLAudioElement} audio - The sound to register.
+   */
   registerSound(audio) {
     audio.muted = this.muted;
     this.sounds.push(audio);
   }
 
+  /**
+   * Loads a single sound effect and stores it under its name.
+   * @param {string} name - The name used to play the effect later.
+   * @param {string} src - The path of the sound file.
+   * @param {number} [volume=0.3] - The volume between 0 and 1.
+   */
   loadEffect(name, src, volume = 0.3) {
     this.effects[name] = this.createSound(src, volume);
   }
 
+  /**
+   * Loads all sound effects from SOUND_EFFECTS
+   * and enables looping for the effects listed in LOOPING_EFFECTS.
+   */
   loadEffects() {
     Object.entries(Control.SOUND_EFFECTS).forEach(([name, src]) =>
       this.loadEffect(name, src),
@@ -100,12 +123,21 @@ class Control {
     });
   }
 
+  /**
+   * Stops a sound effect and rewinds it to the beginning.
+   * @param {string} name - The name of the effect.
+   */
   stopEffect(name) {
     const effect = this.effects[name];
     effect.pause();
     effect.currentTime = 0;
   }
 
+  /**
+   * Plays a sound effect from the beginning.
+   * @param {string} name - The name of the effect.
+   * @param {boolean} [restart=true] - If false, the effect is not restarted while it is still playing.
+   */
   playEffect(name, restart = true) {
     const effect = this.effects[name];
     if (!restart && !effect.paused && !effect.ended) return;
@@ -113,10 +145,17 @@ class Control {
     effect.play().catch(() => {});
   }
 
+  /**
+   * Starts the background music.
+   * If the browser blocks autoplay, the music starts with the first user input.
+   */
   startMusic() {
     this.bgMusic.play().catch(() => this.playMusicOnFirstInput());
   }
 
+  /**
+   * Waits for the first click, touch or key press and then starts the background music.
+   */
   playMusicOnFirstInput() {
     const events = ["pointerdown", "keydown"];
     const resume = () => {
@@ -126,6 +165,9 @@ class Control {
     events.forEach((e) => window.addEventListener(e, resume));
   }
 
+  /**
+   * Switches all sounds between muted and unmuted and saves the setting.
+   */
   swwitchSound() {
     this.muted = !this.muted;
     this.saveMuted();
@@ -134,11 +176,23 @@ class Control {
     });
   }
 
+  /**
+   * Opens or closes the pause menu and pauses or resumes the game.
+   */
   togglePauseMenu() {
     this.pauseMenuOpen = !this.pauseMenuOpen;
     Game.paused = this.pauseMenuOpen;
   }
 
+  /**
+   * Checks whether a position lies inside an area, including the extra HIT_PADDING.
+   * @param {{x: number, y: number}} pos - The position in game units.
+   * @param {number} left - The left edge of the area.
+   * @param {number} top - The top edge of the area.
+   * @param {number} right - The right edge of the area.
+   * @param {number} bottom - The bottom edge of the area.
+   * @returns {boolean} True if the position is inside the area.
+   */
   isInArea(pos, left, top, right, bottom) {
     const p = Control.HIT_PADDING;
     return (
@@ -149,26 +203,57 @@ class Control {
     );
   }
 
+  /**
+   * Measures the width of a label in the menu font.
+   * @param {string} label - The text to measure.
+   * @returns {number} The width of the text in game units.
+   */
   getLabelWidth(label) {
     this.ctx.font = "8px Arial";
     return this.ctx.measureText(label).width;
   }
 
+  /**
+   * Checks whether a position hits a menu entry made of an icon and a label on its right.
+   * @param {{x: number, y: number}} pos - The position in game units.
+   * @param {number} x - The x position of the icon.
+   * @param {number} y - The y position of the icon.
+   * @param {string} label - The label next to the icon.
+   * @returns {boolean} True if the icon or the label was hit.
+   */
   isLabelRowHit(pos, x, y, label) {
     const right = x + this.iconSize + 4 + this.getLabelWidth(label);
     return this.isInArea(pos, x, y, right, y + this.iconSize);
   }
 
+  /**
+   * Checks whether a position hits the sound entry on the start screen
+   * (label on the left, icon on the right).
+   * @param {{x: number, y: number}} pos - The position in game units.
+   * @param {number} iconX - The x position of the sound icon.
+   * @param {number} y - The y position of the sound icon.
+   * @returns {boolean} True if the icon or the label was hit.
+   */
   isSoundRowHit(pos, iconX, y) {
     const left = iconX - 4 - this.getLabelWidth("Sound");
     return this.isInArea(pos, left, y, iconX + this.iconSize, y + this.iconSize);
   }
 
+  /**
+   * Draws the start screen: the background image and the start panel.
+   */
   drawStartScreen() {
     this.drawImageCover(this.startBgImg, Game.VIEW_WIDTH, Game.VIEW_HEIGHT);
     this.drawStartPanel();
   }
 
+  /**
+   * Draws an image so that it fills the given area without distortion.
+   * Parts of the image that do not fit are cut off evenly on both sides.
+   * @param {HTMLImageElement} img - The image to draw.
+   * @param {number} width - The width of the area.
+   * @param {number} height - The height of the area.
+   */
   drawImageCover(img, width, height) {
     if (!img.naturalWidth) return;
     const scale = Math.max(
@@ -192,30 +277,59 @@ class Control {
     );
   }
 
+  /**
+   * Returns the width of the start panel.
+   * @returns {number} The width in game units.
+   */
   getStartPanelWidth() {
     return Game.VIEW_WIDTH;
   }
 
+  /**
+   * Returns the height of the start panel.
+   * @returns {number} The height in game units.
+   */
   getStartPanelHeight() {
     return Game.VIEW_HEIGHT;
   }
 
+  /**
+   * Returns the x position of the start panel (centered horizontally).
+   * @returns {number} The x position in game units.
+   */
   getStartPanelX() {
     return (Game.VIEW_WIDTH - this.getStartPanelWidth()) / 2;
   }
 
+  /**
+   * Returns the y position of the start panel (centered vertically).
+   * @returns {number} The y position in game units.
+   */
   getStartPanelY() {
     return (Game.VIEW_HEIGHT - this.getStartPanelHeight()) / 2;
   }
 
+  /**
+   * Returns the x position where the rows of the start panel begin.
+   * @returns {number} The x position in game units.
+   */
   getStartRowX() {
     return this.getStartPanelX() + 6;
   }
 
+  /**
+   * Returns the y position of a row in the start panel.
+   * @param {number} index - The number of the row.
+   * @returns {number} The y position in game units.
+   */
   getStartRowY(index) {
     return this.getStartPanelY() + index * 8;
   }
 
+  /**
+   * Draws the semi-transparent panel and its rows
+   * (used on the start screen and in the pause menu).
+   */
   drawStartPanel() {
     this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
     this.ctx.fillRect(
@@ -227,6 +341,10 @@ class Control {
     this.drawStartPanelRows();
   }
 
+  /**
+   * Draws the top row and the help row of the panel.
+   * Before the match: Start Match and Sound. During the match: the pause menu entries.
+   */
   drawStartPanelRows() {
     const y = this.getStartRowY(1);
     if (this.gameStarted) {
@@ -243,11 +361,20 @@ class Control {
     this.drawMovementRow(this.getMovementRowY());
   }
 
+  /**
+   * Returns the x position of an entry in the pause menu row.
+   * @param {number} index - The position of the entry (0 to 3).
+   * @returns {number} The x position in game units.
+   */
   getPauseRowItemX(index) {
     const segmentWidth = (Game.VIEW_WIDTH - 20) / 4;
     return 10 + segmentWidth * index;
   }
 
+  /**
+   * Draws the pause menu entries: Resume, Restart, Exit and Sound.
+   * @param {number} y - The y position of the row.
+   */
   drawPauseTopRow(y) {
     this.drawIconLabelRow(this.playIcon, "Resume", this.getPauseRowItemX(0), y);
     this.drawIconLabelRow(
@@ -265,14 +392,26 @@ class Control {
     );
   }
 
+  /**
+   * Returns the icon that matches the current mute setting.
+   * @returns {HTMLImageElement} The mute icon or the speaker icon.
+   */
   getSoundIcon() {
     return this.muted ? this.muteIcon : this.speakerIcon;
   }
 
+  /**
+   * Returns the x position of the sound icon on the start screen (right edge).
+   * @returns {number} The x position in game units.
+   */
   getSpeakerRowX() {
     return Game.VIEW_WIDTH - this.iconSize - this.padding;
   }
 
+  /**
+   * Draws the sound entry of the start screen: the label and the sound icon on its right.
+   * @param {number} y - The y position of the row.
+   */
   drawSoundRow(y) {
     const iconX = this.getSpeakerRowX();
     this.ctx.drawImage(
@@ -290,10 +429,23 @@ class Control {
     this.ctx.textAlign = "left";
   }
 
+  /**
+   * Returns the y position of the help row at the bottom of the panel.
+   * @returns {number} The y position in game units.
+   */
   getMovementRowY() {
     return Game.VIEW_HEIGHT - this.iconSize - 5;
   }
 
+  /**
+   * Draws an icon with a white label on its right.
+   * @param {HTMLImageElement} icon - The icon to draw.
+   * @param {string} label - The text next to the icon.
+   * @param {number} x - The x position of the icon.
+   * @param {number} y - The y position of the icon.
+   * @param {number} [iconWidth=this.iconSize] - The width of the icon.
+   * @param {number} [iconHeight=this.iconSize] - The height of the icon.
+   */
   drawIconLabelRow(
     icon,
     label,
@@ -309,6 +461,10 @@ class Control {
     this.ctx.fillText(label, x + iconWidth + 4, y + iconHeight / 2);
   }
 
+  /**
+   * Draws the help row with the controls: Left, Jump, Right and Throw Bottle.
+   * @param {number} y - The y position of the row.
+   */
   drawMovementRow(y) {
     const startX = 10;
     const segmentWidth = (Game.VIEW_WIDTH - 50) / 4;
@@ -330,6 +486,10 @@ class Control {
     );
   }
 
+  /**
+   * Handles a click on the start screen or in the pause menu.
+   * @param {{x: number, y: number}} pos - The click position in game units.
+   */
   handleStartScreenClick(pos) {
     if (this.gameStarted) {
       this.handlePauseTopRowClick(pos);
@@ -338,6 +498,10 @@ class Control {
     this.handlePreGameTopRowClick(pos);
   }
 
+  /**
+   * Handles a click on the start screen: starts the match or switches the sound.
+   * @param {{x: number, y: number}} pos - The click position in game units.
+   */
   handlePreGameTopRowClick(pos) {
     const y = this.getStartRowY(1);
     if (this.isLabelRowHit(pos, this.getStartRowX(), y, "Start Match")) {
@@ -349,6 +513,10 @@ class Control {
     }
   }
 
+  /**
+   * Handles a click in the pause menu: Resume, Restart, Exit or Sound.
+   * @param {{x: number, y: number}} pos - The click position in game units.
+   */
   handlePauseTopRowClick(pos) {
     const y = this.getStartRowY(1);
     if (this.isLabelRowHit(pos, this.getPauseRowItemX(0), y, "Resume")) {
