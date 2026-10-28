@@ -47,6 +47,11 @@ class TouchControls {
     this.listen();
   }
 
+  /**
+   * Checks whether the touch buttons can be used:
+   * only during a running match, not in the pause menu, while paused or on the result screen.
+   * @returns {boolean} True if the buttons are active.
+   */
   isActive() {
     const control = this.game.control;
     if (!control.gameStarted || control.pauseMenuOpen || Game.paused) {
@@ -55,10 +60,18 @@ class TouchControls {
     return !this.game.getGameResult();
   }
 
+  /**
+   * Checks whether the device is controlled by touch (phone or tablet).
+   * @returns {boolean} True on touch devices.
+   */
   isTouchDevice() {
     return window.matchMedia("(pointer: coarse)").matches;
   }
 
+  /**
+   * Draws all touch buttons with the set opacity, but only on touch devices while they are active.
+   * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on.
+   */
   draw(ctx) {
     if (!this.isTouchDevice() || !this.isActive()) return;
     ctx.save();
@@ -67,6 +80,11 @@ class TouchControls {
     ctx.restore();
   }
 
+  /**
+   * Draws one round button with its ring and icon. A pressed button is drawn darker and smaller.
+   * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on.
+   * @param {{name: string, x: number, y: number, r: number}} button - The button to draw.
+   */
   drawButton(ctx, button) {
     const pressed = this.isPressed(button.name);
     const r = pressed ? button.r * 0.92 : button.r;
@@ -80,6 +98,14 @@ class TouchControls {
     this.drawIcon(ctx, button.name, button.x, button.y, r);
   }
 
+  /**
+   * Draws the icon of a button: an arrow for left, right and jump, the bottle image for throw.
+   * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on.
+   * @param {string} name - The name of the button.
+   * @param {number} x - The x position of the button center.
+   * @param {number} y - The y position of the button center.
+   * @param {number} r - The radius of the button.
+   */
   drawIcon(ctx, name, x, y, r) {
     if (name in TouchControls.ARROW_ANGLE) {
       this.drawArrow(ctx, x, y, r, TouchControls.ARROW_ANGLE[name]);
@@ -90,6 +116,14 @@ class TouchControls {
     ctx.drawImage(this.bottleIcon, x - size / 2, y - size / 2, size, size);
   }
 
+  /**
+   * Draws a filled arrow in the ring color, scaled to the button and rotated in its direction.
+   * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on.
+   * @param {number} x - The x position of the button center.
+   * @param {number} y - The y position of the button center.
+   * @param {number} r - The radius of the button.
+   * @param {number} angle - The direction of the arrow in radians (0 = right).
+   */
   drawArrow(ctx, x, y, r, angle) {
     ctx.save();
     ctx.translate(x, y);
@@ -107,22 +141,40 @@ class TouchControls {
     ctx.restore();
   }
 
+  /**
+   * Returns how many game units one screen pixel is at the current canvas size.
+   * @returns {number} The game units per CSS pixel.
+   */
   getUnitsPerPx() {
     return Game.VIEW_WIDTH / this.game.viewport.cssWidth;
   }
 
+  /**
+   * Checks whether the device is a phone, based on its shorter screen side.
+   * @returns {boolean} True on phones, false on tablets.
+   */
   isPhone() {
     const root = document.documentElement;
     const shortSide = Math.min(root.clientWidth, root.clientHeight);
     return shortSide < TouchControls.PHONE_MAX_HEIGHT_PX;
   }
 
+  /**
+   * Returns the button size for the current device (phone or tablet size).
+   * @returns {number} The diameter in screen pixels.
+   */
   getDiameterPx() {
     return this.isPhone()
       ? TouchControls.PHONE_DIAMETER_PX
       : TouchControls.TABLET_DIAMETER_PX;
   }
 
+  /**
+   * Calculates the position and size of all four buttons.
+   * Left and right are placed in the bottom left corner, jump and throw in the bottom right corner,
+   * each group at an angle (see GROUP_ANGLE_DEG).
+   * @returns {{name: string, x: number, y: number, r: number, tapR: number}[]} The buttons in game units.
+   */
   getButtons() {
     const unit = this.getUnitsPerPx();
     const r = (this.getDiameterPx() / 2) * unit;
@@ -143,16 +195,30 @@ class TouchControls {
     ];
   }
 
+  /**
+   * Finds the button whose tap area contains a position.
+   * @param {{x: number, y: number}} pos - The position in game units.
+   * @returns {(Object|undefined)} The button, or undefined if no button was hit.
+   */
   getButtonAt(pos) {
     return this.getButtons().find(
       (b) => Math.hypot(pos.x - b.x, pos.y - b.y) <= b.tapR,
     );
   }
 
+  /**
+   * Checks whether an active touch button is at a position.
+   * @param {{x: number, y: number}} pos - The position in game units.
+   * @returns {boolean} True if a button is there.
+   */
   isButtonAt(pos) {
     return this.isActive() && !!this.getButtonAt(pos);
   }
 
+  /**
+   * Adds the pointer listeners to the canvas and releases all buttons
+   * when the window loses focus or the page is hidden.
+   */
   listen() {
     this.canvas.addEventListener("pointerdown", (e) => this.onDown(e));
     this.canvas.addEventListener("pointermove", (e) => this.onMove(e));
@@ -165,6 +231,11 @@ class TouchControls {
     });
   }
 
+  /**
+   * Handles a finger touching the canvas: presses the button under the finger.
+   * Mouse input is ignored.
+   * @param {PointerEvent} e - The pointer event.
+   */
   onDown(e) {
     if (e.pointerType !== "touch" || !this.isActive()) return;
     const button = this.getButtonAt(this.game.getCanvasClickPosition(e));
@@ -175,6 +246,11 @@ class TouchControls {
     this.press(button.name);
   }
 
+  /**
+   * Handles a moving finger: switches between left and right when the finger slides
+   * from one movement button to the other.
+   * @param {PointerEvent} e - The pointer event.
+   */
   onMove(e) {
     const current = this.activePointers.get(e.pointerId);
     if (!current) return;
@@ -187,6 +263,10 @@ class TouchControls {
     this.press(button.name);
   }
 
+  /**
+   * Handles a finger leaving the canvas: releases its button.
+   * @param {PointerEvent} e - The pointer event.
+   */
   onUp(e) {
     const name = this.activePointers.get(e.pointerId);
     if (!name) return;
@@ -194,15 +274,30 @@ class TouchControls {
     this.release(name);
   }
 
+  /**
+   * Checks whether a finger slides from one movement button to the other.
+   * @param {string} from - The name of the current button.
+   * @param {string} to - The name of the new button.
+   * @returns {boolean} True if both are movement buttons (left or right).
+   */
   isMoveSwitch(from, to) {
     const moves = TouchControls.MOVE_BUTTONS;
     return moves.includes(from) && moves.includes(to);
   }
 
+  /**
+   * Checks whether any finger is currently holding a button.
+   * @param {string} name - The name of the button.
+   * @returns {boolean} True if the button is pressed.
+   */
   isPressed(name) {
     return [...this.activePointers.values()].includes(name);
   }
 
+  /**
+   * Presses a button: requests a throw, or sets the matching key flag (left, right or up).
+   * @param {string} name - The name of the button.
+   */
   press(name) {
     if (name === "throw") {
       this.keys.throwRequested = true;
@@ -211,12 +306,19 @@ class TouchControls {
     this.keys[TouchControls.HOLD_FLAGS[name]] = true;
   }
 
+  /**
+   * Releases a button and clears its key flag, unless another finger still holds it.
+   * @param {string} name - The name of the button.
+   */
   release(name) {
     const flag = TouchControls.HOLD_FLAGS[name];
     if (!flag || this.isPressed(name)) return;
     this.keys[flag] = false;
   }
 
+  /**
+   * Releases all pressed buttons, so the character never keeps moving on its own.
+   */
   releaseAll() {
     const names = [...this.activePointers.values()];
     this.activePointers.clear();
