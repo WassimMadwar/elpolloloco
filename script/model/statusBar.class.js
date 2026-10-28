@@ -23,12 +23,20 @@ class StatusBar extends DrawableObj {
     this.setPercentge(startPercentage);
   }
 
+  /**
+   * Sets the fill level of the bar and shows the matching image.
+   * @param {number} percentge - The fill level from 0 to 100.
+   */
   setPercentge(percentge) {
     this.percentge = percentge;
     let imgBarPath = this.imgBar[this.resolveImageIndex()];
     this.img = this.imageCache[imgBarPath];
   }
 
+  /**
+   * Finds the image that matches the current fill level (in steps of 20 %).
+   * @returns {number} The index of the image, from 0 (empty) to 5 (full).
+   */
   resolveImageIndex() {
     if (this.percentge >= 100) return 5;
     if (this.percentge >= 80) return 4;

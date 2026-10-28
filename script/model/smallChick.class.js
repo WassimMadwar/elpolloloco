@@ -12,6 +12,12 @@ class SmallChick extends Enemy {
     this.startFallTrajectory();
   }
 
+  /**
+   * Places the chick at its start position, sets its size
+   * and starts the walking animation of the small chick.
+   * @param {number} x - The start x position (the boss position).
+   * @param {number} y - The start y position (the boss position).
+   */
   setupSmallChick(x, y) {
     clearInterval(this.walkInterval);
     this.x = x;
@@ -23,12 +29,19 @@ class SmallChick extends Enemy {
     this.animateEnemyWalking();
   }
 
+  /**
+   * Throws the chick slightly upward and lets it fall down to the ground.
+   */
   startFallTrajectory() {
     this.groundY = 100;
     this.speedY = 3;
     this.applyGravity();
   }
 
+  /**
+   * Starts the death of the chick.
+   * Saves the time of death, stops walking and falling and shows the dead image.
+   */
   die() {
     if (this.isDying) return;
     this.isDying = true;

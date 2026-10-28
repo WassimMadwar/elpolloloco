@@ -36,10 +36,19 @@ class ThrowableObj extends MovableObj {
     this.animateBottleRotation();
   }
 
+  /**
+   * Calculates the start x position of the bottle in front of the character.
+   * @param {number} x - The x position of the character.
+   * @returns {number} The start x position of the bottle.
+   */
   getStartX(x) {
     return this.otherDirection ? x - 20 : x + 20;
   }
 
+  /**
+   * Throws the bottle in an arc in the direction the character is looking.
+   * The bottle breaks when it reaches the ground. Skipped while the game is paused.
+   */
   throwBottle() {
     this.speedY = 3;
     this.applyGravity();
@@ -53,26 +62,51 @@ class ThrowableObj extends MovableObj {
     }, 50);
   }
 
+  /**
+   * Returns the horizontal center of the bottle.
+   * @returns {number} The x position of the center in game units.
+   */
   getCenterX() {
     return this.x + this.width / 2;
   }
 
+  /**
+   * Returns the vertical center of the bottle.
+   * @returns {number} The y position of the center in game units.
+   */
   getCenterY() {
     return this.y + this.height / 2;
   }
 
+  /**
+   * Breaks the bottle on the ground below its current position.
+   */
   splashOnGround() {
     this.splash(this.getCenterX(), ThrowableObj.GROUND_SPLASH_Y);
   }
 
+  /**
+   * Breaks the bottle on the front edge of the boss.
+   * @param {Endboss} boss - The boss that was hit.
+   */
   splashOnBoss(boss) {
     this.splash(boss.x + 10, this.getCenterY());
   }
 
+  /**
+   * Breaks the bottle in the middle of a small enemy.
+   * @param {Enemy} enemy - The enemy that was hit.
+   */
   splashOnEnemy(enemy) {
     this.splash(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2);
   }
 
+  /**
+   * Breaks the bottle at a point: stops its movement, plays the glass sound
+   * and starts the splash animation centered on that point.
+   * @param {number} centerX - The x position of the impact.
+   * @param {number} centerY - The y position of the impact.
+   */
   splash(centerX, centerY) {
     if (this.isSplashing) return;
     this.isSplashing = true;
@@ -85,6 +119,10 @@ class ThrowableObj extends MovableObj {
     this.playSplashOnce();
   }
 
+  /**
+   * Plays the splash animation once and marks the bottle as finished after the last frame.
+   * Skipped while the game is paused.
+   */
   playSplashOnce() {
     let frame = 0;
     this.img = this.imageCache[this.imgBottleSplash[frame]];
@@ -100,6 +138,10 @@ class ThrowableObj extends MovableObj {
     }, ThrowableObj.SPLASH_FRAME_MS);
   }
 
+  /**
+   * Starts the rotation animation of the flying bottle (every 100 ms).
+   * Skipped while the game is paused.
+   */
   animateBottleRotation() {
     this.rotationInterval = setInterval(() => {
       if (Game.paused) return;
@@ -107,6 +149,9 @@ class ThrowableObj extends MovableObj {
     }, 100);
   }
 
+  /**
+   * Stops all intervals of the bottle: movement, rotation, gravity and splash.
+   */
   stopBottle() {
     clearInterval(this.moveInterval);
     clearInterval(this.rotationInterval);

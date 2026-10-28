@@ -15,6 +15,10 @@ class StatusBars {
   endbossPaddingTop = 20;
   visbilityEndBossBar = false;
 
+  /**
+   * Draws the health, coin and bottle bars, and the boss bar once it is visible.
+   * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on.
+   */
   draw(ctx) {
     this.drawBar(ctx, this.health);
     this.drawBar(ctx, this.coin);
@@ -22,35 +26,69 @@ class StatusBars {
     if (this.visbilityEndBossBar) this.drawEndbossBar(ctx);
   }
 
+  /**
+   * Draws a single status bar at its position.
+   * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on.
+   * @param {StatusBar} bar - The bar to draw.
+   */
   drawBar(ctx, bar) {
     ctx.drawImage(bar.img, bar.x, bar.y, bar.width, bar.height);
   }
 
+  /**
+   * Draws the boss health bar in the top right corner, below the control icons.
+   * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on.
+   */
   drawEndbossBar(ctx) {
     const x = Game.VIEW_WIDTH - this.endboss.width - this.endbossPaddingRight;
     ctx.drawImage(this.endboss.img, x, this.endbossPaddingTop, this.endboss.width, this.endboss.height);
   }
 
+  /**
+   * Updates the health bar of the character.
+   * @param {number} percentage - The health from 0 to 100.
+   */
   setHealth(percentage) {
     this.health.setPercentge(percentage);
   }
 
+  /**
+   * Updates the coin bar from the number of collected coins.
+   * @param {number} count - The number of collected coins.
+   * @param {number} total - The number of coins in the level.
+   */
   setCoins(count, total) {
     this.coin.setPercentge((count / total) * 100);
   }
 
+  /**
+   * Updates the bottle bar from the number of throwable bottles.
+   * @param {number} throwable - The number of bottles the character can throw.
+   * @param {number} max - The maximum number of bottles.
+   */
   setBottles(throwable, max) {
     this.bottle.setPercentge((throwable / max) * 100);
   }
 
+  /**
+   * Makes the boss health bar visible.
+   */
   showEndbossBar() {
     this.visbilityEndBossBar = true;
   }
 
+  /**
+   * Updates the boss health bar.
+   * @param {number} percentage - The boss health from 0 to 100.
+   */
   setEndbossHealth(percentage) {
     this.endboss.setPercentge(percentage);
   }
 
+  /**
+   * Resets all bars for a new match: full health, empty coin and bottle bars
+   * and a hidden, full boss bar.
+   */
   reset() {
     this.setHealth(100);
     this.coin.setPercentge(0);
