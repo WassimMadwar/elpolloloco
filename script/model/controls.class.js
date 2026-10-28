@@ -10,6 +10,8 @@ class Control {
     showBoss: "assets/sounds/showBoss.wav",
     bossHurt: "assets/sounds/hartEndBoss.mp3",
     snore: "assets/sounds/snor.mp3",
+    glassBreak: "assets/sounds/glassbreaking.mp3",
+    smallDeath: "assets/sounds/smalldeath.mp3",
   };
   static LOOPING_EFFECTS = ["snore"];
   static HIT_PADDING = 4;

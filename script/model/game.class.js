@@ -112,7 +112,6 @@ class Game {
     return true;
   }
 
-  // DEBUG: remove together with Game.SHOW_HITBOXES after testing.
   drawHitboxes() {
     const objects = [
       this.character,
@@ -264,8 +263,14 @@ class Game {
   checkStomps() {
     if (this.character.isDying) return;
     this.level.enemies.forEach((enemy) => {
-      if (this.isStomped(enemy)) enemy.die();
+      if (this.isStomped(enemy)) this.killEnemy(enemy);
     });
+  }
+
+  killEnemy(enemy) {
+    if (enemy.isDying) return;
+    enemy.die();
+    this.control.playEffect("smallDeath");
   }
 
   isStomped(enemy) {
@@ -278,7 +283,7 @@ class Game {
     this.level.enemies.forEach((enemy) => {
       if (!this.character.isColliding(enemy) || enemy.isDying) return;
       if (this.isStomped(enemy)) {
-        enemy.die();
+        this.killEnemy(enemy);
       } else {
         this.character.hit();
       }
@@ -301,6 +306,7 @@ class Game {
         this.character.y,
         this.character.otherDirection,
       );
+      bottle.gameMatch = this;
       this.bottlesObj.push(bottle);
       this.control.playEffect("throwBottle", false);
       this.throwableBottles--;
@@ -328,7 +334,7 @@ class Game {
       enemy.hit();
       bottle.splashOnBoss(enemy);
     } else {
-      enemy.die();
+      this.killEnemy(enemy);
       bottle.splashOnEnemy(enemy);
     }
   }

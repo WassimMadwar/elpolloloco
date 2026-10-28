@@ -3,6 +3,7 @@ class ThrowableObj extends MovableObj {
   static SPLASH_WIDTH = 45;
   static SPLASH_HEIGHT = 35;
   static GROUND_SPLASH_Y = 112;
+  gameMatch;
   hasHit = false;
   isSplashing = false;
   isFinished = false;
@@ -76,6 +77,7 @@ class ThrowableObj extends MovableObj {
     if (this.isSplashing) return;
     this.isSplashing = true;
     this.stopBottle();
+    this.gameMatch.control.playEffect("glassBreak");
     this.width = ThrowableObj.SPLASH_WIDTH;
     this.height = ThrowableObj.SPLASH_HEIGHT;
     this.x = centerX - this.width / 2;
