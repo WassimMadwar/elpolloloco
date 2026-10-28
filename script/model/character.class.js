@@ -61,6 +61,7 @@ class Character extends MovableObj {
   ];
 
   lastActionTime = new Date().getTime();
+  isSnoring = false;
 
   constructor() {
     super().loadImg("assets/img/2_character_pepe/1_idle/idle/I-1.png");
@@ -79,6 +80,7 @@ class Character extends MovableObj {
     clearInterval(this.controlInterval);
     clearInterval(this.animationInterval);
     clearInterval(this.gravityInterval);
+    this.stopSnoring();
   }
 
   clearIntervalAfterDead() {
@@ -143,24 +145,43 @@ class Character extends MovableObj {
 
   handleCharacterAnimation() {
     this.animationInterval = setInterval(() => {
-      if (this.isDying) {
+      if (this.isDying || Game.paused) {
+        this.stopSnoring();
         return;
       }
-      if (Game.paused) return;
-      if (this.isDead()) {
-        this.playAnimation(this.imageCharDead);
-      } else if (this.isHurt()) {
-        this.playAnimation(this.imageCharHurt);
-      } else if (this.isAboveGround()) {
-        this.playAnimation(this.imageCharJump);
-      } else if (this.isWalking()) {
-        this.playAnimation(this.imageCharWalking);
-      } else if (this.isSleeping()) {
-        this.playAnimation(this.imageCharSleep);
-      } else {
-        this.playAnimation(this.imageCharIdle);
-      }
+      const animation = this.getCurrentAnimation();
+      this.playAnimation(animation);
+      this.updateSnoring(animation === this.imageCharSleep);
     }, 100);
+  }
+
+  getCurrentAnimation() {
+    if (this.isDead()) return this.imageCharDead;
+    if (this.isHurt()) return this.imageCharHurt;
+    if (this.isAboveGround()) return this.imageCharJump;
+    if (this.isWalking()) return this.imageCharWalking;
+    if (this.isSleeping()) return this.imageCharSleep;
+    return this.imageCharIdle;
+  }
+
+  updateSnoring(asleep) {
+    if (asleep) {
+      this.startSnoring();
+    } else {
+      this.stopSnoring();
+    }
+  }
+
+  startSnoring() {
+    if (this.isSnoring) return;
+    this.isSnoring = true;
+    this.gameMatch.control.playEffect("snore");
+  }
+
+  stopSnoring() {
+    if (!this.isSnoring) return;
+    this.isSnoring = false;
+    this.gameMatch.control.stopEffect("snore");
   }
 
   updateCamera() {
@@ -192,6 +213,7 @@ class Character extends MovableObj {
   dieCahracter() {
     if (this.isDying) return;
     this.isDying = true;
+    this.stopSnoring();
     this.gameMatch.control.playEffect("dead");
     this.deathTime = new Date().getTime();
     this.speedY = 8;

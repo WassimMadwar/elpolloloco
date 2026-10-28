@@ -9,7 +9,9 @@ class Control {
     chickJump: "assets/sounds/jumpSmallchick.mp3",
     showBoss: "assets/sounds/showBoss.wav",
     bossHurt: "assets/sounds/hartEndBoss.mp3",
+    snore: "assets/sounds/snor.mp3",
   };
+  static LOOPING_EFFECTS = ["snore"];
   static HIT_PADDING = 4;
 
   muted = Control.loadMuted();
@@ -91,6 +93,15 @@ class Control {
     Object.entries(Control.SOUND_EFFECTS).forEach(([name, src]) =>
       this.loadEffect(name, src),
     );
+    Control.LOOPING_EFFECTS.forEach((name) => {
+      this.effects[name].loop = true;
+    });
+  }
+
+  stopEffect(name) {
+    const effect = this.effects[name];
+    effect.pause();
+    effect.currentTime = 0;
   }
 
   playEffect(name, restart = true) {
