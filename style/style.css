@@ -24,7 +24,9 @@ body {
     overflow: hidden;
     background: url("../assets/img/5_background/pageBG2.jpg") center / cover no-repeat;
     font-family: "zabras", sans-serif;
+    cursor:pointer;
 }
+
 
 h1 {
     position: absolute;
