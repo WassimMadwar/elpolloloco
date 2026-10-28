@@ -37,6 +37,10 @@ class Endboss extends MovableObj {
     this.startThrowingChicks();
   }
 
+  /**
+   * Starts the animation interval (every 200 ms).
+   * Plays the dead, hurt or walking animation depending on the boss state.
+   */
   animate() {
     this.animateInterval = setInterval(() => {
       if (Game.paused) return;
@@ -50,12 +54,20 @@ class Endboss extends MovableObj {
     }, 200);
   }
 
+  /**
+   * Stops the boss completely: the animation and the throwing of chicks.
+   */
   stop() {
     clearInterval(this.animateInterval);
     clearTimeout(this.throwTimeout);
     clearInterval(this.throwInterval);
   }
 
+  /**
+   * Handles a bottle hit on the boss.
+   * Plays the hurt sound, counts the hit and updates the boss health bar.
+   * The boss dies after maxHits hits.
+   */
   hit() {
     if (this.isDying) return;
     this.gameMatch.control.playEffect("bossHurt");
@@ -70,6 +82,11 @@ class Endboss extends MovableObj {
     }
   }
 
+  /**
+   * Shows the boss health bar and plays the boss sound once
+   * when the character comes within the trigger distance.
+   * @param {Character} character - The playable character.
+   */
   checkReached(character) {
     if (this.gameMatch.statusBars.visbilityEndBossBar) return;
     if (character.x >= this.x - this.triggerDistance) {
@@ -78,6 +95,10 @@ class Endboss extends MovableObj {
     }
   }
 
+  /**
+   * Starts the death of the boss.
+   * Saves the time of death and stops the throwing of chicks.
+   */
   die() {
     if (this.isDying) return;
     this.isDying = true;
@@ -86,12 +107,19 @@ class Endboss extends MovableObj {
     clearInterval(this.throwInterval);
   }
 
+  /**
+   * Starts throwing chicks: the first one after 16 seconds, then one every 12 seconds.
+   */
   startThrowingChicks() {
     this.throwTimeout = setTimeout(() => {
       this.throwInterval = setInterval(() => this.throwChick(), 12000);
     }, 16000);
   }
 
+  /**
+   * Throws a new chick from the boss position into the level and plays the chick sound.
+   * Skipped while the game is paused or the boss is dying.
+   */
   throwChick() {
     if (Game.paused || this.isDying || !this.gameMatch) return;
     const chick = new SmallChick(this.x, this.y);

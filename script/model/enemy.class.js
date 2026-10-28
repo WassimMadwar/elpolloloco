@@ -20,6 +20,9 @@ class Enemy extends MovableObj {
     this.animate();
   }
 
+  /**
+   * Starts the walking animation (every 200 ms). Skipped while the game is paused.
+   */
   animateEnemyWalking() {
     this.walkInterval = setInterval(() => {
       if (Game.paused) return;
@@ -27,16 +30,26 @@ class Enemy extends MovableObj {
     }, 200);
   }
 
+  /**
+   * Starts the movement of the enemy: it walks continuously to the left.
+   */
   animate() {
     this.moveLeft();
   }
 
+  /**
+   * Stops the enemy completely: the walking animation, the movement and the gravity.
+   */
   stop() {
     clearInterval(this.walkInterval);
     clearInterval(this.moveInterval);
     clearInterval(this.gravityInterval);
   }
 
+  /**
+   * Starts the death of the enemy.
+   * Saves the time of death, stops walking and shows the dead image.
+   */
   die() {
     if (this.isDying) return;
     this.isDying = true;
@@ -46,6 +59,10 @@ class Enemy extends MovableObj {
     this.loadImg("assets/img/3_enemies_chicken/chicken_normal/2_dead/dead.png");
   }
 
+  /**
+   * Checks whether the dead enemy has been shown long enough (2 seconds) to be removed.
+   * @returns {boolean} True if the enemy can be removed from the level.
+   */
   isReadyToRemove() {
     return this.isDying && new Date().getTime() - this.deathTime > 2000;
   }

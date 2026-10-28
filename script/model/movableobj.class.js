@@ -9,20 +9,30 @@ class MovableObj extends DrawableObj {
   energy = 100;
   lastHit = 0;
   isDying = false;
-  // Transparent space around the visible image that should not collide.
   offset = { top: 0, left: 0, right: 0, bottom: 0 };
 
+  /**
+   * Shows the next frame of an animation.
+   * @param {string[]} arrImg - The image paths of the animation.
+   */
   playAnimation(arrImg) {
     let path = arrImg[this.currentImg % arrImg.length];
     this.img = this.imageCache[path];
     this.updateCurrentImg(arrImg.length);
   }
 
+  /**
+   * Moves the object 8 units to the right and lets it look to the right.
+   */
   moveRight() {
     this.x += 8;
     this.otherDirection = false;
   }
 
+  /**
+   * Starts moving the object continuously to the left (10 times per second).
+   * Skipped while the game is paused.
+   */
   moveLeft() {
     this.moveInterval = setInterval(() => {
       if (Game.paused) return;
@@ -30,10 +40,18 @@ class MovableObj extends DrawableObj {
     }, 1000 / 10);
   }
 
+  /**
+   * Checks whether the object is moving downward.
+   * @returns {boolean} True if the object is falling.
+   */
   isFalling() {
     return this.speedY < 0;
   }
 
+  /**
+   * Starts the gravity (25 times per second).
+   * Lets the object fall until it reaches the ground. A dying object keeps falling.
+   */
   applyGravity() {
     this.gravityInterval = setInterval(() => {
       if (Game.paused) return;
@@ -51,15 +69,27 @@ class MovableObj extends DrawableObj {
     }, 1000 / 25);
   }
 
+  /**
+   * Moves the object by its vertical speed and reduces the speed by the acceleration.
+   */
   goDown() {
     this.y -= this.speedY;
     this.speedY -= this.acceleration;
   }
 
+  /**
+   * Checks whether the object is above the ground.
+   * @returns {boolean} True if the object is in the air.
+   */
   isAboveGround() {
     return this.y < this.groundY;
   }
 
+  /**
+   * Checks whether the collision boxes of this object and another object overlap.
+   * @param {MovableObj} movableObj - The other object.
+   * @returns {boolean} True if both objects touch each other.
+   */
   isColliding(movableObj) {
     const a = this.getHitbox();
     const b = movableObj.getHitbox();
@@ -71,6 +101,10 @@ class MovableObj extends DrawableObj {
     );
   }
 
+  /**
+   * Returns the collision box of the object without its transparent edges (see offset).
+   * @returns {{left: number, right: number, top: number, bottom: number}} The edges of the box in game units.
+   */
   getHitbox() {
     return {
       left: this.x + this.offset.left,
@@ -80,6 +114,9 @@ class MovableObj extends DrawableObj {
     };
   }
 
+  /**
+   * Reduces the energy by 5 after a hit and saves the time of the hit.
+   */
   hit() {
     this.energy -= 5;
     if (this.energy <= 0) {
@@ -89,10 +126,18 @@ class MovableObj extends DrawableObj {
     }
   }
 
+  /**
+   * Checks whether the last hit was less than 5 seconds ago.
+   * @returns {boolean} True if the object is still hurt.
+   */
   isHurt() {
     return new Date().getTime() - this.lastHit < 5000;
   }
-  //
+
+  /**
+   * Checks whether the object has no energy left or is dying.
+   * @returns {boolean} True if the object is dead.
+   */
   isDead() {
     return this.energy == 0 || this.isDying;
   }
