@@ -9,6 +9,8 @@ class MovableObj extends DrawableObj {
   energy = 100;
   lastHit = 0;
   isDying = false;
+  // Transparent space around the visible image that should not collide.
+  offset = { top: 0, left: 0, right: 0, bottom: 0 };
 
   playAnimation(arrImg) {
     let path = arrImg[this.currentImg % arrImg.length];
@@ -59,20 +61,23 @@ class MovableObj extends DrawableObj {
   }
 
   isColliding(movableObj) {
+    const a = this.getHitbox();
+    const b = movableObj.getHitbox();
     return (
-      this.x + this.width > movableObj.x &&
-      this.x < movableObj.x &&
-      this.getHitboxY() + this.getHitboxHeight() > movableObj.y &&
-      this.getHitboxY() < movableObj.y + movableObj.height
+      a.right > b.left &&
+      a.left < b.right &&
+      a.bottom > b.top &&
+      a.top < b.bottom
     );
   }
 
-  getHitboxY() {
-    return this.y;
-  }
-
-  getHitboxHeight() {
-    return this.height;
+  getHitbox() {
+    return {
+      left: this.x + this.offset.left,
+      right: this.x + this.width - this.offset.right,
+      top: this.y + this.offset.top,
+      bottom: this.y + this.height - this.offset.bottom,
+    };
   }
 
   hit() {

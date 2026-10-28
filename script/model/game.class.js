@@ -2,6 +2,8 @@ class Game {
   static VIEW_WIDTH = 300;
   static VIEW_HEIGHT = 150;
   static paused = false;
+  // DEBUG: draws collision boxes as red outlines. Remove after testing.
+  static SHOW_HITBOXES = false;
   character;
   level;
   ctx;
@@ -11,7 +13,7 @@ class Game {
   keyAction;
   camera_x = -100;
   runGameInterval;
-  bottleCheckInterval;
+  fastCheckInterval;
   statusBars;
   bottlesObj = [];
   coinCount = 0;
@@ -89,6 +91,7 @@ class Game {
     this.statusBars.draw(this.ctx);
     this.drawControlIcons();
     this.drawWithCamera(() => this.addingAggregateElements());
+    if (Game.SHOW_HITBOXES) this.drawWithCamera(() => this.drawHitboxes()); // DEBUG
     this.touchControls.draw(this.ctx);
     this.drawGameResult();
     if (this.control.pauseMenuOpen) this.control.drawStartPanel();
@@ -107,6 +110,28 @@ class Game {
     this.control.drawStartScreen();
     requestAnimationFrame(() => this.draw());
     return true;
+  }
+
+  // DEBUG: remove together with Game.SHOW_HITBOXES after testing.
+  drawHitboxes() {
+    const objects = [
+      this.character,
+      ...this.level.enemies,
+      ...this.level.coins,
+      ...this.level.bottles,
+      ...this.bottlesObj,
+    ];
+    this.ctx.strokeStyle = "red";
+    this.ctx.lineWidth = 0.5;
+    objects.forEach((obj) => {
+      const box = obj.getHitbox();
+      this.ctx.strokeRect(
+        box.left,
+        box.top,
+        box.right - box.left,
+        box.bottom - box.top,
+      );
+    });
   }
 
   addingAggregateElements() {
@@ -224,21 +249,35 @@ class Game {
       this.checkCoinCollisions();
       this.checkGroundBottleCollisions();
     }, 200);
-    this.runBottleChecks();
+    this.runFastChecks();
   }
 
-  runBottleChecks() {
-    clearInterval(this.bottleCheckInterval);
-    this.bottleCheckInterval = setInterval(() => {
+  runFastChecks() {
+    clearInterval(this.fastCheckInterval);
+    this.fastCheckInterval = setInterval(() => {
       if (Game.paused) return;
       this.checkBottleCollisions();
+      this.checkStomps();
     }, 50);
+  }
+
+  checkStomps() {
+    if (this.character.isDying) return;
+    this.level.enemies.forEach((enemy) => {
+      if (this.isStomped(enemy)) enemy.die();
+    });
+  }
+
+  isStomped(enemy) {
+    if (!(enemy instanceof Enemy) || enemy.isDying) return false;
+    if (!this.character.isColliding(enemy)) return false;
+    return this.character.canStomp(enemy);
   }
 
   checkCollision() {
     this.level.enemies.forEach((enemy) => {
       if (!this.character.isColliding(enemy) || enemy.isDying) return;
-      if (enemy instanceof Enemy && this.character.isFalling()) {
+      if (this.isStomped(enemy)) {
         enemy.die();
       } else {
         this.character.hit();
@@ -436,7 +475,7 @@ class Game {
     this.bottlesObj.forEach((bottle) => bottle.stopBottle());
     this.bottlesObj = [];
     clearInterval(this.runGameInterval);
-    clearInterval(this.bottleCheckInterval);
+    clearInterval(this.fastCheckInterval);
     this.resetCounters();
     this.control.gameStarted = false;
   }

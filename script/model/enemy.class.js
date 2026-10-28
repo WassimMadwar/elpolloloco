@@ -4,6 +4,7 @@ class Enemy extends MovableObj {
     "assets/img/3_enemies_chicken/chicken_normal/1_walk/2_w.png",
     "assets/img/3_enemies_chicken/chicken_normal/1_walk/3_w.png",
   ];
+  offset = { top: 2, left: 1, right: 1, bottom: 2 };
   // currentImg = 0;
   static countchicken = 0;
   constructor() {

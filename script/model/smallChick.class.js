@@ -4,6 +4,7 @@ class SmallChick extends Enemy {
     "assets/img/3_enemies_chicken/chicken_small/1_walk/2_w.png",
     "assets/img/3_enemies_chicken/chicken_small/1_walk/3_w.png",
   ];
+  offset = { top: 2, left: 2, right: 2, bottom: 2 };
 
   constructor(x, y) {
     super();

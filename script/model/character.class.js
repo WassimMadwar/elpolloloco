@@ -1,7 +1,14 @@
 class Character extends MovableObj {
+  // ===== STOMP RULE: change when a jump kills a chicken here =====
+  // Pepe's feet must land in this upper part of the enemy (0.5 = top half).
+  static STOMP_ZONE = 0.5;
+  // Minimum horizontal overlap between Pepe and the enemy (game units).
+  static MIN_STOMP_OVERLAP = 5;
+  // ===============================================================
   height = 100;
   y = -10;
   groundY = 32;
+  offset = { top: 40, left: 9, right: 9, bottom: 2 };
   gameMatch;
   imageCharWalking = [
     "assets/img/2_character_pepe/2_walk/W-21.png",
@@ -220,11 +227,15 @@ class Character extends MovableObj {
     this.img = this.imageCache[this.imageCharDead[5]];
   }
 
-  getHitboxY() {
-    return this.y + 40;
-  }
-
-  getHitboxHeight() {
-    return 60;
+  canStomp(enemy) {
+    if (!this.isFalling()) return false;
+    const feet = this.getHitbox();
+    const target = enemy.getHitbox();
+    const overlapX =
+      Math.min(feet.right, target.right) - Math.max(feet.left, target.left);
+    const zoneBottom =
+      target.top + (target.bottom - target.top) * Character.STOMP_ZONE;
+    const feetInZone = feet.bottom >= target.top && feet.bottom <= zoneBottom;
+    return feetInZone && overlapX >= Character.MIN_STOMP_OVERLAP;
   }
 }
