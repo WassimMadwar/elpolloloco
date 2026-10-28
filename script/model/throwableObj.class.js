@@ -68,6 +68,10 @@ class ThrowableObj extends MovableObj {
     this.splash(boss.x + 10, this.getCenterY());
   }
 
+  splashOnEnemy(enemy) {
+    this.splash(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2);
+  }
+
   splash(centerX, centerY) {
     if (this.isSplashing) return;
     this.isSplashing = true;

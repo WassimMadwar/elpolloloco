@@ -11,6 +11,7 @@ class Game {
   keyAction;
   camera_x = -100;
   runGameInterval;
+  bottleCheckInterval;
   statusBars;
   bottlesObj = [];
   coinCount = 0;
@@ -218,11 +219,20 @@ class Game {
       this.checkCollision();
       this.checkThrowedBottle();
       this.removeDeadEnemies();
-      this.checkBottleCollisions();
+      this.checkBossReached();
       this.removeOffscreenBottles();
       this.checkCoinCollisions();
       this.checkGroundBottleCollisions();
     }, 200);
+    this.runBottleChecks();
+  }
+
+  runBottleChecks() {
+    clearInterval(this.bottleCheckInterval);
+    this.bottleCheckInterval = setInterval(() => {
+      if (Game.paused) return;
+      this.checkBottleCollisions();
+    }, 50);
   }
 
   checkCollision() {
@@ -259,19 +269,29 @@ class Game {
     }
   }
 
-  checkBottleCollisions() {
+  checkBossReached() {
     const boss = this.level.enemies.find((enemy) => enemy instanceof Endboss);
-    if (!boss) return;
-    this.bottlesObj.forEach((bottle) => this.checkBottleHitsBoss(bottle, boss));
-    boss.checkReached(this.character);
+    if (boss) boss.checkReached(this.character);
   }
 
-  checkBottleHitsBoss(bottle, boss) {
-    if (bottle.hasHit || bottle.isSplashing || boss.isDying) return;
-    if (!bottle.isColliding(boss)) return;
+  checkBottleCollisions() {
+    this.bottlesObj.forEach((bottle) => this.checkBottleHits(bottle));
+  }
+
+  checkBottleHits(bottle) {
+    if (bottle.hasHit || bottle.isSplashing) return;
+    const enemy = this.level.enemies.find(
+      (enemy) => !enemy.isDying && bottle.isColliding(enemy),
+    );
+    if (!enemy) return;
     bottle.hasHit = true;
-    boss.hit();
-    bottle.splashOnBoss(boss);
+    if (enemy instanceof Endboss) {
+      enemy.hit();
+      bottle.splashOnBoss(enemy);
+    } else {
+      enemy.die();
+      bottle.splashOnEnemy(enemy);
+    }
   }
 
   removeOffscreenBottles() {
@@ -416,6 +436,7 @@ class Game {
     this.bottlesObj.forEach((bottle) => bottle.stopBottle());
     this.bottlesObj = [];
     clearInterval(this.runGameInterval);
+    clearInterval(this.bottleCheckInterval);
     this.resetCounters();
     this.control.gameStarted = false;
   }
