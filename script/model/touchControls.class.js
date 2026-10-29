@@ -18,20 +18,7 @@ class TouchControls {
   static MOVE_BUTTONS = ["left", "right"];
   static HOLD_FLAGS = { left: "left", right: "right", jump: "up" };
   static OPACITY = 0.4;
-  static FILL = "#ffc21a";
-  static FILL_PRESSED = "#d98f00";
-  static RING = "#7a2e0b";
   static BOTTLE_SCALE = 1.9;
-  static ARROW_ANGLE = { right: 0, left: Math.PI, jump: -Math.PI / 2 };
-  static ARROW_SHAPE = [
-    [-0.5, -0.16],
-    [0.05, -0.16],
-    [0.05, -0.42],
-    [0.55, 0],
-    [0.05, 0.42],
-    [0.05, 0.16],
-    [-0.5, 0.16],
-  ];
 
   game;
   canvas;
@@ -88,13 +75,7 @@ class TouchControls {
   drawButton(ctx, button) {
     const pressed = this.isPressed(button.name);
     const r = pressed ? button.r * 0.92 : button.r;
-    ctx.beginPath();
-    ctx.arc(button.x, button.y, r, 0, Math.PI * 2);
-    ctx.fillStyle = pressed ? TouchControls.FILL_PRESSED : TouchControls.FILL;
-    ctx.fill();
-    ctx.lineWidth = r * 0.1;
-    ctx.strokeStyle = TouchControls.RING;
-    ctx.stroke();
+    RoundButton.drawCircle(ctx, button.x, button.y, r, pressed);
     this.drawIcon(ctx, button.name, button.x, button.y, r);
   }
 
@@ -107,38 +88,13 @@ class TouchControls {
    * @param {number} r - The radius of the button.
    */
   drawIcon(ctx, name, x, y, r) {
-    if (name in TouchControls.ARROW_ANGLE) {
-      this.drawArrow(ctx, x, y, r, TouchControls.ARROW_ANGLE[name]);
+    if (name in RoundButton.ARROW_ANGLE) {
+      RoundButton.drawIcon(ctx, name, x, y, r);
       return;
     }
     if (!this.bottleIcon.naturalWidth) return;
     const size = r * TouchControls.BOTTLE_SCALE;
     ctx.drawImage(this.bottleIcon, x - size / 2, y - size / 2, size, size);
-  }
-
-  /**
-   * Draws a filled arrow in the ring color, scaled to the button and rotated in its direction.
-   * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on.
-   * @param {number} x - The x position of the button center.
-   * @param {number} y - The y position of the button center.
-   * @param {number} r - The radius of the button.
-   * @param {number} angle - The direction of the arrow in radians (0 = right).
-   */
-  drawArrow(ctx, x, y, r, angle) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(angle);
-    ctx.scale(r, r);
-    ctx.beginPath();
-    TouchControls.ARROW_SHAPE.forEach(([px, py]) => ctx.lineTo(px, py));
-    ctx.closePath();
-    ctx.fillStyle = TouchControls.RING;
-    ctx.fill();
-    ctx.lineJoin = "round";
-    ctx.lineWidth = 0.08;
-    ctx.strokeStyle = TouchControls.RING;
-    ctx.stroke();
-    ctx.restore();
   }
 
   /**

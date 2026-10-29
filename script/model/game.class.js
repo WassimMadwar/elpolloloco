@@ -27,8 +27,6 @@ class Game {
   gameOverDelay = 2000;
   resultTimeoutStarted = false;
   control = new Control();
-  pauseIcon = new Image();
-  settingsIcon = new Image();
   controlIconSize = 15;
   controlIconPadding = 5;
   controlIconGap = 5;
@@ -46,8 +44,6 @@ class Game {
     this.touchControls = new TouchControls(this);
     this.gameOverImg.src = "assets/img/You won, you lost/You lost.png";
     this.winImg.src = "assets/img/You won, you lost/You won A.png";
-    this.pauseIcon.src = "assets/img/control/pause_15x15.png";
-    this.settingsIcon.src = "assets/img/control/settings_15x15.png";
     this.control.gameMatch = this;
     this.control.ctx = this.ctx;
     this.control.renderCanvas = this.renderCanvas;
@@ -560,19 +556,18 @@ class Game {
    * Draws the pause (or play) icon and the settings icon in the top right corner.
    */
   drawControlIcons() {
-    const pauseImg = Game.paused ? this.control.playIcon : this.pauseIcon;
-    this.ctx.drawImage(
-      pauseImg,
+    RoundButton.drawInBox(
+      this.ctx,
+      Game.paused ? "play" : "pause",
       this.getPauseIconX(),
       this.controlIconPadding,
       this.controlIconSize,
-      this.controlIconSize,
     );
-    this.ctx.drawImage(
-      this.settingsIcon,
+    RoundButton.drawInBox(
+      this.ctx,
+      "settings",
       this.getSettingsIconX(),
       this.controlIconPadding,
-      this.controlIconSize,
       this.controlIconSize,
     );
   }

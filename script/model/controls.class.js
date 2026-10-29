@@ -22,34 +22,16 @@ class Control {
   gameMatch;
   ctx;
   renderCanvas;
-  speakerIcon = new Image();
-  muteIcon = new Image();
-  exitIcon = new Image();
-  reloadIcon = new Image();
-  playIcon = new Image();
   iconSize = 15;
   padding = 5;
   gap = 5;
   gameStarted = false;
   pauseMenuOpen = false;
   startBgImg = new Image();
-  jumpIcon = new Image();
-  rightIcon = new Image();
-  leftIcon = new Image();
-  throwIcon = new Image();
 
   constructor() {
-    this.speakerIcon.src = "assets/img/control/speaker_15x151.png";
-    this.muteIcon.src = "assets/img/control/mute_15x151.png";
-    this.exitIcon.src = "assets/img/control/exit_15x15.png";
-    this.reloadIcon.src = "assets/img/control/replay_15x15.png";
-    this.playIcon.src = "assets/img/control/play_15x15.png";
     this.startBgImg.src =
       "assets/img/9_intro_outro_screens/start/startscreen_2.png";
-    this.jumpIcon.src = "assets/img/control/jump.png";
-    this.rightIcon.src = "assets/img/control/right_15x15.png";
-    this.leftIcon.src = "assets/img/control/prev_arrow_15x15.png";
-    this.throwIcon.src = "assets/img/control/space_60x15.png";
     this.bgMusic = this.createSound("assets/sounds/soundBackground.mp3", 0.3);
     this.bgMusic.loop = true;
     this.startMusic();
@@ -351,7 +333,7 @@ class Control {
       this.drawPauseTopRow(y);
     } else {
       this.drawIconLabelRow(
-        this.playIcon,
+        "play",
         "Start Match",
         this.getStartRowX(),
         y,
@@ -376,14 +358,9 @@ class Control {
    * @param {number} y - The y position of the row.
    */
   drawPauseTopRow(y) {
-    this.drawIconLabelRow(this.playIcon, "Resume", this.getPauseRowItemX(0), y);
-    this.drawIconLabelRow(
-      this.reloadIcon,
-      "Restart",
-      this.getPauseRowItemX(1),
-      y,
-    );
-    this.drawIconLabelRow(this.exitIcon, "Exit", this.getPauseRowItemX(2), y);
+    this.drawIconLabelRow("play", "Resume", this.getPauseRowItemX(0), y);
+    this.drawIconLabelRow("replay", "Restart", this.getPauseRowItemX(1), y);
+    this.drawIconLabelRow("exit", "Exit", this.getPauseRowItemX(2), y);
     this.drawIconLabelRow(
       this.getSoundIcon(),
       "Sound",
@@ -394,10 +371,10 @@ class Control {
 
   /**
    * Returns the icon that matches the current mute setting.
-   * @returns {HTMLImageElement} The mute icon or the speaker icon.
+   * @returns {string} The name of the mute icon or the sound icon.
    */
   getSoundIcon() {
-    return this.muted ? this.muteIcon : this.speakerIcon;
+    return this.muted ? "mute" : "sound";
   }
 
   /**
@@ -414,11 +391,11 @@ class Control {
    */
   drawSoundRow(y) {
     const iconX = this.getSpeakerRowX();
-    this.ctx.drawImage(
+    RoundButton.drawInBox(
+      this.ctx,
       this.getSoundIcon(),
       iconX,
       y,
-      this.iconSize,
       this.iconSize,
     );
     this.ctx.fillStyle = "white";
@@ -438,27 +415,28 @@ class Control {
   }
 
   /**
-   * Draws an icon with a white label on its right.
-   * @param {HTMLImageElement} icon - The icon to draw.
+   * Draws a round icon button with a white label on its right.
+   * @param {string} icon - The name of the icon (see RoundButton).
    * @param {string} label - The text next to the icon.
    * @param {number} x - The x position of the icon.
    * @param {number} y - The y position of the icon.
-   * @param {number} [iconWidth=this.iconSize] - The width of the icon.
-   * @param {number} [iconHeight=this.iconSize] - The height of the icon.
    */
-  drawIconLabelRow(
-    icon,
-    label,
-    x,
-    y,
-    iconWidth = this.iconSize,
-    iconHeight = this.iconSize,
-  ) {
-    this.ctx.drawImage(icon, x, y, iconWidth, iconHeight);
+  drawIconLabelRow(icon, label, x, y) {
+    RoundButton.drawInBox(this.ctx, icon, x, y, this.iconSize);
+    this.drawLabel(label, x + this.iconSize + 4, y + this.iconSize / 2);
+  }
+
+  /**
+   * Draws a white label, vertically centered on a position.
+   * @param {string} label - The text to draw.
+   * @param {number} x - The left edge of the text.
+   * @param {number} y - The vertical center of the text.
+   */
+  drawLabel(label, x, y) {
     this.ctx.fillStyle = "white";
     this.ctx.font = "8px Arial";
     this.ctx.textBaseline = "middle";
-    this.ctx.fillText(label, x + iconWidth + 4, y + iconHeight / 2);
+    this.ctx.fillText(label, x, y);
   }
 
   /**
@@ -468,22 +446,23 @@ class Control {
   drawMovementRow(y) {
     const startX = 10;
     const segmentWidth = (Game.VIEW_WIDTH - 50) / 4;
-    this.drawIconLabelRow(this.leftIcon, "Left", startX, y);
-    this.drawIconLabelRow(this.jumpIcon, "Jump", startX + segmentWidth, y);
-    this.drawIconLabelRow(
-      this.rightIcon,
-      "Right",
-      startX + segmentWidth * 2,
-      y,
-    );
-    this.drawIconLabelRow(
-      this.throwIcon,
-      "Throw Bottle",
-      startX + segmentWidth * 3,
-      y + 2,
-      45,
-      11.3,
-    );
+    this.drawIconLabelRow("left", "Left", startX, y);
+    this.drawIconLabelRow("jump", "Jump", startX + segmentWidth, y);
+    this.drawIconLabelRow("right", "Right", startX + segmentWidth * 2, y);
+    this.drawThrowKey(startX + segmentWidth * 3, y);
+  }
+
+  /**
+   * Draws the Space key with the label "Throw Bottle" on its right.
+   * @param {number} x - The x position of the key.
+   * @param {number} y - The y position of the row.
+   */
+  drawThrowKey(x, y) {
+    const width = 45;
+    const height = 11.3;
+    const keyY = y + (this.iconSize - height) / 2;
+    RoundButton.drawKey(this.ctx, "Space", x, keyY, width, height);
+    this.drawLabel("Throw Bottle", x + width + 4, y + this.iconSize / 2);
   }
 
   /**
