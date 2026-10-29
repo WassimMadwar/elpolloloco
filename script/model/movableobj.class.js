@@ -131,7 +131,7 @@ class MovableObj extends DrawableObj {
    * @returns {boolean} True if the object is still hurt.
    */
   isHurt() {
-    return new Date().getTime() - this.lastHit < 5000;
+    return new Date().getTime() - this.lastHit < 1000;
   }
 
   /**
