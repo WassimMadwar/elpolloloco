@@ -1,8 +1,23 @@
 function createLevel1() {
   Enemy.countchicken = 0;
   return new Level(
-    // new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),
-    [new Enemy(), new Endboss()],
+    [
+      new Enemy(),
+      new Enemy(),
+      new Enemy(),
+      new Enemy(),
+      new Enemy(),
+      new Enemy(),
+      new Enemy(),
+      new Enemy(),
+      new Enemy(),
+      new Enemy(),
+      new Enemy(),
+      new Enemy(),
+      new Enemy(),
+      new Enemy(),
+      new Endboss(),
+    ],
     [
       new Cloud("assets/img/5_background/layers/4_clouds/1.png", 0),
       new Cloud("assets/img/5_background/layers/4_clouds/2.png", 225),
