@@ -119,14 +119,15 @@ class Character extends MovableObj {
   /**
    * Starts the movement interval (every 100 ms).
    * Moves the character left or right, triggers jumps from the key state
-   * and keeps the camera following the character. Skipped while paused or dying.
+   * and keeps the camera following the character.
+   * Skipped while paused, dying or after the end of the match.
    */
   handleCharacterMovement() {
     this.controlInterval = setInterval(() => {
       if (this.clearIntervalAfterDead()) {
         return;
       }
-      if (Game.paused) return;
+      if (Game.paused || this.gameMatch.matchOver) return;
       this.handelMoveRight();
       this.handelMoveLeft();
       if (this.gameMatch.keyAction.up) {
@@ -172,9 +173,11 @@ class Character extends MovableObj {
 
   /**
    * Checks whether the left or right key is currently pressed.
+   * After the end of the match the character never walks.
    * @returns {boolean} True if the character is walking.
    */
   isWalking() {
+    if (this.gameMatch.matchOver) return false;
     return this.gameMatch.keyAction.right || this.gameMatch.keyAction.left;
   }
 
@@ -297,6 +300,7 @@ class Character extends MovableObj {
     this.deathTime = new Date().getTime();
     this.speedY = 8;
     this.img = this.imageCache[this.imageCharDead[5]];
+    this.gameMatch.endMatch();
   }
 
   /**

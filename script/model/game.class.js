@@ -26,6 +26,7 @@ class Game {
   winImg = new Image();
   gameOverDelay = 2000;
   resultTimeoutStarted = false;
+  matchOver = false;
   control = new Control();
   controlIconSize = 15;
   controlIconPadding = 5;
@@ -62,6 +63,7 @@ class Game {
     this.character = new Character();
     this.level = createLevel1();
     this.statusBars = new StatusBars();
+    this.matchOver = false;
     this.setupGame();
     this.checkCollision();
     this.runGame();
@@ -221,6 +223,7 @@ class Game {
    */
   restartGame() {
     this.clearResultTimeout();
+    this.matchOver = false;
     this.character.stop();
     this.stopCurrentLevel();
     this.bottlesObj.forEach((bottle) => bottle.stopBottle());
@@ -306,16 +309,18 @@ class Game {
   /**
    * Starts the main game loop (every 200 ms) for collisions, throwing, coins and bottles,
    * and starts the fast checks. Skipped while the game is paused.
+   * After the end of the match only finished bottle splashes are still removed.
    */
   runGame() {
     clearInterval(this.runGameInterval);
     this.runGameInterval = setInterval(() => {
       if (Game.paused) return;
+      this.removeOffscreenBottles();
+      if (this.matchOver) return;
       this.checkCollision();
       this.checkThrowedBottle();
       this.removeDeadEnemies();
       this.checkBossReached();
-      this.removeOffscreenBottles();
       this.checkCoinCollisions();
       this.checkGroundBottleCollisions();
     }, 200);
@@ -324,12 +329,12 @@ class Game {
 
   /**
    * Starts the fast check loop (every 50 ms) for bottle hits and stomps,
-   * so fast moving objects are not missed. Skipped while the game is paused.
+   * so fast moving objects are not missed. Skipped while the game is paused or the match is over.
    */
   runFastChecks() {
     clearInterval(this.fastCheckInterval);
     this.fastCheckInterval = setInterval(() => {
-      if (Game.paused) return;
+      if (Game.paused || this.matchOver) return;
       this.checkBottleCollisions();
       this.checkStomps();
     }, 50);
@@ -623,6 +628,34 @@ class Game {
   }
 
   /**
+   * Ends the match once the character or the boss starts dying.
+   * Freezes all enemies, clouds and coins and removes the bottles still in the air.
+   * A dying boss keeps playing its death animation.
+   */
+  endMatch() {
+    if (this.matchOver) return;
+    this.matchOver = true;
+    this.level.enemies.forEach((enemy) => {
+      if (!(enemy instanceof Endboss && enemy.isDying)) enemy.stop();
+    });
+    this.level.clouds.forEach((cloud) => cloud.stop());
+    this.level.coins.forEach((coin) => coin.stop());
+    this.removeFlyingBottles();
+  }
+
+  /**
+   * Removes all thrown bottles that have not hit anything yet.
+   * Bottles that already hit an enemy finish their splash.
+   */
+  removeFlyingBottles() {
+    this.bottlesObj = this.bottlesObj.filter((bottle) => {
+      const flying = !bottle.hasHit && !bottle.isSplashing;
+      if (flying) bottle.stopBottle();
+      return !flying;
+    });
+  }
+
+  /**
    * Stops all enemies, clouds and coins of the current level.
    */
   stopCurrentLevel() {
@@ -648,6 +681,7 @@ class Game {
    */
   exitToStartScreen() {
     this.clearResultTimeout();
+    this.matchOver = false;
     this.character.stop();
     this.stopCurrentLevel();
     this.bottlesObj.forEach((bottle) => bottle.stopBottle());

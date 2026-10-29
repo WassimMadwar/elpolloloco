@@ -97,7 +97,7 @@ class Endboss extends MovableObj {
 
   /**
    * Starts the death of the boss.
-   * Saves the time of death and stops the throwing of chicks.
+   * Saves the time of death, stops the throwing of chicks and ends the match.
    */
   die() {
     if (this.isDying) return;
@@ -105,6 +105,7 @@ class Endboss extends MovableObj {
     this.deathTime = new Date().getTime();
     clearTimeout(this.throwTimeout);
     clearInterval(this.throwInterval);
+    this.gameMatch.endMatch();
   }
 
   /**

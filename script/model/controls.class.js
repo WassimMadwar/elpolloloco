@@ -345,28 +345,42 @@ class Control {
 
   /**
    * Returns the x position of an entry in the pause menu row.
-   * @param {number} index - The position of the entry (0 to 3).
+   * @param {number} index - The position of the entry.
+   * @param {number} count - The number of entries in the row.
    * @returns {number} The x position in game units.
    */
-  getPauseRowItemX(index) {
-    const segmentWidth = (Game.VIEW_WIDTH - 20) / 4;
+  getPauseRowItemX(index, count) {
+    const segmentWidth = (Game.VIEW_WIDTH - 20) / count;
     return 10 + segmentWidth * index;
   }
 
   /**
-   * Draws the pause menu entries: Resume, Restart, Exit and Sound.
+   * Returns the entries of the pause menu: Resume, Restart, Exit and Sound.
+   * After the end of the match (won or lost) there is no Resume entry.
+   * @returns {{icon: string, label: string, action: Function}[]} The menu entries.
+   */
+  getPauseMenuItems() {
+    const items = [
+      { icon: "replay", label: "Restart", action: () => this.gameMatch.restartGame() },
+      { icon: "exit", label: "Exit", action: () => this.gameMatch.exitToStartScreen() },
+      { icon: this.getSoundIcon(), label: "Sound", action: () => this.swwitchSound() },
+    ];
+    if (!this.gameMatch.matchOver) {
+      items.unshift({ icon: "play", label: "Resume", action: () => this.togglePauseMenu() });
+    }
+    return items;
+  }
+
+  /**
+   * Draws the pause menu entries, evenly spread over the row.
    * @param {number} y - The y position of the row.
    */
   drawPauseTopRow(y) {
-    this.drawIconLabelRow("play", "Resume", this.getPauseRowItemX(0), y);
-    this.drawIconLabelRow("replay", "Restart", this.getPauseRowItemX(1), y);
-    this.drawIconLabelRow("exit", "Exit", this.getPauseRowItemX(2), y);
-    this.drawIconLabelRow(
-      this.getSoundIcon(),
-      "Sound",
-      this.getPauseRowItemX(3),
-      y,
-    );
+    const items = this.getPauseMenuItems();
+    items.forEach((item, index) => {
+      const x = this.getPauseRowItemX(index, items.length);
+      this.drawIconLabelRow(item.icon, item.label, x, y);
+    });
   }
 
   /**
@@ -493,25 +507,15 @@ class Control {
   }
 
   /**
-   * Handles a click in the pause menu: Resume, Restart, Exit or Sound.
+   * Handles a click in the pause menu and runs the action of the clicked entry.
    * @param {{x: number, y: number}} pos - The click position in game units.
    */
   handlePauseTopRowClick(pos) {
     const y = this.getStartRowY(1);
-    if (this.isLabelRowHit(pos, this.getPauseRowItemX(0), y, "Resume")) {
-      this.togglePauseMenu();
-      return;
-    }
-    if (this.isLabelRowHit(pos, this.getPauseRowItemX(1), y, "Restart")) {
-      this.gameMatch.restartGame();
-      return;
-    }
-    if (this.isLabelRowHit(pos, this.getPauseRowItemX(2), y, "Exit")) {
-      this.gameMatch.exitToStartScreen();
-      return;
-    }
-    if (this.isLabelRowHit(pos, this.getPauseRowItemX(3), y, "Sound")) {
-      this.swwitchSound();
-    }
+    const items = this.getPauseMenuItems();
+    const clicked = items.find((item, index) =>
+      this.isLabelRowHit(pos, this.getPauseRowItemX(index, items.length), y, item.label),
+    );
+    if (clicked) clicked.action();
   }
 }
