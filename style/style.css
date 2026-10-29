@@ -66,14 +66,17 @@ canvas {
 }
 
 body.impressum {
-    justify-content: flex-start;
-    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    text-align: center;
     background-size: 100% calc(100% + 1800px);
     overflow-y: auto;
     background-position: top center;
+    max-width: 1440px;
 }
 
 body.impressum p {
+    
     font-size: 30px;
     padding: 0 30px;
 
