@@ -24,7 +24,7 @@ class Endboss extends MovableObj {
     "assets/img/4_enemie_boss_chicken/5_dead/G26.png",
   ];
   hitsTaken = 0;
-  maxHits = 5;
+  maxHits = 8;
   triggerDistance = 300;
 
   constructor() {

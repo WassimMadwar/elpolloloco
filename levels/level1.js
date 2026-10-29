@@ -1,7 +1,8 @@
 function createLevel1() {
   Enemy.countchicken = 0;
   return new Level(
-    [new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(), new Endboss()],
+    // new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),new Enemy(),
+    [new Enemy(), new Endboss()],
     [
       new Cloud("assets/img/5_background/layers/4_clouds/1.png", 0),
       new Cloud("assets/img/5_background/layers/4_clouds/2.png", 225),
@@ -141,10 +142,13 @@ function createLevel1() {
       new Coin(1750, 30),
     ],
     [
-      new Bottle(972, 90),
+      new Bottle(800, 90),
+      new Bottle(820, 90),
+      new Bottle(900, 30),
+      new Bottle(970, 90),
       new Bottle(1083, 30),
       new Bottle(1305, 30),
-      new Bottle(1416, 90),
+      new Bottle(1416, 30),
       new Bottle(1528, 30),
     ],
   );

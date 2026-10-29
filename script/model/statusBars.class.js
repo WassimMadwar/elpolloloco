@@ -13,6 +13,9 @@ class StatusBars {
   endboss = new StatusBar(this.endbossImages, 100, 0, 0);
   endbossPaddingRight = 5;
   endbossPaddingTop = 20;
+  // Start and end of the blue fill inside the boss bar image (in image pixels).
+  endbossFillStart = 97;
+  endbossFillEnd = 585;
   visbilityEndBossBar = false;
 
   /**
@@ -37,11 +40,41 @@ class StatusBars {
 
   /**
    * Draws the boss health bar in the top right corner, below the control icons.
+   * The empty bar is drawn first, then the left part of the full bar on top of it,
+   * so the blue fill matches the exact boss health (one step per hit).
    * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on.
    */
   drawEndbossBar(ctx) {
-    const x = Game.VIEW_WIDTH - this.endboss.width - this.endbossPaddingRight;
-    ctx.drawImage(this.endboss.img, x, this.endbossPaddingTop, this.endboss.width, this.endboss.height);
+    const bar = this.endboss;
+    const x = Game.VIEW_WIDTH - bar.width - this.endbossPaddingRight;
+    const emptyImg = bar.imageCache[this.endbossImages[0]];
+    const fullImg = bar.imageCache[this.endbossImages[5]];
+    ctx.drawImage(emptyImg, x, this.endbossPaddingTop, bar.width, bar.height);
+    if (bar.percentge <= 0 || !fullImg.naturalWidth) return;
+    const sourceWidth = this.getEndbossFillWidth(bar.percentge);
+    const scale = bar.width / fullImg.naturalWidth;
+    ctx.drawImage(
+      fullImg,
+      0,
+      0,
+      sourceWidth,
+      fullImg.naturalHeight,
+      x,
+      this.endbossPaddingTop,
+      sourceWidth * scale,
+      bar.height,
+    );
+  }
+
+  /**
+   * Returns how much of the full boss bar image is drawn for a health value.
+   * @param {number} percentage - The boss health from 0 to 100.
+   * @returns {number} The width in image pixels, measured from the left edge of the image.
+   */
+  getEndbossFillWidth(percentage) {
+    const fillRange = this.endbossFillEnd - this.endbossFillStart;
+    if (percentage >= 100) return this.endboss.imageCache[this.endbossImages[5]].naturalWidth;
+    return this.endbossFillStart + (fillRange * percentage) / 100;
   }
 
   /**
