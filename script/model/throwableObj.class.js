@@ -3,6 +3,8 @@ class ThrowableObj extends MovableObj {
   static SPLASH_WIDTH = 45;
   static SPLASH_HEIGHT = 35;
   static GROUND_SPLASH_Y = 112;
+  // The ground line in the level (where the character's feet stand).
+  static GROUND_LEVEL = 130;
   gameMatch;
   hasHit = false;
   isSplashing = false;
@@ -32,6 +34,7 @@ class ThrowableObj extends MovableObj {
     this.loadImgMoving(this.imgBottleSplash);
     this.height = 25;
     this.width = 30;
+    this.groundY = ThrowableObj.GROUND_LEVEL - this.height;
     this.throwBottle();
     this.animateBottleRotation();
   }
@@ -47,19 +50,29 @@ class ThrowableObj extends MovableObj {
 
   /**
    * Throws the bottle in an arc in the direction the character is looking.
-   * The bottle breaks when it reaches the ground. Skipped while the game is paused.
+   * Skipped while the game is paused.
    */
   throwBottle() {
     this.speedY = 3;
     this.applyGravity();
     this.moveInterval = setInterval(() => {
       if (Game.paused) return;
-      if (!this.isAboveGround()) {
-        this.splashOnGround();
-        return;
-      }
       this.x += this.otherDirection ? -6 : 6;
     }, 50);
+  }
+
+  /**
+   * Starts the gravity of the bottle (25 times per second).
+   * The bottle breaks in the same step in which its bottom reaches the ground.
+   */
+  applyGravity() {
+    this.gravityInterval = setInterval(() => {
+      if (Game.paused) return;
+      this.goDown();
+      if (this.isAboveGround()) return;
+      this.y = this.groundY;
+      this.splashOnGround();
+    }, 1000 / 25);
   }
 
   /**

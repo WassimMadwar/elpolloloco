@@ -22,10 +22,10 @@ class MovableObj extends DrawableObj {
   }
 
   /**
-   * Moves the object 8 units to the right and lets it look to the right.
+   * Moves the object 5 units to the right and lets it look to the right.
    */
   moveRight() {
-    this.x += 8;
+    this.x += 5;
     this.otherDirection = false;
   }
 
