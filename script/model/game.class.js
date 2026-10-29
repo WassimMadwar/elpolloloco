@@ -22,6 +22,7 @@ class Game {
   totalBottles = 5;
   throwableBottles = 0;
   maxThrowableBottles = 10;
+  throwsPerBottle = 2;
   gameOverImg = new Image();
   winImg = new Image();
   gameOverDelay = 2000;
@@ -496,23 +497,36 @@ class Game {
   }
 
   /**
-   * Collects every bottle on the ground the character touches.
+   * Collects every bottle on the ground the character touches,
+   * as long as there is room for it. Otherwise the bottle stays on the ground.
    */
   checkGroundBottleCollisions() {
     this.level.bottles = this.level.bottles.filter((bottle) => {
-      const collected = this.character.isColliding(bottle);
+      const collected =
+        this.canCollectBottle() && this.character.isColliding(bottle);
       if (collected) this.collectBottle();
       return !collected;
     });
   }
 
   /**
-   * Counts a collected bottle, adds two throwable bottles,
+   * Checks whether one more bottle fits: the character carries at most
+   * maxThrowableBottles throws (5 bottles with throwsPerBottle throws each).
+   * @returns {boolean} True if a bottle can be picked up.
+   */
+  canCollectBottle() {
+    return (
+      this.throwableBottles + this.throwsPerBottle <= this.maxThrowableBottles
+    );
+  }
+
+  /**
+   * Counts a collected bottle, adds its throwable bottles,
    * plays the pickup sound and updates the bottle bar.
    */
   collectBottle() {
     this.bottleCount++;
-    this.throwableBottles += 2;
+    this.throwableBottles += this.throwsPerBottle;
     this.control.playEffect("takeBottle");
     this.updateBottleBar();
   }

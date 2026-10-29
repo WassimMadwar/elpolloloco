@@ -26,6 +26,12 @@ class Endboss extends MovableObj {
   hitsTaken = 0;
   maxHits = 8;
   triggerDistance = 300;
+  // Back-and-forth movement after the first hit: half of the character's
+  // walking speed (8 units per 100 ms), in steps of 1000 / 25 ms.
+  patrolRange = 100;
+  patrolStep = 1.6;
+  patrolStartX;
+  patrolDirection = 1;
 
   constructor() {
     super();
@@ -55,23 +61,53 @@ class Endboss extends MovableObj {
   }
 
   /**
-   * Stops the boss completely: the animation and the throwing of chicks.
+   * Stops the boss completely: the animation, the movement and the throwing of chicks.
    */
   stop() {
     clearInterval(this.animateInterval);
+    clearInterval(this.patrolInterval);
     clearTimeout(this.throwTimeout);
     clearInterval(this.throwInterval);
   }
 
   /**
+   * Starts moving the boss back and forth (25 times per second):
+   * patrolRange units to the right of his start position and back again.
+   * Only starts once. Skipped while the game is paused.
+   */
+  startPatrol() {
+    if (this.patrolInterval) return;
+    this.patrolStartX = this.x;
+    this.patrolInterval = setInterval(() => {
+      if (Game.paused) return;
+      this.patrol();
+    }, 1000 / 25);
+  }
+
+  /**
+   * Moves the boss one step and turns around at the ends of the patrol range.
+   */
+  patrol() {
+    this.x += this.patrolStep * this.patrolDirection;
+    if (this.x >= this.patrolStartX + this.patrolRange) {
+      this.x = this.patrolStartX + this.patrolRange;
+      this.patrolDirection = -1;
+    } else if (this.x <= this.patrolStartX) {
+      this.x = this.patrolStartX;
+      this.patrolDirection = 1;
+    }
+  }
+
+  /**
    * Handles a bottle hit on the boss.
    * Plays the hurt sound, counts the hit and updates the boss health bar.
-   * The boss dies after maxHits hits.
+   * The first hit starts the back-and-forth movement. The boss dies after maxHits hits.
    */
   hit() {
     if (this.isDying) return;
     this.gameMatch.control.playEffect("bossHurt");
     this.hitsTaken++;
+    this.startPatrol();
     this.gameMatch.statusBars.setEndbossHealth(
       100 - (this.hitsTaken / this.maxHits) * 100,
     );
@@ -97,12 +133,13 @@ class Endboss extends MovableObj {
 
   /**
    * Starts the death of the boss.
-   * Saves the time of death, stops the throwing of chicks and ends the match.
+   * Saves the time of death, stops the movement and the throwing of chicks and ends the match.
    */
   die() {
     if (this.isDying) return;
     this.isDying = true;
     this.deathTime = new Date().getTime();
+    clearInterval(this.patrolInterval);
     clearTimeout(this.throwTimeout);
     clearInterval(this.throwInterval);
     this.gameMatch.endMatch();

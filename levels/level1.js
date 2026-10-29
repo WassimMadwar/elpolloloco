@@ -142,14 +142,17 @@ function createLevel1() {
       new Coin(1750, 30),
     ],
     [
+      new Bottle(740, 30),
       new Bottle(800, 90),
       new Bottle(820, 90),
       new Bottle(900, 30),
       new Bottle(970, 90),
       new Bottle(1083, 30),
       new Bottle(1305, 30),
-      new Bottle(1416, 30),
+      new Bottle(1416, 90),
       new Bottle(1528, 30),
+      new Bottle(1568, 30),
+      new Bottle(1600, 30),
     ],
   );
 }
