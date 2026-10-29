@@ -24,7 +24,7 @@ body {
     overflow: hidden;
     background: url("../assets/img/5_background/pageBG2.jpg") center / cover no-repeat;
     font-family: "zabras", sans-serif;
-    cursor:pointer;
+    cursor: pointer;
 }
 
 
@@ -65,6 +65,32 @@ canvas {
     margin: 0;
 }
 
+body.impressum {
+    justify-content: flex-start;
+    align-items: center;
+    background-size: 100% calc(100% + 1800px);
+    overflow-y: auto;
+    background-position: top center;
+}
+
+body.impressum p {
+    font-size: 30px;
+    padding: 0 30px;
+
+}
+
+.impr {
+    position: absolute;
+    bottom: 50px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    margin: 0;
+}
+a {
+    text-decoration: none;
+    color:black;
+}
 @media only screen and (max-width: 730px) and (orientation: portrait) {
     #orientation-warning {
         display: flex;
@@ -72,9 +98,9 @@ canvas {
 }
 
 @media only screen and (max-width: 750px),
-    only screen and (max-height: 630px),
-    only screen and (pointer: coarse) and (orientation: landscape) {
-    .game-title {
+only screen and (max-height: 630px),
+only screen and (pointer: coarse) and (orientation: landscape) {
+    .game-title ,.impr {
         display: none;
     }
 }
@@ -84,3 +110,9 @@ canvas {
         background: black;
     }
 }
+
+/* @media (max-width: 750px){
+    .impr {
+        display: none;
+    }
+} */
