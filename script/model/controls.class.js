@@ -25,6 +25,8 @@ class Control {
   iconSize = 15;
   padding = 5;
   gap = 5;
+  endScreenScale = 1.5;
+  endScreenGap = 30;
   gameStarted = false;
   pauseMenuOpen = false;
   startBgImg = new Image();
@@ -326,8 +328,13 @@ class Control {
   /**
    * Draws the top row and the help row of the panel.
    * Before the match: Start Match and Sound. During the match: the pause menu entries.
+   * After the end of the match only the end screen buttons are drawn.
    */
   drawStartPanelRows() {
+    if (this.isEndScreen()) {
+      this.drawEndScreen();
+      return;
+    }
     const y = this.getStartRowY(1);
     if (this.gameStarted) {
       this.drawPauseTopRow(y);
@@ -356,19 +363,102 @@ class Control {
 
   /**
    * Returns the entries of the pause menu: Resume, Restart, Exit and Sound.
-   * After the end of the match (won or lost) there is no Resume entry.
    * @returns {{icon: string, label: string, action: Function}[]} The menu entries.
    */
   getPauseMenuItems() {
-    const items = [
+    return [
+      { icon: "play", label: "Resume", action: () => this.togglePauseMenu() },
       { icon: "replay", label: "Restart", action: () => this.gameMatch.restartGame() },
       { icon: "exit", label: "Exit", action: () => this.gameMatch.exitToStartScreen() },
       { icon: this.getSoundIcon(), label: "Sound", action: () => this.swwitchSound() },
     ];
-    if (!this.gameMatch.matchOver) {
-      items.unshift({ icon: "play", label: "Resume", action: () => this.togglePauseMenu() });
-    }
-    return items;
+  }
+
+  /**
+   * Checks whether the panel is the end screen (the match was won or lost).
+   * @returns {boolean} True if the end screen is shown.
+   */
+  isEndScreen() {
+    return this.gameStarted && this.gameMatch.matchOver;
+  }
+
+  /**
+   * Returns the buttons of the end screen: Restart Game and Exit.
+   * @returns {{icon: string, label: string, action: Function}[]} The end screen buttons.
+   */
+  getEndScreenItems() {
+    return [
+      { icon: "replay", label: "Restart Game", action: () => this.gameMatch.restartGame() },
+      { icon: "exit", label: "Exit", action: () => this.gameMatch.exitToStartScreen() },
+    ];
+  }
+
+  /**
+   * Returns the size of the end screen buttons (1.5 times the menu buttons).
+   * @returns {number} The size in game units.
+   */
+  getEndButtonSize() {
+    return this.iconSize * this.endScreenScale;
+  }
+
+  /**
+   * Returns the label font of the end screen (1.5 times the menu font).
+   * @returns {string} The canvas font.
+   */
+  getEndLabelFont() {
+    return `${8 * this.endScreenScale}px Arial`;
+  }
+
+  /**
+   * Calculates the position and width of the end screen buttons,
+   * so that both buttons together are centered in the game view.
+   * @returns {{icon: string, label: string, action: Function, x: number, y: number, width: number}[]} The placed buttons.
+   */
+  getEndScreenLayout() {
+    const size = this.getEndButtonSize();
+    this.ctx.font = this.getEndLabelFont();
+    const items = this.getEndScreenItems().map((item) => ({
+      ...item,
+      width: size + 6 + this.ctx.measureText(item.label).width,
+    }));
+    const gap = this.endScreenGap;
+    const total =
+      items.reduce((sum, item) => sum + item.width, 0) + gap * (items.length - 1);
+    let x = (Game.VIEW_WIDTH - total) / 2;
+    const y = (Game.VIEW_HEIGHT - size) / 2;
+    return items.map((item) => {
+      const placed = { ...item, x, y };
+      x += item.width + gap;
+      return placed;
+    });
+  }
+
+  /**
+   * Draws the end screen: the two large buttons Restart Game and Exit in the center.
+   */
+  drawEndScreen() {
+    const size = this.getEndButtonSize();
+    this.getEndScreenLayout().forEach((item) => {
+      RoundButton.drawInBox(this.ctx, item.icon, item.x, item.y, size);
+      this.drawLabel(
+        item.label,
+        item.x + size + 6,
+        item.y + size / 2,
+        this.getEndLabelFont(),
+      );
+    });
+  }
+
+  /**
+   * Handles a click on the end screen and runs the action of the clicked button.
+   * @param {{x: number, y: number}} pos - The click position in game units.
+   */
+  handleEndScreenClick(pos) {
+    const size = this.getEndButtonSize();
+    const clicked = this.getEndScreenLayout().find((item) =>
+      this.isInArea(pos, item.x, item.y, item.x + item.width, item.y + size),
+    );
+    if (clicked) clicked.action();
   }
 
   /**
@@ -445,10 +535,11 @@ class Control {
    * @param {string} label - The text to draw.
    * @param {number} x - The left edge of the text.
    * @param {number} y - The vertical center of the text.
+   * @param {string} [font="8px Arial"] - The canvas font.
    */
-  drawLabel(label, x, y) {
+  drawLabel(label, x, y, font = "8px Arial") {
     this.ctx.fillStyle = "white";
-    this.ctx.font = "8px Arial";
+    this.ctx.font = font;
     this.ctx.textBaseline = "middle";
     this.ctx.fillText(label, x, y);
   }
@@ -484,6 +575,10 @@ class Control {
    * @param {{x: number, y: number}} pos - The click position in game units.
    */
   handleStartScreenClick(pos) {
+    if (this.isEndScreen()) {
+      this.handleEndScreenClick(pos);
+      return;
+    }
     if (this.gameStarted) {
       this.handlePauseTopRowClick(pos);
       return;
