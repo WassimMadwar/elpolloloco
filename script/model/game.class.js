@@ -584,8 +584,10 @@ class Game {
 
   /**
    * Draws the pause (or play) icon and the settings icon in the top right corner.
+   * Hidden after the end of the match: the end screen only has its own two buttons.
    */
   drawControlIcons() {
+    if (this.matchOver) return;
     RoundButton.drawInBox(
       this.ctx,
       Game.paused ? "play" : "pause",
@@ -614,6 +616,7 @@ class Game {
         this.control.handleStartScreenClick(pos);
         return;
       }
+      if (this.matchOver) return;
       if (
         this.isIconClicked(pos, this.getPauseIconX(), this.controlIconPadding)
       )

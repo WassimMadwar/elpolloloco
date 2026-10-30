@@ -41,7 +41,7 @@ class TouchControls {
    */
   isActive() {
     const control = this.game.control;
-    if (!control.gameStarted || control.pauseMenuOpen || Game.paused) {
+    if (!control.gameStarted || control.pauseMenuOpen || Game.paused || this.game.matchOver) {
       return false;
     }
     return !this.game.getGameResult();
