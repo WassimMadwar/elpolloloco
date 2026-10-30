@@ -65,26 +65,6 @@ canvas {
     margin: 0;
 }
 
-body.impressum {
-
-    justify-content: flex-start;
-    padding: 20px 0;
-    box-sizing: border-box;
-    margin: 0 auto;
-    text-align: center;
-    background-size: 100% calc(100% + 1800px);
-    overflow-y: auto;
-    background-position: top center;
-    max-width: 1440px;
-}
-
-body.impressum p {
-    
-    font-size: 30px;
-    padding: 0 30px;
-
-}
-
 .impr {
     position: absolute;
     bottom: 50px;
@@ -92,11 +72,14 @@ body.impressum p {
     right: 0;
     text-align: center;
     margin: 0;
+    font-size: 30px;
 }
+
 a {
     text-decoration: none;
     color:black;
 }
+
 @media only screen and (max-width: 730px) and (orientation: portrait) {
     #orientation-warning {
         display: flex;

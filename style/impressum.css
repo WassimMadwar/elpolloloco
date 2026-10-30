@@ -1,0 +1,25 @@
+body.impressum {
+    background: url("../assets/img/5_background/pageBG2.jpg") center / cover no-repeat;
+    font-family: "zabras", sans-serif;
+    justify-content: flex-start;
+    padding: 20px 0;
+    box-sizing: border-box;
+    margin: 0 auto;
+    text-align: center;
+    background-size: 100% calc(100% + 1800px);
+    overflow-y: auto;
+    background-position: top center;
+    max-width: 1440px;
+}
+
+p {
+    
+    font-size: 20px;
+    padding: 0 30px;
+
+}
+
+a {
+    text-decoration: none;
+    color:black;
+}
