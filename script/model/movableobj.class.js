@@ -55,18 +55,26 @@ class MovableObj extends DrawableObj {
   applyGravity() {
     this.gravityInterval = setInterval(() => {
       if (Game.paused) return;
-      if (this.isDying) {
-        this.goDown();
-        return;
-      }
-      if (this.isAboveGround() || this.speedY > 0) {
-        this.goDown();
-        if (!this.isAboveGround()) {
-          this.y = this.groundY;
-          this.speedY = 0;
-        }
-      }
+      this.applyGravityStep();
     }, 1000 / 25);
+  }
+
+  /**
+   * Moves the object one gravity step and stops it on the ground.
+   * A dying object keeps falling through the ground.
+   */
+  applyGravityStep() {
+    if (this.isDying) {
+      this.goDown();
+      return;
+    }
+    if (this.isAboveGround() || this.speedY > 0) {
+      this.goDown();
+      if (!this.isAboveGround()) {
+        this.y = this.groundY;
+        this.speedY = 0;
+      }
+    }
   }
 
   /**

@@ -11,7 +11,15 @@ class Character extends MovableObj {
   // How high Pepe jumps in game units (48 = the original height).
   static JUMP_HEIGHT = 54;
   // ======================================
+  // Walking speed in game units per second (80 = 8 units every 100 ms).
+  static WALK_SPEED = 80;
+  // Longest frame time used for one step, so the character does not jump
+  // forward after the browser tab was in the background.
+  static MAX_FRAME_MS = 100;
+  // Time in milliseconds after a hit in which Pepe cannot be hurt again.
+  static HIT_PROTECTION_MS = 2000;
   acceleration = Character.getJumpGravity();
+  previousFeetY;
   height = 100;
   y = -10;
   groundY = 32;
@@ -95,7 +103,8 @@ class Character extends MovableObj {
    * Clears the movement, animation and gravity intervals and ends the snoring sound.
    */
   stop() {
-    clearInterval(this.controlInterval);
+    this.isMoving = false;
+    cancelAnimationFrame(this.controlFrame);
     clearInterval(this.animationInterval);
     clearInterval(this.gravityInterval);
     this.stopSnoring();
@@ -124,36 +133,51 @@ class Character extends MovableObj {
   }
 
   /**
-   * Starts the movement interval (every 100 ms).
+   * Starts the movement loop, which runs once per screen frame (requestAnimationFrame),
+   * so the character and the camera move a small step on every drawn frame.
+   */
+  handleCharacterMovement() {
+    this.lastMoveTime = null;
+    const step = (time) => {
+      const elapsed = this.lastMoveTime === null ? 0 : time - this.lastMoveTime;
+      this.lastMoveTime = time;
+      this.updateMovement(Math.min(elapsed, Character.MAX_FRAME_MS));
+      if (this.isMoving) this.controlFrame = requestAnimationFrame(step);
+    };
+    this.isMoving = true;
+    this.controlFrame = requestAnimationFrame(step);
+  }
+
+  /**
    * Moves the character left or right, triggers jumps from the key state
    * and keeps the camera following the character.
    * Skipped while paused, dying or after the end of the match.
+   * @param {number} elapsed - The time since the last frame in milliseconds.
    */
-  handleCharacterMovement() {
-    this.controlInterval = setInterval(() => {
-      if (this.clearIntervalAfterDead()) {
-        return;
-      }
-      if (Game.paused || this.gameMatch.matchOver) return;
-      this.handelMoveRight();
-      this.handelMoveLeft();
-      if (this.gameMatch.keyAction.up) {
-        this.jump();
-      }
-      this.updateCamera();
-    }, 100);
+  updateMovement(elapsed) {
+    if (this.clearIntervalAfterDead()) return;
+    if (Game.paused || this.gameMatch.matchOver) return;
+    const distance = (Character.WALK_SPEED * elapsed) / 1000;
+    this.handelMoveRight(distance);
+    this.handelMoveLeft(distance);
+    if (this.gameMatch.keyAction.up) {
+      this.jump();
+    }
+    this.updateCamera();
   }
 
   /**
    * Moves the character to the right while the right key is pressed
    * and the end of the level has not been reached.
+   * @param {number} distance - The distance for this frame in game units.
    */
-  handelMoveRight() {
+  handelMoveRight(distance) {
     if (
       this.gameMatch.keyAction.right &&
       this.x < this.gameMatch.level.levelEndX
     ) {
-      this.moveRight();
+      this.x += distance;
+      this.otherDirection = false;
       this.updateActivity();
     }
   }
@@ -161,10 +185,11 @@ class Character extends MovableObj {
   /**
    * Moves the character to the left while the left key is pressed
    * and the start of the level has not been reached. Mirrors the character image.
+   * @param {number} distance - The distance for this frame in game units.
    */
-  handelMoveLeft() {
+  handelMoveLeft(distance) {
     if (this.gameMatch.keyAction.left && this.x > 0) {
-      this.x -= 8;
+      this.x -= distance;
       this.otherDirection = true;
       this.updateActivity();
     }
@@ -289,11 +314,33 @@ class Character extends MovableObj {
   }
 
   /**
+   * Starts the gravity (25 times per second) and checks for stomps right after
+   * every step, so a landing on top of an enemy is never missed.
+   */
+  applyGravity() {
+    this.gravityInterval = setInterval(() => {
+      if (Game.paused) return;
+      this.previousFeetY = this.getHitbox().bottom;
+      this.applyGravityStep();
+      if (this.gameMatch && this.gameMatch.level) this.gameMatch.checkStomps();
+    }, 1000 / 25);
+  }
+
+  /**
+   * Checks whether the character is still protected after the last hit.
+   * @returns {boolean} True during HIT_PROTECTION_MS after a hit.
+   */
+  isProtected() {
+    return new Date().getTime() - this.lastHit < Character.HIT_PROTECTION_MS;
+  }
+
+  /**
    * Reduces the character's energy by 20 after a hit and updates the health bar.
    * Plays the hurt sound, or lets the character die when the energy reaches 0.
+   * Ignored while the character is protected after the last hit.
    */
   hit() {
-    if (this.isDying) return;
+    if (this.isDying || this.isProtected()) return;
     this.energy -= 20;
     if (this.energy <= 0) {
       this.energy = 0;
@@ -324,20 +371,25 @@ class Character extends MovableObj {
 
   /**
    * Checks whether the character lands on top of an enemy.
-   * The character must be falling, its feet must be in the upper part of the enemy
-   * (see STOMP_ZONE) and both must overlap horizontally (see MIN_STOMP_OVERLAP).
+   * In the last gravity step the feet must have moved down from above the bottom
+   * of the stomp zone (see STOMP_ZONE) to the top of the enemy or lower,
+   * so even a big fall step through the zone counts. Both must also overlap
+   * horizontally (see MIN_STOMP_OVERLAP).
    * @param {MovableObj} enemy - The enemy to check.
    * @returns {boolean} True if the enemy is stomped.
    */
   canStomp(enemy) {
-    if (!this.isFalling()) return false;
     const feet = this.getHitbox();
+    if (this.previousFeetY === undefined || feet.bottom <= this.previousFeetY) {
+      return false;
+    }
     const target = enemy.getHitbox();
     const overlapX =
       Math.min(feet.right, target.right) - Math.max(feet.left, target.left);
     const zoneBottom =
       target.top + (target.bottom - target.top) * Character.STOMP_ZONE;
-    const feetInZone = feet.bottom >= target.top && feet.bottom <= zoneBottom;
-    return feetInZone && overlapX >= Character.MIN_STOMP_OVERLAP;
+    const cameFromAbove = this.previousFeetY <= zoneBottom;
+    const reachedTop = feet.bottom >= target.top;
+    return cameFromAbove && reachedTop && overlapX >= Character.MIN_STOMP_OVERLAP;
   }
 }

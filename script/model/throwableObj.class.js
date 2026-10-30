@@ -103,7 +103,7 @@ class ThrowableObj extends MovableObj {
    * @param {Endboss} boss - The boss that was hit.
    */
   splashOnBoss(boss) {
-    this.splash(boss.x + 10, this.getCenterY());
+    this.splash(boss.x + boss.offset.left, this.getCenterY());
   }
 
   /**

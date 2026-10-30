@@ -3,6 +3,10 @@ class Endboss extends MovableObj {
   y = 30;
   height = 100;
   width = 100;
+  // ===== BOSS HITBOX: transparent edges that do not count for hits =====
+  // The hitbox is 65 x 67 units inside the 100 x 100 image.
+  offset = { top: 25, left: 15, right: 20, bottom: 8 };
+  // =====================================================================
   imgBossWalking = [
     "assets/img/4_enemie_boss_chicken/2_alert/G5.png",
     "assets/img/4_enemie_boss_chicken/2_alert/G6.png",

@@ -329,23 +329,24 @@ class Game {
   }
 
   /**
-   * Starts the fast check loop (every 50 ms) for bottle hits and stomps,
-   * so fast moving objects are not missed. Skipped while the game is paused or the match is over.
+   * Starts the fast check loop (every 50 ms) for bottle hits,
+   * so fast moving bottles are not missed. Skipped while the game is paused or the match is over.
+   * Stomps are checked by the character after every gravity step.
    */
   runFastChecks() {
     clearInterval(this.fastCheckInterval);
     this.fastCheckInterval = setInterval(() => {
       if (Game.paused || this.matchOver) return;
       this.checkBottleCollisions();
-      this.checkStomps();
     }, 50);
   }
 
   /**
    * Kills every small enemy the character is landing on.
+   * Called by the character after every gravity step.
    */
   checkStomps() {
-    if (this.character.isDying) return;
+    if (this.character.isDying || this.matchOver) return;
     this.level.enemies.forEach((enemy) => {
       if (this.isStomped(enemy)) this.killEnemy(enemy);
     });
@@ -398,13 +399,14 @@ class Game {
   }
 
   /**
-   * Throws a bottle when a throw was requested and the character has bottles left.
-   * Plays the throw sound and updates the bottle bar.
+   * Throws a bottle when a throw was requested, the character has bottles left
+   * and no other bottle is still flying. Plays the throw sound and updates the bottle bar.
+   * A throw request while a bottle is flying is ignored.
    */
   checkThrowedBottle() {
     const wantsThrow = this.keyAction.throwRequested;
     this.keyAction.throwRequested = false;
-    if (wantsThrow && this.throwableBottles > 0) {
+    if (wantsThrow && this.throwableBottles > 0 && !this.isBottleFlying()) {
       let bottle = new ThrowableObj(
         this.character.x,
         this.character.y,
@@ -416,6 +418,15 @@ class Game {
       this.throwableBottles--;
       this.updateBottleBar();
     }
+  }
+
+  /**
+   * Checks whether a thrown bottle is still in the air
+   * (it has not hit an enemy and has not broken on the ground yet).
+   * @returns {boolean} True if a bottle is still flying.
+   */
+  isBottleFlying() {
+    return this.bottlesObj.some((bottle) => !bottle.hasHit && !bottle.isSplashing);
   }
 
   /**
