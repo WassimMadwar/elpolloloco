@@ -5,6 +5,13 @@ class Character extends MovableObj {
   // Minimum horizontal overlap between Pepe and the enemy (game units).
   static MIN_STOMP_OVERLAP = 5;
   // ===============================================================
+  // ===== JUMP: change the jump here =====
+  // How fast Pepe jumps up (higher = faster and snappier jump).
+  static JUMP_SPEED = 8;
+  // How high Pepe jumps in game units (48 = the original height).
+  static JUMP_HEIGHT = 54;
+  // ======================================
+  acceleration = Character.getJumpGravity();
   height = 100;
   y = -10;
   groundY = 32;
@@ -186,7 +193,8 @@ class Character extends MovableObj {
    * @returns {boolean} True if the character should show the sleep animation.
    */
   isSleeping() {
-    return new Date().getTime() - this.lastActionTime >= 15000;
+    // Sleep 1, 2, 3: idle time in milliseconds before the sleep animation starts (15000 = 15 seconds).
+    return new Date().getTime() - this.lastActionTime >= 4000;
   }
 
   /**
@@ -258,12 +266,23 @@ class Character extends MovableObj {
   }
   
   /**
+   * Calculates the gravity of the character from JUMP_SPEED and JUMP_HEIGHT,
+   * so the jump always reaches JUMP_HEIGHT, no matter how fast it is.
+   * @static
+   * @returns {number} The acceleration per gravity step.
+   */
+  static getJumpGravity() {
+    const speed = Character.JUMP_SPEED;
+    return (speed * speed) / (2 * (Character.JUMP_HEIGHT - speed / 2));
+  }
+
+  /**
    * Lets the character jump if it is standing on the ground.
    * Plays the jump sound and counts as an action (wakes the character up).
    */
   jump() {
     if (!this.isAboveGround()) {
-      this.speedY = 6;
+      this.speedY = Character.JUMP_SPEED;
       this.gameMatch.control.playEffect("jump");
       this.updateActivity();
     }
