@@ -22,7 +22,7 @@ class Game {
   totalBottles = 5;
   throwableBottles = 0;
   maxThrowableBottles = 10;
-  throwsPerBottle = 2;
+  throwsPerBottle = 1;
   gameOverImg = new Image();
   winImg = new Image();
   gameOverDelay = 2000;
@@ -522,7 +522,7 @@ class Game {
 
   /**
    * Checks whether one more bottle fits: the character carries at most
-   * maxThrowableBottles throws (5 bottles with throwsPerBottle throws each).
+   * maxThrowableBottles bottles (one throw and one bar step per bottle).
    * @returns {boolean} True if a bottle can be picked up.
    */
   canCollectBottle() {

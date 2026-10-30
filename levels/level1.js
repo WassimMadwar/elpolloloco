@@ -163,11 +163,17 @@ function createLevel1() {
       new Bottle(900, 30),
       new Bottle(970, 90),
       new Bottle(1083, 30),
+      new Bottle(1150, 90),
+      new Bottle(1250, 90),
       new Bottle(1305, 30),
       new Bottle(1416, 90),
       new Bottle(1528, 30),
       new Bottle(1568, 30),
       new Bottle(1600, 30),
+      // Extra bottles in front of the boss, so missed throws can be refilled.
+      new Bottle(1660, 90),
+      new Bottle(1690, 90),
+      new Bottle(1720, 90),
     ],
   );
 }

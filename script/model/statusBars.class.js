@@ -16,16 +16,27 @@ class StatusBars {
   // Start and end of the blue fill inside the boss bar image (in image pixels).
   endbossFillStart = 97;
   endbossFillEnd = 585;
+  // Start and end of the green fill inside the bottle bar image (in image pixels).
+  bottleFillStart = 61;
+  bottleFillEnd = 581;
   visbilityEndBossBar = false;
 
   /**
    * Draws the health, coin and bottle bars, and the boss bar once it is visible.
+   * The bottle bar is filled exactly (one step per bottle).
    * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on.
    */
   draw(ctx) {
     this.drawBar(ctx, this.health);
     this.drawBar(ctx, this.coin);
-    this.drawBar(ctx, this.bottle);
+    this.drawExactBar(
+      ctx,
+      this.bottle,
+      this.bottle.x,
+      this.bottle.y,
+      this.bottleFillStart,
+      this.bottleFillEnd,
+    );
     if (this.visbilityEndBossBar) this.drawEndbossBar(ctx);
   }
 
@@ -39,19 +50,38 @@ class StatusBars {
   }
 
   /**
-   * Draws the boss health bar in the top right corner, below the control icons.
-   * The empty bar is drawn first, then the left part of the full bar on top of it,
-   * so the blue fill matches the exact boss health (one step per hit).
+   * Draws the boss health bar in the top right corner, below the control icons,
+   * filled exactly (one step per hit).
    * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on.
    */
   drawEndbossBar(ctx) {
     const bar = this.endboss;
-    const x = Game.VIEW_WIDTH - bar.width - this.endbossPaddingRight;
-    const emptyImg = bar.imageCache[this.endbossImages[0]];
-    const fullImg = bar.imageCache[this.endbossImages[5]];
-    ctx.drawImage(emptyImg, x, this.endbossPaddingTop, bar.width, bar.height);
+    this.drawExactBar(
+      ctx,
+      bar,
+      Game.VIEW_WIDTH - bar.width - this.endbossPaddingRight,
+      this.endbossPaddingTop,
+      this.endbossFillStart,
+      this.endbossFillEnd,
+    );
+  }
+
+  /**
+   * Draws a bar with an exact fill level instead of the 20 % image steps.
+   * The empty bar is drawn first, then the left part of the full bar on top of it.
+   * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on.
+   * @param {StatusBar} bar - The bar to draw (its first image is empty, its last one full).
+   * @param {number} x - The x position of the bar.
+   * @param {number} y - The y position of the bar.
+   * @param {number} fillStart - Where the fill starts in the image (in image pixels).
+   * @param {number} fillEnd - Where the fill ends in the image (in image pixels).
+   */
+  drawExactBar(ctx, bar, x, y, fillStart, fillEnd) {
+    const emptyImg = bar.imageCache[bar.imgBar[0]];
+    const fullImg = bar.imageCache[bar.imgBar[bar.imgBar.length - 1]];
+    ctx.drawImage(emptyImg, x, y, bar.width, bar.height);
     if (bar.percentge <= 0 || !fullImg.naturalWidth) return;
-    const sourceWidth = this.getEndbossFillWidth(bar.percentge);
+    const sourceWidth = this.getFillWidth(fullImg, bar.percentge, fillStart, fillEnd);
     const scale = bar.width / fullImg.naturalWidth;
     ctx.drawImage(
       fullImg,
@@ -60,21 +90,23 @@ class StatusBars {
       sourceWidth,
       fullImg.naturalHeight,
       x,
-      this.endbossPaddingTop,
+      y,
       sourceWidth * scale,
       bar.height,
     );
   }
 
   /**
-   * Returns how much of the full boss bar image is drawn for a health value.
-   * @param {number} percentage - The boss health from 0 to 100.
+   * Returns how much of the full bar image is drawn for a fill level.
+   * @param {HTMLImageElement} fullImg - The image of the full bar.
+   * @param {number} percentage - The fill level from 0 to 100.
+   * @param {number} fillStart - Where the fill starts in the image (in image pixels).
+   * @param {number} fillEnd - Where the fill ends in the image (in image pixels).
    * @returns {number} The width in image pixels, measured from the left edge of the image.
    */
-  getEndbossFillWidth(percentage) {
-    const fillRange = this.endbossFillEnd - this.endbossFillStart;
-    if (percentage >= 100) return this.endboss.imageCache[this.endbossImages[5]].naturalWidth;
-    return this.endbossFillStart + (fillRange * percentage) / 100;
+  getFillWidth(fullImg, percentage, fillStart, fillEnd) {
+    if (percentage >= 100) return fullImg.naturalWidth;
+    return fillStart + ((fillEnd - fillStart) * percentage) / 100;
   }
 
   /**
