@@ -66,7 +66,10 @@ canvas {
 }
 
 body.impressum {
-    justify-content: center;
+
+    justify-content: flex-start;
+    padding: 20px 0;
+    box-sizing: border-box;
     margin: 0 auto;
     text-align: center;
     background-size: 100% calc(100% + 1800px);
@@ -114,8 +117,3 @@ only screen and (pointer: coarse) and (orientation: landscape) {
     }
 }
 
-/* @media (max-width: 750px){
-    .impr {
-        display: none;
-    }
-} */
